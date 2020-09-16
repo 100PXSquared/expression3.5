@@ -1,6 +1,6 @@
 --[[
 	   ____      _  _      ___    ___       ____      ___      ___     __     ____      _  _          _        ___     _  _       ____
-	  F ___J    FJ  LJ    F _ ", F _ ",    F ___J    F __".   F __".   FJ    F __]    F L L]        /.\      F __".  FJ  L]     F___ J
+	  F ___J    FJ  LJ    F _ ", F _ ",    F ___J    F __".   F __".   FJ    F __ ]    F L L]        /.\      F __".  FJ  L]     F___ J
 	 J |___:    J \/ F   J `-' |J `-'(|   J |___:   J (___|  J (___|  J  L  J |--| L  J   \| L      //_\\    J |--\ LJ |  | L    `-__| L
 	 | _____|   /    \   |  __/F|  _  L   | _____|  J\___ \  J\___ \  |  |  | |  | |  | |\   |     / ___ \   | |  J |J J  F L     |__  (
 	 F L____:  /  /\  \  F |__/ F |_\  L  F L____: .--___) \.--___) \ F  J  F L__J J  F L\\  J    / L___J \  F L__J |J\ \/ /F  .-____] J
@@ -2287,7 +2287,7 @@ function PARSER.ClassStatment_1(this)
 			end
 		end
 
-		this:Require("sep", "Statements must be separated by a semicolon (;) 2292")
+		this:Require("sep", "Statements must be separated by a semicolon (;) 2290")
 
 		return this:EndInstruction(inst, {type = type; expressions = expressions; variables = variables});
 	end
@@ -2419,7 +2419,7 @@ function PARSER.InterfaceStatment_1(this)
 
 		local count = this:Require("num", "Method body must be return followed by return count as number.");
 
-		this:Require("sep", "Statements must be separated by a semicolon (;) 2411");
+		this:Require("sep", "Statements must be separated by a semicolon (;) 2422");
 
 		if (lcb) then
 			this:Require("rcb", "Right curly bracket (}) expected to close method.");

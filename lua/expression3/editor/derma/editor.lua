@@ -1893,7 +1893,7 @@ function PANEL:PaintSelection(selection, color, outline)
 	if char < 0 then char = 0 end
 	if endchar < 0 then endchar = 0 end
 
-	color = color or Color(51, 153, 255, 255)
+	color = color or Color(51, 153, 255, 100)
 	outline = outline or false
 
 	local LinePos = line - self.Scroll.x - 1 - self:GetFoldingOffset(line)
