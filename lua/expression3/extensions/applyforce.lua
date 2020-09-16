@@ -23,20 +23,20 @@ local function applyangForce(ph, a)
 
 		if a.p ~= 0 then
 			local pitch = up * (a.p * 0.5);
-			ph:ApplyForceOffset( forward, pitch );
-			ph:ApplyForceOffset( forward * -1, pitch * -1 );
+			ph:ApplyForceOffset(forward, pitch);
+			ph:ApplyForceOffset(forward * -1, pitch * -1);
 		end
 
 		if a.y ~= 0  then
 			local yaw = forward * (a.y * 0.5);
-			ph:ApplyForceOffset( left, yaw );
-			ph:ApplyForceOffset( left * -1, yaw * -1 );
+			ph:ApplyForceOffset(left, yaw);
+			ph:ApplyForceOffset(left * -1, yaw * -1);
 		end
 
 		if a.r ~= 0 then
 			local roll = left * (a.r * 0.5);
-			ph:ApplyForceOffset( up, roll );
-			ph:ApplyForceOffset( up * -1, roll * -1 );
+			ph:ApplyForceOffset(up, roll);
+			ph:ApplyForceOffset(up * -1, roll * -1);
 		end
 	end
 end

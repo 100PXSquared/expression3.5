@@ -1,6 +1,6 @@
 --[[
 	   ____      _  _      ___    ___       ____      ___      ___     __     ____      _  _          _        ___     _  _       ____
-	  F ___J    FJ  LJ    F _ ", F _ ",    F ___J    F __".   F __".   FJ    F __ ]    F L L]        /.\      F __".  FJ  L]     F___ J
+	  F ___J    FJ  LJ    F _ ", F _ ",    F ___J    F __".   F __".   FJ    F __]    F L L]        /.\      F __".  FJ  L]     F___ J
 	 J |___:    J \/ F   J `-' |J `-'(|   J |___:   J (___|  J (___|  J  L  J |--| L  J   \| L      //_\\    J |--\ LJ |  | L    `-__| L
 	 | _____|   /    \   |  __/F|  _  L   | _____|  J\___ \  J\___ \  |  |  | |  | |  | |\   |     / ___ \   | |  J |J J  F L     |__  (
 	 F L____:  /  /\  \  F |__/ F |_\  L  F L____: .--___) \.--___) \ F  J  F L__J J  F L\\  J    / L___J \  F L__J |J\ \/ /F  .-____] J
@@ -12,7 +12,7 @@
 
 AddCSLuaFile();
 
-WireToolSetup.setCategory( "Chips, Gates" )
+WireToolSetup.setCategory("Chips, Gates")
 WireToolSetup.open("expression3", "Expression 3", "wire_expression3_base", nil, "Expression3s")
 
 --[[
@@ -24,11 +24,11 @@ if CLIENT then
 	language.Add("Tool.wire_expression3.desc", "Spawns an Expression 3 chip for use with the wire system.")
 
 	TOOL.Information = {
-		{ name = "left", text = "Create " .. TOOL.Name },
-		{ name = "right", text = "Open " .. TOOL.Name .. " in Editor" },
+		{name = "left", text = "Create " .. TOOL.Name},
+		{name = "right", text = "Open " .. TOOL.Name .. " in Editor"},
 	}
 
-	WireToolSetup.setToolMenuIcon( "vgui/e2logo" )
+	WireToolSetup.setToolMenuIcon("vgui/e2logo")
 end
 
 --[[
@@ -43,7 +43,7 @@ TOOL.ClientConVar = {
 WireToolSetup.SetupMax(20)
 WireToolSetup.BaseLang()
 
-duplicator.RegisterEntityClass( "wire_expression3_base", WireLib.MakeWireEnt, "Data", "code_str" )
+duplicator.RegisterEntityClass("wire_expression3_base", WireLib.MakeWireEnt, "Data", "code_str")
 
 function TOOL:PostMake(ent)
 	local ply = self:GetOwner();
@@ -56,11 +56,11 @@ function TOOL:PostMake(ent)
 	end);
 end
 
-function TOOL:CheckHitOwnClass( trace )
+function TOOL:CheckHitOwnClass(trace)
 	return trace.Entity:IsValid() and trace.Entity.Expression3;
 end
 
-function TOOL:LeftClick_Update( trace )
+function TOOL:LeftClick_Update(trace)
 	EXPR_UPLOADER.RequestFromClient(self:GetOwner(), trace.Entity);
 end
 
@@ -92,26 +92,26 @@ end
 if CLIENT then
 	local TOOL = TOOL;
 
-	function TOOL.BuildCPanel( CPanel )
+	function TOOL.BuildCPanel(CPanel)
 
-		local PropList = vgui.Create( "PropSelect" )
+		local PropList = vgui.Create("PropSelect")
 
-		PropList:SetConVar( "wire_expression3_model" )
+		PropList:SetConVar("wire_expression3_model")
 
-		for _, Model in pairs( GateModels ) do
-			PropList:AddModel( Model, false )
+		for _, Model in pairs(GateModels) do
+			PropList:AddModel(Model, false)
 		end
 
-		CPanel:AddItem( PropList )
+		CPanel:AddItem(PropList)
 	end
 
 	hook.Add("Expression3.CloseGolem", "Expression3.Tool.ChooseModel", function()
 		local model = Golem.GetDirective("model") or "";
-		RunConsoleCommand( "wire_expression3_script_model", model);
+		RunConsoleCommand("wire_expression3_script_model", model);
 	end)
 end
 
-function TOOL:RightClick( Trace )
+function TOOL:RightClick(Trace)
 	if (SERVER) then
 		local loadScript = self:CheckHitOwnClass(Trace);
 		

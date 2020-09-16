@@ -155,16 +155,16 @@
 
 --[[
 	*****************************************************************************************************************************************************
-		system.invoke needs a custom compiler operation, 
+		system.invoke needs a custom interpreter operation, 
 	*****************************************************************************************************************************************************
 ]]--
 
 	extension:RegisterFunction("system", "invoke", "cls,n,f,...", "", 0, EXPR_LIB.Invoke);
 
-	hook.Add("Expression3.PostCompile.System.invoke", "Expression3.Core.Extensions", function(this, inst, token, data, compile)
+	hook.Add("Expression3.PostInterpret.System.invoke", "Expression3.Core.Extensions", function(this, inst, token, data, interpret)
 
-		local r, c, prc = compile();
-		-- We need to instruct the compiler what this actualy returns.
+		local r, c, prc = interpret();
+		-- We need to instruct the interpreter what this actualy returns.
 		local class = data.expressions[1].token.data; -- Return class was arg 1.
 		local count = data.expressions[2].token.data; -- Return count was arg 2.
 

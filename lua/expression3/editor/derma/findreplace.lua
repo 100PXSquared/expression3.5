@@ -1,121 +1,421 @@
-/*============================================================================================================================================
+--[[============================================================================================================================================
 	Name: GOLEM_Search
 	Author: Rusketh (The whole point of this, is to make Oskar hate it so he replaces it!)
 	Based on Sublime Text 3, because its the best Text Editor (Disagree? Your wrong!).
-============================================================================================================================================*/
+
+	Disregard above if reading this, completely redesigned and replaced as the original doesn't even work.
+	Now uses the same UI, and similar underlying functions as E2's find and replace.
+	Also has respect for code folding and will only unfold blocks that contain the string to find or line to go to when they are found or gone to respectively.
+
+	Complete rewrite author: Derpius
+
+	Also, VSCode is the best text editor based on feature set and available extensions,
+	and if you want to talk about asthetics, well Rusketh, you aren't really in a position to talk about asthetics given your human rights violation of an editor colour scheme.
+	I mean jesus, pure black background and bright red characters, REALLY? I've seen PC UIs from the 90s that look better than that
+============================================================================================================================================]]
 
 --[[
 	Search Box
 ]]
 
-local SEARCH = {};
+local SEARCH = {
+	bWholeWord = false,
+	bMatchCase = false,
+	bAllowRegex = false,
+	bWrapAround = false,
+	bFindDown = true
+}
 
-function SEARCH:Init()
-
-	self.bWholeWord = false;
-	self.bMatchCase = false;
-	self.bAllowRegex = false;
-	self.bWrapAround = false;
-
-	self:SetZPos(999);
-	self:SetSize(300, 50);
-
-	self.query_text = self:Add("DTextEntry");
-	self.query_text:SetPaintBackground(false);
-
-	self.replace_text = self:Add("DTextEntry");
-	self.replace_text:SetPaintBackground(false);
-
-	self.find_prev = self:Add("GOLEM_ImageButton");
-	self.find_prev:SetMaterial( Material("fugue\\arrow-090.png") );
-	self.find_prev:SetTooltip("Find previous.");
-
-	self.find_next = self:Add("GOLEM_ImageButton");
-	self.find_next:SetMaterial( Material("fugue\\arrow-270.png") );
-	self.find_next:SetTooltip("Find next.");
-
-	self.find_all = self:Add("GOLEM_ImageButton");
-	self.find_all:SetMaterial( Material("fugue\\arrow-retweet.png") );
-	self.find_all:SetTooltip("Replace all.");
-
-	self.replace_check = self:Add("GOLEM_CheckBox");
-	self.replace_check:SetCross(Material("fugue\\binocular.png"));
-	self.replace_check:SetTick(Material("fugue\\quill.png"));
-	self.replace_check:SetTooltip("Toggle Find and Replace");
-
-	function self.replace_check.ChangedValue(this, bChecked)
-		if (bChecked) then self:ShowReplace(); else self:HideReplace(); end
-	end
-
-	function self.find_next.DoClick(this)
-		self:FindNext();
-	end
-
-	function self.find_prev.DoClick(this)
-		self:FindPrev();
-	end
-
-	function self.query_text.OnEnter(this)
-		self:FindNext();
-	end
-
-	function self.find_all.DoClick(this)
-		self:FindAll();
-	end
-
-	self:HideReplace();
+function SEARCH:Init() 
+	-- Nothing needs to be done here anymore, at least not right now
 end
 
-function SEARCH:SetEditor(ide)
-	self.pEditor = ide;
-end
+function SEARCH:CreateFindWindow()
+	self.FindWindow = vgui.Create("DFrame", self)
+	local ide = self:GetIDE()
 
-function SEARCH:PerformLayout( )
-	local w, h = self:GetSize();
-
-	self.find_prev:SetPos(w - 44, 1);
-	self.find_prev:SetSize(22, 22);
-
-	self.find_next:SetPos(w - 22, 1);
-	self.find_next:SetSize(22, 22);
-
-	self.find_all:SetPos(w - 44, 24);
-	self.find_all:SetSize(22, 22);
-
-	self.query_text:SetPos(1, 1);
-	self.query_text:SetSize(w - 48, 24);
-
-	self.replace_text:SetPos(1, 25);
-	self.replace_text:SetSize(w - 48, 24);
-
-	self.replace_check:SetPos(w - 22, 24);
-	self.replace_check:SetSize(22, 22);
-
-	if (self.bOpen) then self:Open(true); else self:Close(true); end
-end
-
-function SEARCH:Open(noanim)
-	local pw, ph = self:GetParent():GetSize();
-	local w, h = self:GetSize();
-	local x = pw - w - 20;
-	local y = 10;
-
-	if (noanim) then self:SetPos(x, y);
-	else self:MoveTo(x, y, 0.2, 0.2); end
-
-	if (self.btnOptions) then
-		for i = 1, 5 do
-			local btn = self.btnOptions[i];
-			btn:SetEnabled(true);
-			btn:SetVisible(true);
+	local pnl = self.FindWindow
+	pnl:SetSize(322, 201)
+	pnl:ShowCloseButton(true)
+	pnl:SetDeleteOnClose(false) -- No need to create a new window every time
+	pnl:MakePopup() -- Make it separate from the editor itself
+	pnl:SetVisible(false) -- but hide it for now
+	pnl:SetTitle("Find")
+	pnl:SetScreenLock(true)
+	do
+		local old = pnl.Close
+		function pnl.Close()
+			self.ForceDrawCursor = false
+			old(pnl)
 		end
 	end
 
-	self.pEditor.tbRight:InvalidateLayout(false);
+	-- Center it above the editor
+	local x,y = ide:GetPos()
+	local w,h = ide:GetSize()
+	pnl:SetPos(x+w/2-150, y+h/2-100)
 
-	self.query_text:RequestFocus();
+	pnl.TabHolder = vgui.Create("DPropertySheet", pnl)
+	pnl.TabHolder:StretchToParent(1, 23, 1, 1)
 
-	self.bOpen = true;
+	-- Options
+	local common_panel = vgui.Create("DPanel", pnl)
+	common_panel:SetSize(225, 60)
+	common_panel:SetPos(10, 130)
+	common_panel.Paint = function()
+		local w,h = common_panel:GetSize()
+		draw.RoundedBox(4, 0, 0, w, h, Color(0,0,0,150))
+	end
+
+	local use_patterns = vgui.Create("DCheckBoxLabel", common_panel)
+	use_patterns:SetText("Use Patterns")
+	use_patterns:SetToolTip("Use/Don't use Lua patterns in the find.")
+	use_patterns:SizeToContents()
+	use_patterns.OnChange = function(chk) self.bAllowRegex = chk:GetChecked() end
+	use_patterns:SetPos(4, 4)
+	do
+		local old = use_patterns.Button.SetValue
+		use_patterns.Button.SetValue = function(pnl, b)
+			if self.bWholeWord then return end
+			old(pnl, b)
+		end
+	end
+
+	local case_sens = vgui.Create("DCheckBoxLabel", common_panel)
+	case_sens:SetText("Match Case")
+	case_sens:SetToolTip("Ignore/Don't ignore case in the find.")
+	case_sens:SizeToContents()
+	case_sens:SetValue(self.bMatchCase)
+	case_sens.OnChange = function(chk) self.bMatchCase = chk:GetChecked() end
+	case_sens:SetPos(4, 24)
+
+	local whole_word = vgui.Create("DCheckBoxLabel", common_panel)
+	whole_word:SetText("Match Whole Word")
+	whole_word:SetToolTip("Match/Don't match the entire word in the find.")
+	whole_word:SizeToContents()
+	whole_word:SetValue(self.bWholeWord)
+	whole_word.OnChange = function(chk) self.bWholeWord = chk:GetChecked() end
+	whole_word:SetPos(4, 44)
+	do
+		local old = whole_word.Button.Toggle
+		whole_word.Button.Toggle = function(pnl)
+			old(pnl)
+			if pnl:GetValue() then use_patterns:SetValue(false) end
+		end
+	end
+
+	local wrap_around = vgui.Create("DCheckBoxLabel", common_panel)
+	wrap_around:SetText("Wrap Around")
+	wrap_around:SetToolTip("Start/Don't start from the top after reaching the bottom, or the bottom after reaching the top.")
+	wrap_around:SizeToContents()
+	wrap_around:SetValue(self.bWrapAround)
+	wrap_around.OnChange = function(chk) self.bWrapAround = chk:GetChecked() end
+	wrap_around:SetPos(130, 4)
+
+	local dir_down = vgui.Create("DCheckBoxLabel", common_panel)
+	local dir_up = vgui.Create("DCheckBoxLabel", common_panel)
+
+	dir_up:SetText("Up")
+	dir_up:SizeToContents()
+	dir_up:SetPos(130, 24)
+	dir_up:SetTooltip("Note: Most patterns won't work when searching up because the search function reverses the string to search backwards.")
+	dir_up:SetValue(not self.bFindDown)
+	dir_down:SetText("Down")
+	dir_down:SizeToContents()
+	dir_down:SetPos(130, 44)
+	dir_down:SetValue(self.bFindDown)
+
+	dir_up.Button.Toggle = function()
+		dir_up:SetValue(true)
+		dir_down:SetValue(false)
+		self.bFindDown = false
+	end
+	dir_down.Button.Toggle = function()
+		dir_down:SetValue(true)
+		dir_up:SetValue(false)
+		self.bFindDown = true
+	end
+
+	do
+		-- Find tab
+		local findtab = vgui.Create("DPanel")
+
+		-- Label
+		local FindLabel = vgui.Create("DLabel", findtab)
+		FindLabel:SetText("Find:")
+		FindLabel:SetPos(4, 4)
+		FindLabel:SetTextColor(Color(0,0,0,255))
+
+		-- Text entry
+		local FindEntry = vgui.Create("DTextEntry", findtab)
+		FindEntry:SetPos(30,4)
+		FindEntry:SetSize(200,20)
+		FindEntry:RequestFocus()
+		FindEntry.OnEnter = function(pnl)
+			self:Find(pnl:GetValue())
+			pnl:RequestFocus()
+		end
+
+		-- Find next button
+		local FindNext = vgui.Create("DButton", findtab)
+		FindNext:SetText("Find Next")
+		FindNext:SetToolTip("Find the next match and highlight it.")
+		FindNext:SetPos(233,4)
+		FindNext:SetSize(70,20)
+		FindNext.DoClick = function(pnl)
+			self:Find(FindEntry:GetValue())
+		end
+
+		-- Find button
+		local Find = vgui.Create("DButton", findtab)
+		Find:SetText("Find")
+		Find:SetToolTip("Find the next match, highlight it, and close the Find window.")
+		Find:SetPos(233,29)
+		Find:SetSize(70,20)
+		Find.DoClick = function(pnl)
+			self.FindWindow:Close()
+			self:Find(FindEntry:GetValue())
+		end
+
+		-- Count button
+		local Count = vgui.Create("DButton", findtab)
+		Count:SetText("Count")
+		Count:SetPos(233, 95)
+		Count:SetSize(70, 20)
+		Count:SetTooltip("Count the number of matches in the file.")
+		Count.DoClick = function(pnl)
+			Derma_Message(self:CountFinds(FindEntry:GetValue()) .. " matches found.", "", "Ok")
+		end
+
+		-- Cancel button
+		local Cancel = vgui.Create("DButton", findtab)
+		Cancel:SetText("Cancel")
+		Cancel:SetPos(233,120)
+		Cancel:SetSize(70,20)
+		Cancel.DoClick = function(pnl)
+			self.FindWindow:Close()
+		end
+
+		pnl.FindTab = pnl.TabHolder:AddSheet("Find", findtab, "icon16/page_white_find.png", false, false)
+		pnl.FindTab.Entry = FindEntry
+	end
+
+	do
+		-- Replace tab
+		local replacetab = vgui.Create("DPanel")
+
+		-- Label
+		local FindLabel = vgui.Create("DLabel", replacetab)
+		FindLabel:SetText("Find:")
+		FindLabel:SetPos(4, 4)
+		FindLabel:SetTextColor(Color(0,0,0,255))
+
+		-- Text entry
+		local FindEntry = vgui.Create("DTextEntry", replacetab)
+		local ReplaceEntry
+		FindEntry:SetPos(30,4)
+		FindEntry:SetSize(200,20)
+		FindEntry:RequestFocus()
+		FindEntry.OnEnter = function(pnl)
+			self:Replace(pnl:GetValue(), ReplaceEntry:GetValue())
+			ReplaceEntry:RequestFocus()
+		end
+
+		-- Label
+		local ReplaceLabel = vgui.Create("DLabel", replacetab)
+		ReplaceLabel:SetText("Replace With:")
+		ReplaceLabel:SetPos(4, 32)
+		ReplaceLabel:SizeToContents()
+		ReplaceLabel:SetTextColor(Color(0,0,0,255))
+
+		-- Replace entry
+		ReplaceEntry = vgui.Create("DTextEntry", replacetab)
+		ReplaceEntry:SetPos(75,29)
+		ReplaceEntry:SetSize(155,20)
+		ReplaceEntry:RequestFocus()
+		ReplaceEntry.OnEnter = function(pnl)
+			self:Replace(FindEntry:GetValue(), pnl:GetValue())
+			pnl:RequestFocus()
+		end
+
+		-- Find next button
+		local FindNext = vgui.Create("DButton", replacetab)
+		FindNext:SetText("Find Next")
+		FindNext:SetToolTip("Find the next match and highlight it.")
+		FindNext:SetPos(233,4)
+		FindNext:SetSize(70,20)
+		FindNext.DoClick = function(pnl)
+			self:Find(FindEntry:GetValue())
+		end
+
+		-- Replace next button
+		local ReplaceNext = vgui.Create("DButton", replacetab)
+		ReplaceNext:SetText("Replace")
+		ReplaceNext:SetToolTip("Replace the current selection if it matches, else find the next match.")
+		ReplaceNext:SetPos(233,29)
+		ReplaceNext:SetSize(70,20)
+		ReplaceNext.DoClick = function(pnl)
+			self:Replace(FindEntry:GetValue(), ReplaceEntry:GetValue())
+		end
+
+		-- Replace all button
+		local ReplaceAll = vgui.Create("DButton", replacetab)
+		ReplaceAll:SetText("Replace All")
+		ReplaceAll:SetToolTip("Replace all occurences of the match in the entire file, and close the Find window.")
+		ReplaceAll:SetPos(233,54)
+		ReplaceAll:SetSize(70,20)
+		ReplaceAll.DoClick = function(pnl)
+			self.FindWindow:Close()
+			self:ReplaceAll(FindEntry:GetValue(), ReplaceEntry:GetValue())
+		end
+
+		-- Count button
+		local Count = vgui.Create("DButton", replacetab)
+		Count:SetText("Count")
+		Count:SetPos(233, 95)
+		Count:SetSize(70, 20)
+		Count:SetTooltip("Count the number of matches in the file.")
+		Count.DoClick = function(pnl)
+			Derma_Message(self:CountFinds(FindEntry:GetValue()) .. " matches found.", "", "Ok")
+		end
+
+		-- Cancel button
+		local Cancel = vgui.Create("DButton", replacetab)
+		Cancel:SetText("Cancel")
+		Cancel:SetPos(233,120)
+		Cancel:SetSize(70,20)
+		Cancel.DoClick = function(pnl)
+			self.FindWindow:Close()
+		end
+
+		pnl.ReplaceTab = pnl.TabHolder:AddSheet("Replace", replacetab, "icon16/page_white_wrench.png", false, false)
+		pnl.ReplaceTab.Entry = FindEntry
+	end
+
+	-- Go to line tab
+	local gototab = vgui.Create("DPanel")
+
+	-- Label
+	local GotoLabel = vgui.Create("DLabel", gototab)
+	GotoLabel:SetText("Go to Line:")
+	GotoLabel:SetPos(4, 4)
+	GotoLabel:SetTextColor(Color(0,0,0,255))
+
+	-- Text entry
+	local GoToEntry = vgui.Create("DTextEntry", gototab)
+	GoToEntry:SetPos(57,4)
+	GoToEntry:SetSize(173,20)
+	GoToEntry:SetNumeric(true)
+
+	-- Goto Button
+	local Goto = vgui.Create("DButton", gototab)
+	Goto:SetText("Go to Line")
+	Goto:SetPos(233,4)
+	Goto:SetSize(70,20)
+
+	-- Action
+	local function GoToAction(panel)
+		local val = tonumber(GoToEntry:GetValue())
+		if val then
+			val = math.Clamp(val, 1, #ide.tRows)
+			ide:SetCaret(Vector2(val, 1))
+			local toUnfold = self:RecursiveUnfold(ide.tRows, Vector2(val, 1))
+			for i = 1, #ide.tRows do
+				if not toUnfold[i] then continue end
+				ide:ExpandLine(i, false)
+			end
+		end
+		GoToEntry:SetText(tostring(val))
+		self.FindWindow:Close()
+	end
+	GoToEntry.OnEnter = GoToAction
+	Goto.DoClick = GoToAction
+
+	pnl.GoToLineTab = pnl.TabHolder:AddSheet("Go to Line", gototab, "icon16/page_white_go.png", false, false)
+	pnl.GoToLineTab.Entry = GoToEntry
+
+	-- Tab buttons
+	do
+		local old = pnl.FindTab.Tab.OnMousePressed
+		pnl.FindTab.Tab.OnMousePressed = function(...)
+			pnl.FindTab.Entry:SetText(pnl.ReplaceTab.Entry:GetValue() or "")
+			local active = pnl.TabHolder:GetActiveTab()
+			if active == pnl.GoToLineTab.Tab then
+				pnl:SetHeight(200)
+				pnl.TabHolder:StretchToParent(1, 23, 1, 1)
+			end
+			old(...)
+		end
+	end
+
+	do
+		local old = pnl.ReplaceTab.Tab.OnMousePressed
+		pnl.ReplaceTab.Tab.OnMousePressed = function(...)
+			pnl.ReplaceTab.Entry:SetText(pnl.FindTab.Entry:GetValue() or "")
+			local active = pnl.TabHolder:GetActiveTab()
+			if active == pnl.GoToLineTab.Tab then
+				pnl:SetHeight(200)
+				pnl.TabHolder:StretchToParent(1, 23, 1, 1)
+			end
+			old(...)
+		end
+	end
+
+	do
+		local old = pnl.GoToLineTab.Tab.OnMousePressed
+		pnl.GoToLineTab.Tab.OnMousePressed = function(...)
+			pnl:SetHeight(86)
+			pnl.TabHolder:StretchToParent(1, 23, 1, 1)
+			pnl.GoToLineTab.Entry:SetText(1)
+			old(...)
+		end
+	end
+end
+
+function SEARCH:OpenFindWindow(mode, selection)
+	if not self.FindWindow then self:CreateFindWindow() end
+	self.FindWindow:SetVisible(true)
+	self.FindWindow:MakePopup() -- This will move it above the E2 editor if it is behind it.
+	self.ForceDrawCursor = true
+
+	if mode == "find" then
+		if selection and selection ~= "" then self.FindWindow.FindTab.Entry:SetText(selection) end
+		self.FindWindow.TabHolder:SetActiveTab(self.FindWindow.FindTab.Tab)
+		self.FindWindow.FindTab.Entry:RequestFocus()
+		self.FindWindow:SetHeight(201)
+		self.FindWindow.TabHolder:StretchToParent(1, 23, 1, 1)
+	elseif mode == "find and replace" then
+		if selection and selection ~= "" then self.FindWindow.ReplaceTab.Entry:SetText(selection) end
+		self.FindWindow.TabHolder:SetActiveTab(self.FindWindow.ReplaceTab.Tab)
+		self.FindWindow.ReplaceTab.Entry:RequestFocus()
+		self.FindWindow:SetHeight(201)
+		self.FindWindow.TabHolder:StretchToParent(1, 23, 1, 1)
+	elseif mode == "go to line" then
+		self.FindWindow.TabHolder:SetActiveTab(self.FindWindow.GoToLineTab.Tab)
+		local caretPos = self:GetIDE().Caret.x
+		self.FindWindow.GoToLineTab.Entry:SetText(caretPos)
+		self.FindWindow.GoToLineTab.Entry:RequestFocus()
+		self.FindWindow.GoToLineTab.Entry:SelectAllText()
+		self.FindWindow.GoToLineTab.Entry:SetCaretPos(tostring(caretPos):len())
+		self.FindWindow:SetHeight(83)
+		self.FindWindow.TabHolder:StretchToParent(1, 23, 1, 1)
+	end
+end
+
+function SEARCH:SetEditor(ide)
+	self.pEditor = ide
+end
+
+function SEARCH:GetIDE()
+	local pTab = self.pEditor.pnlTabHolder:GetActiveTab()
+
+	if not pTab then return end
+
+	if not IsValid(pTab) or not ispanel(pTab) then return end
+
+	if pTab.__type ~= "editor" then return end
+
+	return pTab:GetPanel();
 end
 
 function SEARCH:Close(noanim)
@@ -140,288 +440,225 @@ function SEARCH:Close(noanim)
 	self.bOpen = false;
 end
 
-function SEARCH:Toggle()
-	if ( self.bOpen ) then self:Close(); else self:Open(); end
+function SEARCH:RecursiveUnfold(rows, pos, toExpand, offset)
+	local toExpand = toExpand or {}
+	local offset = offset or 0
+
+	for i = 1, #rows do
+		if rows[i] == nil or not istable(rows[i]) or toExpand[rows[i].Primary] then continue end
+		if pos.x <= i + offset or pos.x >= #rows[i] + i + offset then continue end
+
+		toExpand[i + offset] = true
+		toExpand = self:RecursiveUnfold(rows[i], pos, toExpand, offset + i - 1)
+		break
+	end
+
+	return toExpand
 end
 
-function SEARCH:SetOptions(options)
-	self.btnOptions = options;
-end
+function SEARCH:HighlightFoundWord(caretstart, start, stop, prevFolded)
+	local ide = self:GetIDE()
+	caretstart = caretstart or ide.Start
 
-function SEARCH:ShowReplace()
-	self.replace_text:SetEnabled(true);
-	self.replace_text:SetVisible(true);
+	if istable(start) then
+		ide.Start = Vector2(start.x, start.y)
+	elseif isnumber(start) then
+		ide.Start = ide:MovePosition(caretstart, start)
+	end
+	if istable(stop) then
+		ide.Caret = Vector2(stop.x, stop.y + 1)
+	elseif isnumber(stop) then
+		ide.Caret = ide:MovePosition(caretstart, stop + 1)
+	end
 
-	self.find_all:SetEnabled(true);
-	self.find_all:SetVisible(true);
+	ide:ScrollCaret()
 
-	self.replace_check:SetValue(true, true);
+	ide:FoldAll(prevFolded)
 
-	self.bReplace = true;
-end
+	local toExpand = self:RecursiveUnfold(ide.tRows, ide.Start)
+	PrintTable(toExpand)
 
-function SEARCH:HideReplace()
-	self.replace_text:SetEnabled(false);
-	self.replace_text:SetVisible(false);
-
-	self.find_all:SetEnabled(false);
-	self.find_all:SetVisible(false);
-
-	self.replace_check:SetValue(false, true);
-
-	self.bReplace = false;
-end
-
-function SEARCH:Paint()
-	local w, h = self:GetSize();
-
-	draw.RoundedBox( 6, 0, 0, w, 24, Color( 100, 100, 100, 255 ) );
-	draw.RoundedBox( 6, w - 24, 0, 24, h, Color( 100, 100, 100, 255 ) );
-
-	draw.RoundedBox( 6, 2, 4, w - 46, 18, Color( 100, 150, 150, 255 ) );
-
-	if (self.bReplace) then
-		draw.RoundedBox( 6, 2, 26, w - 46, 18, Color( 100, 150, 150, 255 ) );
+	for i = 1, #ide.tRows do
+		if not toExpand[i] then continue end
+		ide:ExpandLine(i, false)
 	end
 end
 
-function SEARCH:GetIDE( )
-	local pTab = self.pEditor.pnlTabHolder:GetActiveTab( )
-
-	if not pTab then return end
-
-	if not IsValid( pTab ) or not ispanel( pTab ) then return end
-
-	if pTab.__type ~= "editor" then return end
-
-	return pTab:GetPanel( );
-end
-
-function SEARCH:GetCode()
+function SEARCH:Find(str, looped, prevFolded)
 	local ide = self:GetIDE()
 
-	if (not ide) then return; end
+	if looped and looped >= 2 then return end
+	if str == "" then return end
+	local _str = str
 
-	local code = ide:GetCode();
-
-	local bMatchCase = self.pEditor.searchOpCase:GetValue();
-
-	if (bMatchCase) then
-		code = string.lower(code);
+	-- Check if the match exists anywhere at all
+	local temptext = ide:GetCode()
+	if not self.bMatchCase then
+		temptext = temptext:lower()
+		str = str:lower()
 	end
+	local _start,_stop = temptext:find(str, 1, not self.bAllowRegex)
+	if not _start or not _stop then return false end
 
-	return code;
+	local prevFolded = prevFolded or ide:ExpandAll() -- Expand all the rows internally, then fold all but the ones that the match is in
+
+	if self.bFindDown then -- Down
+		local line = ide.tRows[ide.Start.x]
+		local text = line:sub(ide.Start.y) .. "\n" .. table.concat(ide.tRows, "\n", ide.Start.x + 1) --_text:sub(0, #_text)
+
+		if not self.bMatchCase then text = text:lower() end
+
+		if not self.bAllowRegex then
+			str = string.PatternSafe(str)
+		end
+
+		if self.bWholeWord then
+			str = "%f[%w_]" .. str .. "%f[^%w_]"
+		end
+
+		local start, stop = text:find(str, 2)
+		if start and stop then
+			self:HighlightFoundWord(nil, start - 1, stop - 1, prevFolded)
+			return true
+		end
+
+		if self.bWrapAround then
+			ide:SetCaret(Vector2(1, 1))
+			return self:Find(_str, (looped or 0) + 1, prevFolded)
+		end
+
+		ide:FoldAll(prevFolded)
+		return false
+	else -- Up
+		local line = ide.tRows[ide.Start.x]
+		text = table.concat(ide.tRows, "\n", 1, ide.Start.x - 1) .. "\n" .. line:sub(1, ide.Start.y - 1)
+
+		str = string.reverse(str)
+		text = string.reverse(text)
+
+		if not self.bMatchCase then text = text:lower() end
+
+		if not self.bAllowRegex then
+			str = string.PatternSafe(str)
+		end
+
+		if self.bWholeWord then
+			str = "%f[%w_]" .. str .. "%f[^%w_]"
+		end
+
+		local start, stop = text:find(str, 2)
+		if start and stop then
+			self:HighlightFoundWord(nil, -(start - 1), -(stop + 1), prevFolded)
+			return true
+		end
+
+		if self.bWrapAround then
+			ide:SetCaret(Vector2(#ide.tRows, #ide.tRows[#ide.tRows]))
+			return self:Find(_str, (looped or 0) + 1, prevFolded)
+		end
+
+		ide:FoldAll(prevFolded)
+		return false
+	end
 end
 
-function SEARCH:GetQuery()
-	local query = self.query_text:GetValue();
-	local bMatchCase = self.pEditor.searchOpCase:GetValue();
-	local bAllowRegex = self.pEditor.searchOptRegex:GetValue();
+function SEARCH:Replace(str, replacewith)
+	if str == "" or str == replacewith then return end
 
-	if (bMatchCase) then
-		query = string.lower(query);
+	local ide = self:GetIDE()
+
+	local selection = ide:GetSelection()
+
+	local _str = str
+	if not self.bAllowRegex then
+		str = string.PatternSafe(str)
+		replacewith = replacewith:gsub("%%", "%%%1")
 	end
 
-	if (not bAllowRegex) then
-		query = string.gsub(query, "[%-%^%$%(%)%%%.%[%]%*%+%?]", "%%%1");
-	end
-
-	return query;
-end
-
-function SEARCH:SetQuery(text)
-	self.query_text:SetValue(text or "");
-end
-
-function SEARCH:GetReplacement()
-	return self.replace_text:GetValue();
-end
-
-function SEARCH:CaretToPos(ide, caret)
-	local tRows = ide.tRows;
-
-	local pos = 0;
-
-	for l = 1, caret.x - 1 do
-		pos = pos + #tRows[l] + 1;
-	end
-
-	local len = #tRows[caret.x];
-
-	if caret.y >= len then
-		pos = pos + caret.y;
+	if selection:match(str) ~= nil then
+		ide:SetSelection(selection:gsub(str, replacewith))
+		return self:Find(_str)
 	else
-		pos = pos + len;
-	end
-
-	return pos;
-end
-
-function SEARCH:PosToCaret(ide, pos)
-	local tRows = ide.tRows;
-
-	local cur = 0;
-
-	for l = 1, #tRows do
-		local len = #tRows[l];
-
-		if (cur + len < pos) then
-			cur = cur + len + 1;
-		else
-			return Vector2(l, pos - cur);
-		end
-	end
-
-	return Vector2(0, 0);
-end
-
-function SEARCH:FindResults(maxResults)
-	local ide = self:GetIDE();
-
-	if (not ide) then
-		return;
-	end
-
-	local code = self:GetCode();
-	local query = self:GetQuery();
-
-	local bInSelection = self.pEditor.searchOptSelection:GetValue();
-	local bAllowRegex = self.pEditor.searchOptRegex:GetValue();
-	local bMatchWhole = self.pEditor.searchOptWhole:GetValue();
-	local bWrapAround = self.pEditor.searchOptWrap:GetValue();
-
-	local startPos = ide.Start;
-	local endPos = Vector2(#ide.tRows, #ide.tRows[#ide.tRows]);
-
-	if (bInSelection) then
-		endPos = ide.Caret;
-	end
-
-	local caretPos = self:CaretToPos(ide, startPos);
-	local offset = caretPos;
-	local maxoffset = self:CaretToPos(ide, endPos);
-
-	local tempStart, tempStop = string.find(code, query, 1, not bAllowRegex);
-
-	if (not tempStart or not tempStop) then
-		return;
-	end
-
-	local results = {};
-
-	for i = 1, 500 do --TODO: Maybe make this while true?
-		if (offset >= maxoffset) then
-			break;
-		end
-
-		local start, stop = string.find(code, query, offset, not bAllowRegex);
-
-		if (not start or not stop) then
-			if (bWrapAround and not bInSelection) then
-				bWrapAround = false;
-				maxoffset = caretPos;
-				offset = 0;
-				continue;
-			else
-				break;
-			end
-		end
-
-		stop = stop + 1;
-
-		local newStart = self:PosToCaret(ide, start);
-		local newStop = self:PosToCaret(ide, stop);
-
-		if (bMatchWhole) then
-
-			local wordStart = ide:wordStart(newStart);
-			local wordStop = ide:wordEnd(newStop);
-
-			if (wordStart == newStart and wordStop == newStop) then
-				results[#results + 1] = { newStart, newStop, string.sub(code, start, stop) };
-			end
-
-			offset = start + 1;
-		else
-			results[#results + 1] = { newStart, newStop, string.sub(code, start, stop - 1) };
-			offset = start + 1;
-		end
-
-		if (maxResults and #results >= maxResults) then
-			break;
-		end
-	end
-
-	if (#results > 0) then
-		return results;
+		return self:Find(_str)
 	end
 end
 
-function SEARCH:FindNext()
-	local results = self:FindResults(10);
+function SEARCH:ReplaceAll(str, replacewith)
+	if str == "" then return end
 
-	if (not results) then
-		Golem.Print({image = "fugue\\binocular.png", size = 16}, Color(100, 100, 100), "Search returned no results!");
+	local ide = self:GetIDE()
+
+	if not self.bAllowRegex then
+		str = string.PatternSafe(str)
+		replacewith = replacewith:gsub("%%", "%%%1")
+	end
+
+	if not self.bMatchCase then
+		str = str:lower()
+	end
+
+	local pattern
+	if self.bWholeWord then
+		pattern = "%f[%w_]()" .. str .. "%f[^%w_]()"
 	else
-		self:DoFindReplace(results[1]);
+		pattern = "()" .. str .. "()"
 	end
-end
 
-function SEARCH:FindPrev()
-	local results = self:FindResults();
+	local txt = ide:GetCode()
 
-	if (not results) then
-		Golem.Print({image = "fugue\\binocular.png", size = 16}, Color(100, 100, 100), "Search returned no results!");
+	if not self.bMatchCase then
+		local txt2 = txt -- Store original cased copy
+		txt = txt:lower() -- Lowercase everything
+
+		local positions = {}
+
+		for startpos, endpos in string.gmatch(txt, pattern) do
+			positions[#positions + 1] = {startpos, endpos}
+		end
+
+		-- Do the replacing backwards, or it won't work
+		for i = #positions, 1, -1 do
+			local startpos, endpos = positions[i][1], positions[i][2]
+			txt2 = string.sub(txt2, 1, startpos - 1) .. replacewith .. string.sub(txt2, endpos)
+		end
+
+		-- Replace everything with the edited copy
+		ide:SelectAll()
+		ide:SetSelection(txt2)
 	else
-		self:DoFindReplace(results[#results]);
+		txt = string.gsub(txt, pattern, replacewith)
+
+		ide:SelectAll()
+		ide:SetSelection(txt)
 	end
 end
 
-function SEARCH:DoFindReplace(result, noPrint)
-	local ide = self:GetIDE();
+function SEARCH:CountFinds(str)
+	PrintTable({
+		bWholeWord = self.bWholeWord,
+		bMatchCase = self.bMatchCase,
+		bAllowRegex = self.bAllowRegex,
+		bWrapAround = self.bWrapAround,
+		bFindDown = self.bFindDown
+	})
+	if str == "" then return 0 end
 
-	if (self.bReplace) then
-		local with = self:GetReplacement();
-
-		ide:SetArea( { ide:MakeSelection({ result[1], result[2] }) }, with);
-
-		if (not noPrint) then
-			Golem.Print({image = "fugue\\binocular.png", size = 16}, Color(100, 100, 100), "Replaced ", Color(50, 100, 50), result[3], Color(100, 100, 100), " at line ", result[1].x, " char ", result[1].y, ".");
-		end
-	else
-		if (not noPrint) then
-			Golem.Print({image = "fugue\\quill.png", size = 16}, Color(100, 100, 100), "Found ", Color(50, 100, 50), result[3], Color(100, 100, 100), " at line ", result[1].x, " char ", result[1].y, ".");
-		end
+	if not self.bAllowRegex then
+		str = string.PatternSafe(str)
 	end
 
-	ide:SetCaret(result[1]);
-	ide:ScrollCaret();
-	ide:RequestFocus();
-end
+	local txt = self:GetIDE():GetCode()
 
-function SEARCH:FindAll()
-	local results = self:FindResults();
-
-	if (not results) then
-		Golem.Print({image = "fugue\\binocular.png", size = 16}, Color(100, 100, 100), "Search returned no results!");
-	else
-		Golem.Print({image = "fugue\\binocular.png", size = 16}, Color(100, 100, 100), "Search returned ", #results, " results!");
-
-		for i = 1, #results do
-			self:DoFindReplace(results[i], true);
-		end
-
-		if (self.bReplace) then
-			Golem.Print({image = "fugue\\quill.png", size = 16}, Color(100, 100, 100), "Replaced ", Color(50, 100, 50), #results, Color(100, 100, 100), " results.");
-		else
-			--This wont happen as the button only exists when replacing D:
-			Golem.Print({image = "fugue\\binocular.png", size = 16}, Color(100, 100, 100), "Found ", Color(50, 100, 50), #results, Color(100, 100, 100), " results.");
-		end
+	if not self.bMatchCase then
+		txt = txt:lower()
+		str = str:lower()
 	end
 
-	--TODO: Oskar make this function do more then just print in to the console.
+	if self.bWholeWord then
+		str = "%f[%w_]()" .. str .. "%f[^%w_]()"
+	end
+
+	return select(2, txt:gsub(str, ""))
 end
-
-
 
 vgui.Register("GOLEM_SearchBox", SEARCH, "DPanel");

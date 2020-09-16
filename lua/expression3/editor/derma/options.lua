@@ -300,7 +300,7 @@ function PANEL:Init()
 		editorFontSize:AddChoice(i)
 	end
 	function editorFontSize:OnSelect(index, value, data)
-		-- Golem.Font:SetFont( value )
+		-- Golem.Font:SetFont(value)
 		Golem.Font:ChangeFontSize(value, true)
 	end
 

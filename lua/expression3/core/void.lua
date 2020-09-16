@@ -103,7 +103,7 @@
 		this:Throw("__band()");
 	end
 
-	mtvoid.__bor = function(this )
+	mtvoid.__bor = function(this)
 		this:Throw("__bor()");
 	end
 

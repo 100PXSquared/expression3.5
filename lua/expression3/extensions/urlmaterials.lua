@@ -23,7 +23,7 @@ end);
 
 local TextureSize = 512;
 local HTML = HTML
-local URLQueue = { }
+local URLQueue = {}
 local CanLoad = true
 
 if CLIENT then TextureSize = max_size:GetInt(); end
@@ -80,7 +80,7 @@ local function Download(context, Name, url, Width, Height)
 
 		if !mat then return end
 
-		local vertex_mat = CreateMaterial("e3urlmat_" .. Name, "UnlitGeneric", { ["$vertexcolor"] = 1, ["$vertexalpha"] = 1, ["$ignorez"] = 1, ["$nolod"] = 1 } )
+		local vertex_mat = CreateMaterial("e3urlmat_" .. Name, "UnlitGeneric", {["$vertexcolor"] = 1, ["$vertexalpha"] = 1, ["$ignorez"] = 1, ["$nolod"] = 1})
 		local tex = mat:GetTexture("$basetexture")
 		tex:Download()
 		vertex_mat:SetTexture("$basetexture", tex)
@@ -112,7 +112,7 @@ end)
 local download_material = function(context, Trace, Name, URL, Width, Height)
 	if (context.data.materials[Name] || #context.data.materials < Component:ReadSetting("maxurlmaterials", 15)) && #URLQueue < 10 then
 		context.data.materials[Name] = context.data.materials[Name] or Material("debug/debugempty")
-		table.insert(URLQueue, { context, Name, URL, math.Clamp(Width or TextureSize, 1, TextureSize), math.Clamp(Height or TextureSize, 1, TextureSize) })
+		table.insert(URLQueue, {context, Name, URL, math.Clamp(Width or TextureSize, 1, TextureSize), math.Clamp(Height or TextureSize, 1, TextureSize)})
 	end
 end
 

@@ -229,7 +229,7 @@ do
 
 	function EXPR_DOCS.GenerateDefaultEventDocs()
 
-		for _, op in pairs( EXPR_EVENTS ) do
+		for _, op in pairs(EXPR_EVENTS) do
 				
 			EXPR_DOCS.DescribeEvent({
 				["signature"] = op.signature,
@@ -280,7 +280,7 @@ do
 	end
 
 	function EXPR_DOCS.GenerateDefaultTypeDocs()
-		for _, data in pairs( EXPR_CLASSES ) do
+		for _, data in pairs(EXPR_CLASSES) do
 			EXPR_DOCS.DescribeType({
 				["id"] = data.id,
 				["name"] = data.name,
@@ -327,7 +327,7 @@ do
 
 	function EXPR_DOCS.GenerateDefaultConstructorDocs()
 
-		for _, cls in pairs( EXPR_CLASSES ) do
+		for _, cls in pairs(EXPR_CLASSES) do
 			
 			if cls.constructors then
 
@@ -388,7 +388,7 @@ do
 
 	function EXPR_DOCS.GenerateDefaultAttributeDocs()
 
-		for _, cls in pairs( EXPR_CLASSES ) do
+		for _, cls in pairs(EXPR_CLASSES) do
 			
 			if cls.attributes then
 
@@ -445,7 +445,7 @@ do
 
 	function EXPR_DOCS.GenerateDefaultMethodDocs()
 
-		for _, op in pairs( EXPR_METHODS ) do
+		for _, op in pairs(EXPR_METHODS) do
 				
 			EXPR_DOCS.DescribeMethod({
 				["signature"] = op.signature,
@@ -499,7 +499,7 @@ do
 
 	function EXPR_DOCS.GenerateDefaultOperatorDocs()
 
-		for _, op in pairs( EXPR_OPERATORS ) do
+		for _, op in pairs(EXPR_OPERATORS) do
 				
 			EXPR_DOCS.DescribeOperator({
 				["signature"] = op.signature,
@@ -513,7 +513,7 @@ do
 
 		end
 
-		for _, op in pairs( EXPR_CAST_OPERATORS ) do
+		for _, op in pairs(EXPR_CAST_OPERATORS) do
 
 			EXPR_DOCS.DescribeOperator({
 				["signature"] = op.signature,
@@ -566,7 +566,7 @@ do
 
 	function EXPR_DOCS.GenerateDefaultLibraryDocs()
 		
-		for _, op in pairs( EXPR_LIBRARIES ) do
+		for _, op in pairs(EXPR_LIBRARIES) do
 				
 			EXPR_DOCS.DescribeLibrary({
 				["name"] = op.name,
@@ -615,7 +615,7 @@ do
 
 	function EXPR_DOCS.GenerateDefaultFunctionDocs()
 		
-		for _, lib in pairs( EXPR_LIBRARIES ) do
+		for _, lib in pairs(EXPR_LIBRARIES) do
 			
 			for __, op in pairs(lib._functions)	do
 				EXPR_DOCS.DescribeFunction({
@@ -671,7 +671,7 @@ do
 
 	function EXPR_DOCS.GenerateDefaultConstantDocs()
 		
-		for _, lib in pairs( EXPR_LIBRARIES ) do
+		for _, lib in pairs(EXPR_LIBRARIES) do
 			
 			for __, op in pairs(lib._constants)	do
 				EXPR_DOCS.DescribeConstant({
@@ -795,7 +795,7 @@ do
 	function EXPR_DOCS.LoadCustomDocs()
 		local files = file.Find(path .. "*.txt", "GAME");
 
-		for i, filename in pairs( files ) do
+		for i, filename in pairs(files) do
 			EXPR_DOCS.LoadCustomDocFile(path .. filename);
 		end
 	end
@@ -842,7 +842,7 @@ do
 		local fl = file.Open(path, "w", "DATA");
 
 		if fl then
-			fl:Write( EXPR_DOCS.ChangedDocs() );
+			fl:Write(EXPR_DOCS.ChangedDocs());
 
 			fl:Close();
 		end

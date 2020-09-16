@@ -3,10 +3,10 @@
 	Author: Oskar
 ============================================================================================================================================*/
 
-local PANEL = { }
+local PANEL = {}
 
-function PANEL:Init( )
+function PANEL:Init()
 
 end
 
-vgui.Register( "GOLEM_FileBrowser", PANEL, "DFileBrowser" )
+vgui.Register("GOLEM_FileBrowser", PANEL, "DFileBrowser")

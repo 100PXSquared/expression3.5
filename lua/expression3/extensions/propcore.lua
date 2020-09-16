@@ -32,7 +32,7 @@ if SERVER then
 	end);
 
 	hook.Add("Expression3.Entity.Stop", "Expression3.Props",function(entity, ctx)
-		for _, prop in pairs( ctx.data.props ) do
+		for _, prop in pairs(ctx.data.props) do
 			if IsValid(prop) then
 				prop:Remove();
 			end
@@ -41,10 +41,10 @@ if SERVER then
 		ctx.data.props = nil
 	end);
 
-	hook.Add("PlayerDisconnected", "Expression3.Props", function( ply )
+	hook.Add("PlayerDisconnected", "Expression3.Props", function(ply)
 		for _, ctx in pairs(EXPR_LIB.GetAll()) do
 			if (ctx.player == ply) then
-				for _, prop in pairs( ctx.data.props ) do
+				for _, prop in pairs(ctx.data.props) do
 					if IsValid(prop) then
 						prop:Remove();
 					end
@@ -53,17 +53,17 @@ if SERVER then
 				ctx.data.props = nil
 			end
 		end
-	end );
+	end);
 
 	local function incSpawn(context)
 
-		local count = EXPR_LIB.PropSpawnRate[ context.player ] or 0;
+		local count = EXPR_LIB.PropSpawnRate[context.player] or 0;
 
 		if count >= spawn_rate:GetInt() then
 			return false;
 		end
 
-		EXPR_LIB.PropSpawnRate[ context.player ] = count + 1;
+		EXPR_LIB.PropSpawnRate[context.player] = count + 1;
 
 		return true;
 	end
@@ -78,7 +78,7 @@ if SERVER then
 			return;
 		end
 
-		if not (gamemode.Call( "PlayerSpawnProp", context.player, model ) ~= false) then
+		if not (gamemode.Call("PlayerSpawnProp", context.player, model) ~= false) then
 			return;
 		end
 
@@ -138,7 +138,7 @@ if SERVER then
 			model = "models/nova/airboat_seat.mdl";
 		end
 		
-		if not (gamemode.Call( "PlayerSpawnVehicle", context.player, model, "Seat_Airboat", list.Get( "Vehicles" ).Seat_Airboat ) ~= false) then
+		if not (gamemode.Call("PlayerSpawnVehicle", context.player, model, "Seat_Airboat", list.Get("Vehicles").Seat_Airboat) ~= false) then
 			return;
 		end
 
@@ -157,9 +157,9 @@ if SERVER then
 
 		e:Spawn();
 
-		e:SetKeyValue( "limitview", 0 );
+		e:SetKeyValue("limitview", 0);
 
-		table.Merge( e, { HandleAnimation = function(_, p) return p:SelectWeightedSequence( ACT_HL2MP_SIT ); end } );
+		table.Merge(e, {HandleAnimation = function(_, p) return p:SelectWeightedSequence(ACT_HL2MP_SIT); end});
 		
 		hook.Run("PlayerSpawnedVehicle", p, e);
 
@@ -235,7 +235,7 @@ end, false);
 ]]
 
 extension:RegisterFunction("prop", "canSpawn", "", "b", 1, function(context)
-	local count = EXPR_LIB.PropSpawnRate[ context.player ] or 0;
+	local count = EXPR_LIB.PropSpawnRate[context.player] or 0;
 
 	if count >= spawn_rate:GetInt() then
 		return false;
@@ -267,7 +267,7 @@ extension:RegisterMethod("e", "setAng", "a", "", 0, function(context, e, v)
 end, false);
 
 extension:RegisterMethod("e", "setFrozen", "b", "", 0, function(context, e, b)
-	if context:CanUseEntity( e ) and ((not e.GetUnFreezable) or e:GetUnFreezable() ~= true) then
+	if context:CanUseEntity(e) and ((not e.GetUnFreezable) or e:GetUnFreezable() ~= true) then
 		local ph = e:GetPhysicsObject();
 
 		if IsValid(ph) then 
@@ -286,24 +286,24 @@ extension:RegisterMethod("e", "isFrozen", "", "b", 1, function(context, e)
 end, false);
 
 extension:RegisterMethod("e", "setNotSolid", "b", "", 0, function(context, e, b)
-	if context:CanUseEntity( e ) then
+	if context:CanUseEntity(e) then
 		local ph = e:GetPhysicsObject();
 
 		if IsValid(ph) then
-			ph:SetSolid( b and SOLID_NONE or SOLID_VPHYSICS );
+			ph:SetSolid(b and SOLID_NONE or SOLID_VPHYSICS);
 			ph:Wake();
 		end
 	end
 end, false);
 
 extension:RegisterMethod("e", "setParent", "e", "", 0, function(context, e, p)
-	if context:CanUseEntity( e ) and IsValid(p) then
+	if context:CanUseEntity(e) and IsValid(p) then
 		e:SetParent(p);
 	end
 end, false);
 
 extension:RegisterMethod("e", "unParent", "", "", 0, function(context, e)
-	if context:CanUseEntity( e ) then
+	if context:CanUseEntity(e) then
 		e:SetParent(nil);
 	end
 end, false);
@@ -315,7 +315,7 @@ end, false);
 
 extension:RegisterMethod("ph", "setPos", "v", "", 0, function(context, ph, v)
 	if IsValid(ph) then
-		if context:CanUseEntity( ph:GetEntity() ) then
+		if context:CanUseEntity(ph:GetEntity()) then
 			ph:SetPos(v);
 		end
 	end
@@ -323,7 +323,7 @@ end, false);
 
 extension:RegisterMethod("ph", "setAng", "a", "", 0, function(context, ph, v)
 	if IsValid(ph) then
-		if context:CanUseEntity( ph:GetEntity() ) then
+		if context:CanUseEntity(ph:GetEntity()) then
 			ph:SetAngles(v);
 		end
 	end
@@ -331,7 +331,7 @@ end, false);
 
 extension:RegisterMethod("ph", "setFrozen", "b", "", 0, function(context, ph, b)
 	if IsValid(ph) then
-		if context:CanUseEntity( ph:GetEntity() ) then
+		if context:CanUseEntity(ph:GetEntity()) then
 			ph:EnableMotion(not b);
 		end
 	end

@@ -1,6 +1,6 @@
 --[[
 	   ____      _  _      ___    ___       ____      ___      ___     __     ____      _  _          _        ___     _  _       ____
-	  F ___J    FJ  LJ    F _ ", F _ ",    F ___J    F __".   F __".   FJ    F __ ]    F L L]        /.\      F __".  FJ  L]     F___ J
+	  F ___J    FJ  LJ    F _ ", F _ ",    F ___J    F __".   F __".   FJ    F __]    F L L]        /.\      F __".  FJ  L]     F___ J
 	 J |___:    J \/ F   J `-' |J `-'(|   J |___:   J (___|  J (___|  J  L  J |--| L  J   \| L      //_\\    J |--\ LJ |  | L    `-__| L
 	 | _____|   /    \   |  __/F|  _  L   | _____|  J\___ \  J\___ \  |  |  | |  | |  | |\   |     / ___ \   | |  J |J J  F L     |__  (
 	 F L____:  /  /\  \  F |__/ F |_\  L  F L____: .--___) \.--___) \ F  J  F L__J J  F L\\  J    / L___J \  F L__J |J\ \/ /F  .-____] J
@@ -578,18 +578,18 @@ end, true);
 	Bearing / Elevation
 ]]
 
-extension:RegisterMethod( "e", "bearing", "v", "n", 1, function(e, v)
+extension:RegisterMethod("e", "bearing", "v", "n", 1, function(e, v)
 	if IsValid(e) then
-		local p = e:WorldToLocal( v );
+		local p = e:WorldToLocal(v);
 		return (180 / math.pi) * -math.atan2(p.y, p.x);
 	end
 
 	return 0;
 end, true);
 
-extension:RegisterMethod( "e", "elevation", "v", "n", 1, function(e, v)
+extension:RegisterMethod("e", "elevation", "v", "n", 1, function(e, v)
 	if IsValid(e) then
-		local p = e:WorldToLocal( v );
+		local p = e:WorldToLocal(v);
 		local l = p:Length();
 		return (180 / math.pi) * -math.asin(p.z / l);
 	end
@@ -597,12 +597,12 @@ extension:RegisterMethod( "e", "elevation", "v", "n", 1, function(e, v)
 	return 0;
 end, true);
 
-extension:RegisterMethod( "e", "heading", "v", "a", 1, function(e, v)
+extension:RegisterMethod("e", "heading", "v", "a", 1, function(e, v)
 	if IsValid(e) then
-		local p = e:WorldToLocal( v );
+		local p = e:WorldToLocal(v);
 		local b = (180 / math.pi) * -math.atan2(p.y, p.x);
 		local l = p:Length();
-		return Angle((180 / math.pi) * math.asin(p.z / l), b, 0 )	;
+		return Angle((180 / math.pi) * math.asin(p.z / l), b, 0)	;
 	end
 
 	return Angle(0, 0, 0);
@@ -612,12 +612,12 @@ end, true);
 	Attachments
 ]]
 
-extension:RegisterMethod( "e", "lookupAttachment", "s", "n", 1, function(e, s)
+extension:RegisterMethod("e", "lookupAttachment", "s", "n", 1, function(e, s)
 	if IsValid(e) then return e:LookupAttachment(s) or -1; end
 	return -1;
 end);
 
-extension:RegisterMethod( "e", "attachmentPos", "n", "v", 1, function(e, n)
+extension:RegisterMethod("e", "attachmentPos", "n", "v", 1, function(e, n)
 	if IsValid(e) then
 		local attachment = e:GetAttachment(n);
 
@@ -629,7 +629,7 @@ extension:RegisterMethod( "e", "attachmentPos", "n", "v", 1, function(e, n)
 	return Vector(0, 0, 0);
 end, true);
 
-extension:RegisterMethod( "e", "attachmentAng", "n", "a", 1, function(e, n)
+extension:RegisterMethod("e", "attachmentAng", "n", "a", 1, function(e, n)
 	if IsValid(e) then
 		local attachment = e:GetAttachment(n);
 
@@ -641,7 +641,7 @@ extension:RegisterMethod( "e", "attachmentAng", "n", "a", 1, function(e, n)
 	return Angle(0, 0, 0);
 end, true);
 
-extension:RegisterMethod( "e", "attachments", "", "t", 1, function(e)
+extension:RegisterMethod("e", "attachments", "", "t", 1, function(e)
 	local t = {};
 
 	if IsValid(e) then
@@ -659,13 +659,13 @@ end, true);
 	Trails
 ]]
 
-extension:RegisterMethod( "e", "removeTrails", "", "", 0, function(context, e)
+extension:RegisterMethod("e", "removeTrails", "", "", 0, function(context, e)
 	if context:CanUseEntity(e) then
 		duplicator.EntityModifiers.trail(context.player, e, nil);
 	end
 end, false);
 
-extension:RegisterMethod( "e", "setTrails", "n,n,n,s,c,n,b", "", 0, function(context, e, n1, n2, n3, s, c, n4, b)
+extension:RegisterMethod("e", "setTrails", "n,n,n,s,c,n,b", "", 0, function(context, e, n1, n2, n3, s, c, n4, b)
 	if context:CanUseEntity(e) then
 		if not string.find(s, '"', 1, true) then
 			duplicator.EntityModifiers.trail(context.player, e, {
@@ -676,7 +676,7 @@ extension:RegisterMethod( "e", "setTrails", "n,n,n,s,c,n,b", "", 0, function(con
 				Material = s,
 				AttachmentID = n4,
 				Additive = b
-			} );
+			});
 		end
 	end
 end, true);

@@ -70,7 +70,7 @@ SetGlobal = function(player, perm, value)
 	local perms = ply_perms[id];
 
 	if not perms then
-		perms = { };
+		perms = {};
 		ply_perms[id] = perms;
 	end
 
@@ -109,7 +109,7 @@ Set = function(entity, target, perm, value)
 	local perms = entity.permissions[tid];
 
 	if not perms then
-		perms = { };
+		perms = {};
 		entity.permissions[tid] = perms;
 	end
 
@@ -244,13 +244,13 @@ end);
 ****************************************************************************************************************************/
 
 if SERVER then
-	util.AddNetworkString( "e3_permission" )
-	util.AddNetworkString( "e3_global_permission" )
+	util.AddNetworkString("e3_permission")
+	util.AddNetworkString("e3_global_permission")
 
 	EXPR_PERMS.SetPermission = function(entity, target, perm, value)
 		Set(entity, target, perm, value);
 
-		net.Start( "e3_permission" );
+		net.Start("e3_permission");
 			net.WriteEntity(entity);
 			net.WriteEntity(target);
 			net.WriteString(perm);
@@ -261,7 +261,7 @@ if SERVER then
 	EXPR_PERMS.SetGlobalPermission = function(player, perm, value)
 		SetGlobal(player, perm, value);
 
-		net.Start( "e3_global_permission" );
+		net.Start("e3_global_permission");
 			net.WriteEntity(player);
 			net.WriteString(perm);
 			net.WriteUInt(value, 3);
@@ -308,7 +308,7 @@ if CLIENT then
 		RunConsoleCommand("e3_global_permission", perm, value);
 	end;
 
-	net.Receive( "e3_permission", function(len)
+	net.Receive("e3_permission", function(len)
 		local entity = net.ReadEntity();
 		local target = net.ReadEntity();
 		local perm = net.ReadString();
@@ -320,7 +320,7 @@ if CLIENT then
 		Set(entity, target, perm, value);
 	end);
 
-	net.Receive( "e3_global_permission", function(len)
+	net.Receive("e3_global_permission", function(len)
 		local player = net.ReadEntity();
 		local perm = net.ReadString();
 		local value = net.ReadUInt(3);
@@ -351,14 +351,14 @@ local function CreateFilter(filter)
         ["\\%"]="%", 
         ["%"]="%%",
         ["*"]="([a-zA-Z0-9_]+)",
-    });
+   });
 end
 
 /****************************************************************************************************************************
 	Black List
 ****************************************************************************************************************************/
 
-local black_list = { };
+local black_list = {};
 
 local GetBlackList = function()
 	return black_list;

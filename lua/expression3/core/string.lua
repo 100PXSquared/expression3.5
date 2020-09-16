@@ -39,14 +39,14 @@
 	extension:RegisterOperator("add", "n,s", "s", 1);
 	extension:RegisterOperator("add", "s,s", "s", 1);
 	extension:RegisterOperator("neq", "s,s", "b", 1);
-	extension:RegisterOperator( "eq", "s,s", "b", 1);
+	extension:RegisterOperator("eq", "s,s", "b", 1);
 	extension:RegisterOperator("lth", "s,s", "b", 1);
 	extension:RegisterOperator("leg", "s,s", "b", 1);
 	extension:RegisterOperator("gth", "s,s", "b", 1);
 	extension:RegisterOperator("geq", "s,s", "b", 1);
 	extension:RegisterOperator("get", "s,n", "s", 1);
 	extension:RegisterOperator("ten", "b,s,s", "s", 1);
-	extension:RegisterOperator( "is", "s", "b", 1, function (context, string) return string and string ~= "" end, true);
+	extension:RegisterOperator("is", "s", "b", 1, function (context, string) return string and string ~= "" end, true);
 	extension:RegisterOperator("not", "s", "b", 1, function (context, string) return string and string ~= "" end, true);
 	extension:RegisterOperator("len", "s", "n", 1, string.len, true);
 
@@ -90,7 +90,7 @@
 
 		local ret = {}
 		for i = 1, rep / rep_chunk do
-			ret[#ret+1] = string.rep( str, rep_chunk, sep )
+			ret[#ret+1] = string.rep(str, rep_chunk, sep)
 		end
 
 		local r = rep%rep_chunk
@@ -147,7 +147,7 @@
 ]]--
 
 	extension:RegisterMethod("s", "gmatch", "s,ptr,f", "s", 1, function(context, str, ptr, fun)
-		for w in string.gmatch( str, ptr ) do
+		for w in string.gmatch(str, ptr) do
 			EXPR_LIB.Invoke(context, "s", 1, func, {"s", w})
 		end
 	end);

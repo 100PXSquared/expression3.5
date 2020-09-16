@@ -1,6 +1,6 @@
 --[[
 	   ____      _  _      ___    ___       ____      ___      ___     __     ____      _  _          _        ___     _  _       ____
-	  F ___J    FJ  LJ    F _ ", F _ ",    F ___J    F __".   F __".   FJ    F __ ]    F L L]        /.\      F __".  FJ  L]     F___ J
+	  F ___J    FJ  LJ    F _ ", F _ ",    F ___J    F __".   F __".   FJ    F __]    F L L]        /.\      F __".  FJ  L]     F___ J
 	 J |___:    J \/ F   J `-' |J `-'(|   J |___:   J (___|  J (___|  J  L  J |--| L  J   \| L      //_\\    J |--\ LJ |  | L    `-__| L
 	 | _____|   /    \   |  __/F|  _  L   | _____|  J\___ \  J\___ \  |  |  | |  | |  | |\   |     / ___ \   | |  J |J J  F L     |__  (
 	 F L____:  /  /\  \  F |__/ F |_\  L  F L____: .--___) \.--___) \ F  J  F L__J J  F L\\  J    / L___J \  F L__J |J\ \/ /F  .-____] J
@@ -18,7 +18,7 @@ include("shared.lua");
 
 local ValidateError;
 
-function ValidateError(Thrown )
+function ValidateError(Thrown)
 	local Error;
 
 	if (istable(Thrown)) then
@@ -133,7 +133,7 @@ function ENT:OpenPermissionsMenu()
 				local pnl = vgui.Create("E3_TekMenu");
 				pnl:SetUp(self, perms);
 				pnl:Center();
-				pnl:MakePopup( );
+				pnl:MakePopup();
 
 				self.FeaturesPanel = pnl
 
@@ -149,30 +149,30 @@ end
 	Context Menu
 ****************************************************************************************************************************/
 
-local function Filter( self, Entity, Player )
-	if not (IsValid( Entity) and Entity.Expression3) then
+local function Filter(self, Entity, Player)
+	if not (IsValid(Entity) and Entity.Expression3) then
 		return false;
 	end
 
 	return true
 end
 
-local function MenuOpen( ContextMenu, Option, Entity, Trace )
-	local SubMenu = Option:AddSubMenu( )
+local function MenuOpen(ContextMenu, Option, Entity, Trace)
+	local SubMenu = Option:AddSubMenu()
 
 	SubMenu:AddOption("Show Permissions", function()
 		Entity:OpenPermissionsMenu();
 	end);
 end
 
-properties.Add( "expadv", {
+properties.Add("expadv", {
 	MenuLabel = "Expression Advanced",
 	MenuIcon  = "fugue/gear.png",
 	Order = 999,
 	Filter = Filter,
 	MenuOpen = MenuOpen,
-	Action = function( ) end,
-} ); -- We wont use recieve here, Send it yourself :D
+	Action = function() end,
+}); -- We wont use recieve here, Send it yourself :D
 
 /****************************************************************************************************************************
 	Add a pulsing effect over the entity.
@@ -189,21 +189,21 @@ function ENT:DrawPulse(red, green, blue)
 
     local pos = self:LocalToWorld(self:OBBCenter());
 
-    if self:GetModel( ) == "models/lemongate/lemongate.mdl" then
+    if self:GetModel() == "models/lemongate/lemongate.mdl" then
         pos = self:GetAttachment(self:LookupAttachment("fan_attch")).Pos;
     end
 
     local p, a, r = pos, self:GetAngles(), 0.1;
 
-    render.SetStencilEnable( true );
-    render.SetStencilWriteMask( 3 );
-    render.SetStencilTestMask( 3 );
-    render.ClearStencil( );
+    render.SetStencilEnable(true);
+    render.SetStencilWriteMask(3);
+    render.SetStencilTestMask(3);
+    render.ClearStencil();
 
     render.SetStencilReferenceValue(1);
-    render.SetStencilPassOperation( STENCIL_REPLACE );
-    render.SetStencilFailOperation( STENCIL_REPLACE );
-    render.SetStencilZFailOperation( STENCIL_REPLACE );
+    render.SetStencilPassOperation(STENCIL_REPLACE);
+    render.SetStencilFailOperation(STENCIL_REPLACE);
+    render.SetStencilZFailOperation(STENCIL_REPLACE);
 
     render.SetStencilCompareFunction(STENCIL_NEVER);
 
@@ -215,9 +215,9 @@ function ENT:DrawPulse(red, green, blue)
     cam.End3D2D();
 
     render.SetStencilReferenceValue(1);
-    render.SetStencilPassOperation( STENCIL_ZERO );
-    render.SetStencilFailOperation( STENCIL_ZERO );
-    render.SetStencilZFailOperation( STENCIL_ZERO );
+    render.SetStencilPassOperation(STENCIL_ZERO);
+    render.SetStencilFailOperation(STENCIL_ZERO);
+    render.SetStencilZFailOperation(STENCIL_ZERO);
 
     render.SetStencilCompareFunction(STENCIL_NEVER);
 
@@ -235,7 +235,7 @@ function ENT:DrawPulse(red, green, blue)
     self:DrawModel();
 
     render.SetColorModulation(1,1,1);
-    render.SetStencilEnable( false );
+    render.SetStencilEnable(false);
 end
 
 /****************************************************************************************************************************

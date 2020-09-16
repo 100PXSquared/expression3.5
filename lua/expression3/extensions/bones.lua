@@ -66,29 +66,29 @@ extension:RegisterMethod("ph", "getAng", "", "v", 1, getAngles);
 extension:RegisterMethod("ph", "ang", "", "v", 1, getAngles);
 
 
-extension:RegisterMethod( "ph", "forward", "", "v", 1, function(e)
+extension:RegisterMethod("ph", "forward", "", "v", 1, function(e)
 	if IsValid(e) then
-		return e:LocalToWorld( Vector(1,0,0) ) - e:GetPos( );
+		return e:LocalToWorld(Vector(1,0,0)) - e:GetPos();
 	end
 
 	return Vector(0, 0, 0);
-end, true );
+end, true);
 
-extension:RegisterMethod( "ph", "right", "", "v", 1, function(e)
+extension:RegisterMethod("ph", "right", "", "v", 1, function(e)
 	if IsValid(e) then
-		return e:LocalToWorld( Vector(0,-1,0) ) - e:GetPos( );
+		return e:LocalToWorld(Vector(0,-1,0)) - e:GetPos();
 	end
 
 	return Vector(0, 0, 0);
-end, true );
+end, true);
 
-extension:RegisterMethod( "ph", "up", "", "v", 1, function(e)
+extension:RegisterMethod("ph", "up", "", "v", 1, function(e)
 	if IsValid(e) then
-		return e:LocalToWorld( Vector(0,0,1) ) - e:GetPos( );
+		return e:LocalToWorld(Vector(0,0,1)) - e:GetPos();
 	end
 
 	return Vector(0, 0, 0);
-end, true );
+end, true);
 
 --[[
 	World and Local Vector and Angles
@@ -179,18 +179,18 @@ end, true);
 	Bearing / Elevation
 ]]
 
-extension:RegisterMethod( "ph", "bearing", "v", "n", 1, function(ph, v)
+extension:RegisterMethod("ph", "bearing", "v", "n", 1, function(ph, v)
 	if IsValid(ph) then
-		local p = ph:WorldToLocal( v );
+		local p = ph:WorldToLocal(v);
 		return (180 / math.pi) * -math.atan2(p.y, p.x);
 	end
 
 	return 0;
 end, true);
 
-extension:RegisterMethod( "ph", "elevation", "v", "n", 1, function(ph, v)
+extension:RegisterMethod("ph", "elevation", "v", "n", 1, function(ph, v)
 	if IsValid(ph) then
-		local p = ph:WorldToLocal( v );
+		local p = ph:WorldToLocal(v);
 		local l = p:Length();
 		return (180 / math.pi) * -math.asin(p.z / l);
 	end
@@ -198,12 +198,12 @@ extension:RegisterMethod( "ph", "elevation", "v", "n", 1, function(ph, v)
 	return 0;
 end, true);
 
-extension:RegisterMethod( "ph", "heading", "v", "n", 1, function(ph, v)
+extension:RegisterMethod("ph", "heading", "v", "n", 1, function(ph, v)
 	if IsValid(ph) then
-		local p = ph:WorldToLocal( v );
+		local p = ph:WorldToLocal(v);
 		local b = (180 / math.pi) * -math.atan2(p.y, p.x);
 		local l = p:Length();
-		return Angle((180 / math.pi) * math.asin(p.z / l), b, 0 )	;
+		return Angle((180 / math.pi) * math.asin(p.z / l), b, 0)	;
 	end
 
 	return Angle(0, 0, 0);

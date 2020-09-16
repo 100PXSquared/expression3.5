@@ -1,6 +1,6 @@
 --[[
 	   ____      _  _      ___    ___       ____      ___      ___     __     ____      _  _          _        ___     _  _       ____
-	  F ___J    FJ  LJ    F _ ", F _ ",    F ___J    F __".   F __".   FJ    F __ ]    F L L]        /.\      F __".  FJ  L]     F___ J
+	  F ___J    FJ  LJ    F _ ", F _ ",    F ___J    F __".   F __".   FJ    F __]    F L L]        /.\      F __".  FJ  L]     F___ J
 	 J |___:    J \/ F   J `-' |J `-'(|   J |___:   J (___|  J (___|  J  L  J |--| L  J   \| L      //_\\    J |--\ LJ |  | L    `-__| L
 	 | _____|   /    \   |  __/F|  _  L   | _____|  J\___ \  J\___ \  |  |  | |  | |  | |\   |     / ___ \   | |  J |J J  F L     |__  (
 	 F L____:  /  /\  \  F |__/ F |_\  L  F L____: .--___) \.--___) \ F  J  F L__J J  F L\\  J    / L___J \  F L__J |J\ \/ /F  .-____] J
@@ -10,9 +10,9 @@
 	::Expression Advanced 3 Library::
 	`````````````````````````````````
 		Some operators, methods and functions can return more then one value of the same type at once.
-		You need to tell the compiler how many results it returns even if that is 0.
+		You need to tell the interpreter how many results it returns even if that is 0.
 		Parameters should always be class id's separated by a comma (,); e.g "n,n,s".
-		All documentation below is to be considered work in progress and this api will more then likely change.
+		All documentation below is to be considered work in progress and this api will more than likely change.
 
 	::HOOKS::
 		Expression3.RegisterExtension					-> Called when extensions should be registered.
@@ -25,7 +25,7 @@
 		Expression3.LoadLibraries						-> Libraries must be registered inside this hook.
 		Expression3.LoadFunctions						-> Functions must be registered inside this hook.
 		Expression3.PostRegisterExtensions				-> This is called once expadv3 has loaded its extensions.
-		Expression3.PostCompile.System.<function>		-> This is called after compiling every function on the system library,		-> ressult class, result count = (comiler, instruction, token, expressions)
+		Expression3.PostInterpret.System.<function>		-> This is called after compiling every function on the system library,		-> ressult class, result count = (comiler, instruction, token, expressions)
 												  		   (replace <function> with the name of the function on the library..
 		Expression3.Entity.BuildSandbox					-> This is called when building the sandboxed enviroment for an entity.		-> (entity, context, enviroment)
 		Expression3.Start.Entity						-> This is called when an entity is about to run for the first time.		-> (entity, context)
@@ -50,13 +50,13 @@
 		It is possible to register an extension outside the extension folder by creating it inside Expression3.RegisterExtensions hook.
 
 	::RULES::
-		A constructor's function can be a string, if so the compiler will attempt to use a native lua function at the given string; e.g string.replace.
+		A constructor's function can be a string, if so the interpreter will attempt to use a native lua function at the given string; e.g string.replace.
 		The first parameter to a constructor's function will always be context unless exclude context is true;
-		Some operator's and casting operator's function is optional, if not given the compiler will attempt to use lua's native method.
+		Some operator's and casting operator's function is optional, if not given the interpreter will attempt to use lua's native method.
 		The first parameter to an operator / casting operator function will always be context unless exclude context is true;
-		A method's function can be a string, if so the compiler will attempt to use a native lua method on that object.
+		A method's function can be a string, if so the interpreter will attempt to use a native lua method on that object.
 		The first parameter to a method's function will always be context unless exclude context is true;
-		NO LONGER SUPPORTED: A function's function can be a string, if so the compiler will attempt to use a native lua function at the given string; e.g string.replace.
+		NO LONGER SUPPORTED: A function's function can be a string, if so the interpreter will attempt to use a native lua function at the given string; e.g string.replace.
 		The first parameter to a function's function will always be context unless exclude context is true;
 
 	::Examples::
@@ -283,7 +283,7 @@ end
 --[[
 ]]
 
-EXPR_LIB.PERMS = { };
+EXPR_LIB.PERMS = {};
 
 function EXPR_LIB.RegisterPermission(name, image, desc)
 	EXPR_LIB.PERMS[name] = {name, image, desc};
@@ -336,7 +336,7 @@ end
 function EXPR_LIB.RegisterClass(id, name, isType, isValid)
 
 	if (not loadClasses) then
-		EXPR_LIB.ThrowInternal(0, "Attempt to register class %s outside of Hook::Expression3.LoadClasses }}", name);
+		EXPR_LIB.ThrowInternal(0, "Attempt to register class %s outside of Hook::Expression3.LoadClasses}}", name);
 	end
 
 	if (string.len(id) > 1) then
@@ -484,7 +484,7 @@ local methods;
 local loadMethods = false;
 
 function EXPR_LIB.RegisterMethod(class, name, parameter, type, count, method, excludeContext)
-	-- if method is nil lua, compiler will use native Object:(...);
+	-- if method is nil lua, interpreter will use native Object:(...);
 
 	if (not loadMethods) then
 		EXPR_LIB.ThrowInternal(0, "Attempt to register method %s.%s(%s) outside of Hook::Expression3.LoadMethods", class, name, parameter);
@@ -563,7 +563,7 @@ local operators;
 local loadOperators = false;
 
 function EXPR_LIB.RegisterOperator(operation, parameter, type, count, operator, excludeContext)
-	-- if operator is nil lua, compiler will use native if possible (+, -, /, *, ^, etc)
+	-- if operator is nil lua, interpreter will use native if possible (+, -, /, *, ^, etc)
 
 	if (not loadOperators) then
 		EXPR_LIB.ThrowInternal(0, "Attempt to register operator %s(%s) outside of Hook::Expression3.LoadOperators", operation, parameter);
@@ -761,7 +761,7 @@ end
 function EXPR_LIB.GetAllClasses()
 	local res = {};
 
-	if ( EXPR_CLASSES ) then
+	if (EXPR_CLASSES) then
 		for _, v in pairs(EXPR_CLASSES) do
 			res[v] = v;
 		end
@@ -1319,7 +1319,7 @@ function EXPR_LIB.Initialize()
 
 	include("expression3/tokenizer.lua");
 	include("expression3/parser.lua");
-	include("expression3/compiler.lua");
+	include("expression3/interpreter.lua");
 
 	if (CLIENT) then
 		hook.Run("Expression3.LoadGolem");
@@ -1411,15 +1411,15 @@ function EXPR_LIB.Validate(cb, script, files)
 
 					bench = SysTime();
 
-					vldr.compiler = EXPR_COMPILER.New();
+					vldr.interpreter = EXPR_COMPILER.New();
 
-					vldr.compiler:Initialize(res, files);
+					vldr.interpreter:Initialize(res, files);
 
-					ok, res = vldr.compiler:Run();
+					ok, res = vldr.interpreter:Run();
 
 					vldr.compilerTime = SysTime() - bench;
 
-					--print("Compiler Time -> ", SysTime() - bench);
+					--print("Interpreter Time -> ", SysTime() - bench);
 
 					if ok then
 						coroutine.yield();

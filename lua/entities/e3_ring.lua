@@ -1,6 +1,6 @@
 --[[
 	   ____      _  _      ___    ___       ____      ___      ___     __     ____      _  _          _        ___     _  _       ____
-	  F ___J    FJ  LJ    F _ ", F _ ",    F ___J    F __".   F __".   FJ    F __ ]    F L L]        /.\      F __".  FJ  L]     F___ J
+	  F ___J    FJ  LJ    F _ ", F _ ",    F ___J    F __".   F __".   FJ    F __]    F L L]        /.\      F __".  FJ  L]     F___ J
 	 J |___:    J \/ F   J `-' |J `-'(|   J |___:   J (___|  J (___|  J  L  J |--| L  J   \| L      //_\\    J |--\ LJ |  | L    `-__| L
 	 | _____|   /    \   |  __/F|  _  L   | _____|  J\___ \  J\___ \  |  |  | |  | |  | |\   |     / ___ \   | |  J |J J  F L     |__  (
 	 F L____:  /  /\  \  F |__/ F |_\  L  F L____: .--___) \.--___) \ F  J  F L__J J  F L\\  J    / L___J \  F L__J |J\ \/ /F  .-____] J
@@ -75,9 +75,9 @@ if CLIENT then
       ["$basetexture"] = "e3_ring_rt",
       ["$translucent"] = 1,
       --["$basetexturetransform"] = "center .5 .5 scale 1 1 rotate 0 translate 0 0",
-    };
+   };
 
-    EXPR_LIB.RING_RT = EXPR_LIB.RING_RT or GetRenderTarget( "e3_ring_rt", 512, 512);
+    EXPR_LIB.RING_RT = EXPR_LIB.RING_RT or GetRenderTarget("e3_ring_rt", 512, 512);
     EXPR_LIB.RING_MAT = EXPR_LIB.RING_MAT or CreateMaterial("sprites/e3_ring_mat", "UnlitGeneric", data);
   end
 
@@ -108,12 +108,12 @@ end
 
 function ENT:Think()
   local player = self:GetParent();
-  self:SetAngles( Angle(0, RealTime() * -10, 0) );
+  self:SetAngles(Angle(0, RealTime() * -10, 0));
 
   if (IsValid(player)) then
     local height = (player:OBBMaxs() - player:OBBMins()).z;
-    local off = 20 + math.abs( math.sin(CurTime() * 0.5) * (height - 20));
-    self:SetPos(player:GetPos() + Vector(0, 0, off) );
+    local off = 20 + math.abs(math.sin(CurTime() * 0.5) * (height - 20));
+    self:SetPos(player:GetPos() + Vector(0, 0, off));
   end
 
 end
@@ -126,7 +126,7 @@ if CLIENT then
 
   local borderColor = Color(150, 34, 34, 255);
 
-  surface.CreateFont( "E3_Ring_Font", {
+  surface.CreateFont("E3_Ring_Font", {
   	font = "Arial", -- Use the font-name which is shown to you by your operating system Font Viewer, not the file name
   	extended = false,
   	size = 30,
@@ -142,9 +142,9 @@ if CLIENT then
   	shadow = false,
   	additive = true,
   	outline = false,
-  } );
+ });
 
-  surface.CreateFont( "E3_Ring_Font_Smaller", {
+  surface.CreateFont("E3_Ring_Font_Smaller", {
   	font = "Arial", -- Use the font-name which is shown to you by your operating system Font Viewer, not the file name
   	extended = false,
   	size = 16,
@@ -160,7 +160,7 @@ if CLIENT then
   	shadow = false,
   	additive = true,
   	outline = false,
-  } );
+ });
 
 
   local y = 256;
@@ -198,8 +198,8 @@ if CLIENT then
 
           self:DrawBackGround();
 
-          draw.DrawText( self:GetPlayerName() .. " is currently edditing", "E3_Ring_Font_Smaller", 256, y - 26, Color(255, 100, 100, 100), TEXT_ALIGN_CENTER );
-          draw.DrawText( "Expression Advanced Three", "E3_Ring_Font", 256, y - 10, borderColor, TEXT_ALIGN_CENTER );
+          draw.DrawText(self:GetPlayerName() .. " is currently edditing", "E3_Ring_Font_Smaller", 256, y - 26, Color(255, 100, 100, 100), TEXT_ALIGN_CENTER);
+          draw.DrawText("Expression Advanced Three", "E3_Ring_Font", 256, y - 10, borderColor, TEXT_ALIGN_CENTER);
 
           cam.End2D()
         render.SetViewPort(0, 0, w, h);

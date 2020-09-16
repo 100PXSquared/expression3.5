@@ -164,7 +164,7 @@ end
 hook.Add("Expression3.LoadHelperNodes", "Expression3.EventHelpers", function(pnl)
 	local event_docs = EXPR_DOCS.GetEventDocs();
 
-	event_docs:ForEach( function(i, keyvalues)
+	event_docs:ForEach(function(i, keyvalues)
 		local signature = EXPR_DOCS.PrettyEvent(keyvalues);
 
 		local node = pnl:AddNode("Events", signature);
@@ -189,7 +189,7 @@ hook.Add("Expression3.LoadHelperNodes", "Expression3.EventHelpers", function(pnl
 
 		addSaveStateIcon(pnl, node, type_docs, i, keyvalues);
 
-	end );
+	end);
 end);
 
 /*********************************************************************************
@@ -200,7 +200,7 @@ hook.Add("Expression3.LoadHelperNodes", "Expression3.LibraryHelpers", function(p
 	
 	local libdocs = EXPR_DOCS.GetLibraryDocs();
 
-	libdocs:ForEach( function(i, keyvalues)
+	libdocs:ForEach(function(i, keyvalues)
 
 		local node = pnl:AddNode("Libraries", keyvalues.name);
 
@@ -220,12 +220,12 @@ hook.Add("Expression3.LoadHelperNodes", "Expression3.LibraryHelpers", function(p
 
 		addSaveStateIcon(pnl, node, libdocs, i, keyvalues);
 
-	end );
+	end);
 
 
 	local fundocs = EXPR_DOCS.GetFunctionDocs();
 
-	fundocs:ForEach( function(i, keyvalues)
+	fundocs:ForEach(function(i, keyvalues)
 		local signature = EXPR_DOCS.PrettyFunction(keyvalues);
 		local result = EXPR_DOCS.PrettyReturn(keyvalues);
 		
@@ -251,12 +251,12 @@ hook.Add("Expression3.LoadHelperNodes", "Expression3.LibraryHelpers", function(p
 
 		addSaveStateIcon(pnl, node, fundocs, i, keyvalues);
 
-	end );
+	end);
 
 
 	local constdocs = EXPR_DOCS.GetConstantDocs();
 
-	constdocs:ForEach( function(i, keyvalues)
+	constdocs:ForEach(function(i, keyvalues)
 		local node = pnl:AddNode("Libraries", keyvalues.library, "Constants", keyvalues.signature);
 
 		stateIcon(node, keyvalues.state);
@@ -279,7 +279,7 @@ hook.Add("Expression3.LoadHelperNodes", "Expression3.LibraryHelpers", function(p
 
 		addSaveStateIcon(pnl, node, constdocs, i, keyvalues);
 
-	end );
+	end);
 
 end);
 
@@ -291,7 +291,7 @@ hook.Add("Expression3.LoadHelperNodes", "Expression3.ClassHelpers", function(pnl
 
 	local type_docs = EXPR_DOCS.GetTypeDocs();
 
-	type_docs:ForEach( function(i, keyvalues)
+	type_docs:ForEach(function(i, keyvalues)
 
 		if not lk[keyvalues.id] then
 			
@@ -321,11 +321,11 @@ hook.Add("Expression3.LoadHelperNodes", "Expression3.ClassHelpers", function(pnl
 
 		end
 
-	end );
+	end);
 
 	local const_docs = EXPR_DOCS.GetConstructorDocs();
 
-	const_docs:ForEach( function(i, keyvalues)
+	const_docs:ForEach(function(i, keyvalues)
 
 		local signature = EXPR_DOCS.PrettyConstructor(keyvalues);
 
@@ -354,11 +354,11 @@ hook.Add("Expression3.LoadHelperNodes", "Expression3.ClassHelpers", function(pnl
 
 		addSaveStateIcon(pnl, node, const_docs, i, keyvalues);
 
-	end );
+	end);
 
 	local attr_docs = EXPR_DOCS.GetAttributeDocs();
 
-	attr_docs:ForEach( function(i, keyvalues)
+	attr_docs:ForEach(function(i, keyvalues)
 
 		local node = pnl:AddNode("Classes", lk[keyvalues.id], "Attributes", keyvalues.name);
 
@@ -378,11 +378,11 @@ hook.Add("Expression3.LoadHelperNodes", "Expression3.ClassHelpers", function(pnl
 
 		addSaveStateIcon(pnl, node, attr_docs, i, keyvalues);
 
-	end );
+	end);
 
 	local method_docs = EXPR_DOCS.GetMethodDocs();
 
-	method_docs:ForEach( function(i, keyvalues)
+	method_docs:ForEach(function(i, keyvalues)
 
 		local signature = EXPR_DOCS.PrettyMethod(keyvalues);
 
@@ -407,7 +407,7 @@ hook.Add("Expression3.LoadHelperNodes", "Expression3.ClassHelpers", function(pnl
 		end);
 
 		addSaveStateIcon(pnl, node, method_docs, i, keyvalues);
-	end );
+	end);
 
 end);
 
@@ -518,7 +518,7 @@ end
 hook.Add("Expression3.LoadHelperNodes", "Expression3.OperatorHelpers", function(pnl)
 	local op_docs = EXPR_DOCS.GetOperatorDocs();
 
-	op_docs:ForEach( function(i, keyvalues)
+	op_docs:ForEach(function(i, keyvalues)
 
 		local signature, class = prettyOp(keyvalues);
 
@@ -555,11 +555,11 @@ hook.Add("Expression3.LoadHelperNodes", "Expression3.Examples", function(pnl)
 
 	local path = "lua/expression3/helper/examples/";
 
-	local editor = Golem.GetInstance( );
+	local editor = Golem.GetInstance();
 
 	local files = file.Find(path .. "*.lua", "GAME");
 
-	for i, filename in pairs( files ) do
+	for i, filename in pairs(files) do
 		local node = pnl:AddNode("Examples", filename);
 		
 		node.DoClick = function()
@@ -603,11 +603,11 @@ hook.Add("Expression3.LoadHelperNodes", "Expression3.SavedHelpers", function(pnl
 
 	local path = "e3docs/saved/";
 
-	local editor = Golem.GetInstance( );
+	local editor = Golem.GetInstance();
 
 	local files = file.Find(path .. "*.txt", "DATA");
 
-	for i, filename in pairs( files ) do
+	for i, filename in pairs(files) do
 
 		local node = pnl:AddNode("Custom Helpers", filename)
 
@@ -630,24 +630,24 @@ end);
 /*********************************************************************************
 	Add menu to golem
 *********************************************************************************/
-hook.Add( "Expression3.AddGolemTabTypes", "HelperTab", function(editor)
-	editor:AddCustomTab(false, "helper", function( self )
+hook.Add("Expression3.AddGolemTabTypes", "HelperTab", function(editor)
+	editor:AddCustomTab(false, "helper", function(self)
 		if self.Helper then
-			self.pnlSideTabHolder:SetActiveTab( self.Helper.Tab )
-			self.Helper.Panel:RequestFocus( )
+			self.pnlSideTabHolder:SetActiveTab(self.Helper.Tab)
+			self.Helper.Panel:RequestFocus()
 			return self.Helper
 		end
 
-		local Panel = vgui.Create( "GOLEM_E3Helper" )
-		local Sheet = self.pnlSideTabHolder:AddSheet( "", Panel, "fugue/question.png", function(pnl) self:CloseMenuTab( pnl:GetParent( ), true ) end )
-		self.pnlSideTabHolder:SetActiveTab( Sheet.Tab )
+		local Panel = vgui.Create("GOLEM_E3Helper")
+		local Sheet = self.pnlSideTabHolder:AddSheet("", Panel, "fugue/question.png", function(pnl) self:CloseMenuTab(pnl:GetParent(), true) end)
+		self.pnlSideTabHolder:SetActiveTab(Sheet.Tab)
 		self.Helper = Sheet
-		Sheet.Panel:RequestFocus( )
+		Sheet.Panel:RequestFocus()
 
 		return Sheet
-	end, function( self )
+	end, function(self)
 		self.Helper = nil
-	end );
+	end);
 
-	editor.tbRight:SetupButton( "Helper", "fugue/question.png", TOP, function( ) editor:NewMenuTab( "helper" ); end )
-end );
+	editor.tbRight:SetupButton("Helper", "fugue/question.png", TOP, function() editor:NewMenuTab("helper"); end)
+end);

@@ -1,6 +1,6 @@
 --[[
 	   ____      _  _      ___    ___       ____      ___      ___     __     ____      _  _          _        ___     _  _       ____
-	  F ___J    FJ  LJ    F _ ", F _ ",    F ___J    F __".   F __".   FJ    F __ ]    F L L]        /.\      F __".  FJ  L]     F___ J
+	  F ___J    FJ  LJ    F _ ", F _ ",    F ___J    F __".   F __".   FJ    F __]    F L L]        /.\      F __".  FJ  L]     F___ J
 	 J |___:    J \/ F   J `-' |J `-'(|   J |___:   J (___|  J (___|  J  L  J |--| L  J   \| L      //_\\    J |--\ LJ |  | L    `-__| L
 	 | _____|   /    \   |  __/F|  _  L   | _____|  J\___ \  J\___ \  |  |  | |  | |  | |\   |     / ___ \   | |  J |J J  F L     |__  (
 	 F L____:  /  /\  \  F |__/ F |_\  L  F L____: .--___) \.--___) \ F  J  F L__J J  F L\\  J    / L___J \  F L__J |J\ \/ /F  .-____] J
@@ -489,21 +489,21 @@ end
 --[[
 ]]
 
-function PARSER.Require( this, type, msg, ... )
+function PARSER.Require(this, type, msg, ...)
 	if (not this:Accept(type)) then
-		this:Throw( this.__token, msg, ... )
+		this:Throw(this.__token, msg, ...)
 	end; return this.__token;
 end
 
-function PARSER.Exclude( this, tpye, msg, ... )
+function PARSER.Exclude(this, tpye, msg, ...)
 	if (this:Accept(type)) then
-		this:Throw( this.__token, msg, ... )
+		this:Throw(this.__token, msg, ...)
 	end
 end
 
 function PARSER.ExcludeWhiteSpace(this, msg, ...)
 	if (not this:HasTokens()) then
-		this:Throw( this.__token, msg, ... )
+		this:Throw(this.__token, msg, ...)
 	end
 end
 
@@ -578,7 +578,7 @@ function PARSER.Root(this)
 end
 
 function PARSER.Block_1(this, _end, lcb, returnable)
-	this:ExcludeWhiteSpace( "Further input required at end of code, incomplete statement" )
+	this:ExcludeWhiteSpace("Further input required at end of code, incomplete statement")
 
 	if (this:Accept("lcb")) then
 		local stmts;
@@ -605,8 +605,6 @@ function PARSER.Block_1(this, _end, lcb, returnable)
 		this:PushScope()
 
 		local stmt = this:Statment_1();
-
-		this:Accept("sep");
 		
 		this:PopScope()
 
@@ -615,7 +613,7 @@ function PARSER.Block_1(this, _end, lcb, returnable)
 end
 
 function PARSER.Block_2(this)
-	this:ExcludeWhiteSpace( "Further input required at end of code, incomplete statement" )
+	this:ExcludeWhiteSpace("Further input required at end of code, incomplete statement")
 
 	this:Require("lcb", "Left curly bracket ({) missing for constructor");
 
@@ -647,7 +645,7 @@ function PARSER.ConstructorStatment(this, stmtc)
 
 		local seq = this:StartInstruction("supconst", this.__token, true);
 
-		this:Require("lpa", "Left parenthesis (( ) expected to open super constructor parameters.")
+		this:Require("lpa", "Left parenthesis (() expected to open super constructor parameters.")
 
 		local expressions = {};
 
@@ -662,7 +660,7 @@ function PARSER.ConstructorStatment(this, stmtc)
 
 		end
 
-		this:Require("rpa", "Right parenthesis ( )) expected to close super constructor parameters.");
+		this:Require("rpa", "Right parenthesis ()) expected to close super constructor parameters.");
 
 		return this:EndInstruction(seq, {expressions = expressions});
 	end
@@ -795,47 +793,48 @@ end
 function PARSER.Statements(this, block, call)
 	local sep = false;
 	local stmts = {};
+	local last = nil;
 
 	call = call or this.Statment_0;
 
-		while true do
+	while true do
 
-			local stmt = call(this, #stmts);
+		local stmt = call(this, #stmts);
 
-			stmts[#stmts + 1] = stmt;
+		stmts[#stmts + 1] = stmt;
 
-			local seperated = this:Accept("sep");
+		local separated = this:Accept("sep");
 
-			if (not stmt) then
-				break;
-			end
-
-			if (block and this:CheckToken("rcb")) then
-				break;
-			end
-
-			if (not this:HasTokens()) then
-				break;
-			end
-
-			local pre = stmts[#stmts - 1];
-
-			if (pre) then
-				if (pre.line == stmt.line and not sep) then
-					this:Throw(stmt.token, "Statements must be separated by semicolon (;) or newline")
-				end
-			end
-
-			if (stmt.type == "return") then
-				this:Throw(stmt.final, "Statement can not appear after return.")
-			elseif (stmt.type == "continue") then
-				this:Throw(stmt.final, "Statement can not appear after continue.")
-			elseif (stmt.type == "break") then
-				this:Throw(stmt.final, "Statement can not appear after break.")
-			end
-
-			sep = seperated;
+		if (not stmt) then
+			break;
 		end
+
+		if (block and this:CheckToken("rcb")) then
+			break;
+		end
+
+		if (not this:HasTokens()) then
+			break;
+		end
+
+		local pre = stmts[#stmts - 1];
+
+		if pre then
+			if pre.line == stmt.line and not sep  then
+				this:Throw(stmt.token, "Statements must be separated by semicolon (;) 825")
+			end
+		end
+
+		if (stmt.type == "return") then
+			this:Throw(stmt.final, "Statement can not appear after return.")
+		elseif (stmt.type == "continue") then
+			this:Throw(stmt.final, "Statement can not appear after continue.")
+		elseif (stmt.type == "break") then
+			this:Throw(stmt.final, "Statement can not appear after break.")
+		end
+
+		sep = separated;
+	end
 
  	return stmts;
 end
@@ -865,7 +864,13 @@ function PARSER.Statment_0(this)
 
 		local instr = func(this, token, directive);
 
-		sep = this:Accept("sep");
+		--[[sep = this:Accept("sep");
+
+		if not sep then
+			this:Throw(stmt.token, "Statements must be separated by a semicolon (;)")
+		end]]
+
+		this:Require("sep", "Statements must be separated by a semicolon (;) 874")
 
 		if (instr) then
 			return instr
@@ -886,9 +891,9 @@ function PARSER.Statment_0(this)
 
 	local stmt = this:Statment_1();
 
-	if (dirLine and (not sep or direLine == stmt.line)) then
+	--[[if (dirLine and (not sep or direLine == stmt.line)) then
 		this:Throw(stmt.token, "Statements must be separated by semicolon (;) or newline")
-	end
+	end]]
 
 	return stmt;
 end;
@@ -902,11 +907,11 @@ function PARSER.Statment_1(this)
 
 		this:Require("cth", "Catch expected after try statment, for try catch");
 
-		this:Require("lpa", "Left parenthesis (( ) expected after catch.");
+		this:Require("lpa", "Left parenthesis (() expected after catch.");
 
 		local var = this:Require("var", "Variable expected for error object, catch(variable)");
 
-		this:Require("rpa", "Right parenthesis ( )) expected to end catch.");
+		this:Require("rpa", "Right parenthesis ()) expected to end catch.");
 
 		local block2 = this:Block_1(false, "then");
 
@@ -924,7 +929,7 @@ function PARSER.Statment_2(this)
 
 		local block = this:Block_1(false, "then");
 
-		local eif = { this:Statment_3() };
+		local eif = {this:Statment_3()};
 
 		if (#eif > 0) then
 			while true do
@@ -980,9 +985,9 @@ function PARSER.Statment_5(this)
 	if (this:Accept("for")) then
 		local inst = this:StartInstruction("for", this.__token);
 
-		this:Require("lpa", "Left parenthesis (( ) expected after for.");
+		this:Require("lpa", "Left parenthesis (() expected after for.");
 
-		local iClass = this:Require("typ", "Class expected for loop itorator");
+		local iClass = this:Require("typ", "Class expected for loop iterator");
 
 		local iVar = this:Require("var", "Assigment expected for loop definition.");
 
@@ -1000,7 +1005,7 @@ function PARSER.Statment_5(this)
 			expressions[3] = this:Expression_1();
 		end
 
-		this:Require("rpa", "Right parenthesis ( )) expected to close cloop defintion.");
+		this:Require("rpa", "Right parenthesis ()) expected to close loop defintion.");
 
 		local block = this:Block_1(true);
 
@@ -1020,7 +1025,7 @@ function PARSER.Statment_5(this)
 	if (this:Accept("each")) then
 		local inst = this:StartInstruction("each", this.__token);
 
-		this:Require("lpa", "Left parenthesis (() ) expected to close cloop defintion.");
+		this:Require("lpa", "Left parenthesis (()) expected to close cloop defintion.");
 
 		this:Require("typ", "Class expected after lpa, for foreach loop")
 
@@ -1048,7 +1053,7 @@ function PARSER.Statment_5(this)
 
 		local expr = this:Expression_1();
 
-		this:Require("rpa", "Right parenthesis ( )) expected to close loop defintion.");
+		this:Require("rpa", "Right parenthesis ()) expected to close loop defintion.");
 
 		local block = this:Block_1(true, "do");
 
@@ -1102,15 +1107,17 @@ function PARSER.Statment_7(this)
 		local expressions = {};
 
 		if (this:Accept("ass")) then
-			this:ExcludeWhiteSpace( "Assignment operator (=), must not be preceded by whitespace." );
+			this:ExcludeWhiteSpace("Assignment operator (=), must not be preceded by whitespace.");
 
 			expressions[1] = this:Expression_1();
 
 			while (this:Accept("com")) do
-				this:ExcludeWhiteSpace( "comma (,) must not be preceded by whitespace." );
+				this:ExcludeWhiteSpace("comma (,) must not be preceded by whitespace.");
 				expressions[#expressions + 1] = this:Expression_1();
 			end
 		end
+
+		this:Require("sep", "Statements must be separated by a semicolon (;) 1122")
 
 		return this:EndInstruction(inst, {class = var_type; variables = variables; expressions = expressions});
 	end
@@ -1136,15 +1143,17 @@ function PARSER.Statment_7(this)
 		local expressions = {};
 
 		if (this:Accept("ass")) then
-			this:ExcludeWhiteSpace( "Assignment operator (=), must not be preceded by whitespace." );
+			this:ExcludeWhiteSpace("Assignment operator (=), must not be preceded by whitespace.");
 
 			expressions[1] = this:Expression_1();
 
 			while (this:Accept("com")) do
-				this:ExcludeWhiteSpace( "comma (,) must not be preceded by whitespace." );
+				this:ExcludeWhiteSpace("comma (,) must not be preceded by whitespace.");
 				expressions[#expressions + 1] = this:Expression_1();
 			end
 		end
+
+		this:Require("sep", "Statements must be separated by a semicolon (;) 1158")
 
 		return this:EndInstruction(inst, {class = var_type; variables = variables; expressions = expressions});
 	end
@@ -1171,14 +1180,16 @@ function PARSER.Statment_8(this)
 			local expressions = {};
 
 			if (this:Accept("ass")) then
-				this:ExcludeWhiteSpace( "Assignment operator (=), must not be preceded by whitespace." );
+				this:ExcludeWhiteSpace("Assignment operator (=), must not be preceded by whitespace.");
 
 				expressions[1] = this:Expression_1();
 
 				while (this:Accept("com")) do
-					this:ExcludeWhiteSpace( "comma (,) must not be preceeded by whitespace." );
+					this:ExcludeWhiteSpace("comma (,) must not be preceeded by whitespace.");
 					expressions[#expressions + 1] = this:Expression_1();
 				end
+
+				this:Require("sep", "Statements must be separated by a semicolon (;) 1194")
 
 				return this:EndInstruction(inst, {expressions = expressions; variables = variables});
 			end
@@ -1193,7 +1204,7 @@ function PARSER.Statment_8(this)
 				expressions[1] = this:Expression_1();
 
 				while (this:Accept("com")) do
-					this:ExcludeWhiteSpace( "comma (,) must not be preceeded by whitespace." );
+					this:ExcludeWhiteSpace("comma (,) must not be preceeded by whitespace.");
 					expressions[#expressions + 1] = this:Expression_1();
 				end
 
@@ -1201,6 +1212,8 @@ function PARSER.Statment_8(this)
 					-- TODO: Better error message.
 					this:ExcludeWhiteSpace("Invalid arithmetic assignment, not all variables are given values.");
 				end
+
+				this:Require("sep", "Statements must be separated by a semicolon (;) 1218")
 
 				return this:EndInstruction(inst, {expressions = expressions; variables = variables});
 			end
@@ -1214,11 +1227,11 @@ end
 
 function PARSER.GetTypeInputs(this)
 	
-	if ( this:Accept("cst") ) then
+	if (this:Accept("cst")) then
 		return {this.__token.data};
 	end
 
-	this:Require("lpa", "Left parenthesis (( ) expected to open delegate parameters.");
+	this:Require("lpa", "Left parenthesis (() expected to open delegate parameters.");
 
 	local parameters = {};
 
@@ -1235,7 +1248,7 @@ function PARSER.GetTypeInputs(this)
 		end
 	end
 
-	this:Require("rpa", "Right parenthesis ( )) expected to close delegate parameters.");
+	this:Require("rpa", "Right parenthesis ()) expected to close delegate parameters.");
 
 	return parameters;
 end
@@ -1262,13 +1275,13 @@ function PARSER.Statment_9(this)
 
 		local result_count = this.__token.data;
 
-		this:Accept("sep")
+		this:Require("sep", "Statements must be separated by a semicolon (;) 1271")
 
 		if (lcb) then
-			this:Require("rcb", "Right curly bracket ( }) expected to close delegate.");
+			this:Require("rcb", "Right curly bracket (}) expected to close delegate.");
 		end
 
-		return this:EndInstruction(inst, {result_class= result_class;  variable = variable;  parameters = parameters;  result_count = result_count });
+		return this:EndInstruction(inst, {result_class= result_class;  variable = variable;  parameters = parameters;  result_count = result_count});
 	end
 
 	return this:Statment_10();
@@ -1318,20 +1331,20 @@ function PARSER.Statment_11(this)
 			end
 		end
 
-		this:Accept("sep");
+		this:Require("sep", "Statements must be separated by a semicolon (;) 1327");
 
 		return this:EndInstruction(inst, {expressions = expressions});
 	end
 
 	if (this:Accept("cnt")) then
 		local inst = this:StartInstruction("continue", this.__token);
-		this:Accept("sep");
+		this:Require("sep", "Statements must be separated by a semicolon (;) 1334");
 		return this:EndInstruction(inst, expressions);
 	end
 
 	if (this:Accept("brk")) then
 		local inst = this:StartInstruction("break", this.__token);
-		this:Accept("sep");
+		this:Require("sep", "Statements must be separated by a semicolon (;) 1340");
 		return this:EndInstruction(inst, expressions);
 	end
 
@@ -1342,6 +1355,8 @@ function PARSER.Statment_11(this)
 	elseif (expr and this:CheckToken("prd")) then
 		expr = this:Statment_13(expr);
 	end
+
+	this:Require("sep", "Statements must be separated by a semicolon (;) 1361")
 
 	return expr;
 end
@@ -1572,7 +1587,7 @@ function PARSER.Expression_8(this)
 end
 
 function PARSER.Expression_9(this)
-	local expr = this:Expression_Trailing( this:Expression_10() );
+	local expr = this:Expression_Trailing(this:Expression_10());
 
 	while this:Accept("bshl") do
 		local inst = this:StartInstruction("bshl", expr.token);
@@ -1586,7 +1601,7 @@ function PARSER.Expression_9(this)
 end
 
 function PARSER.Expression_10(this)
-	local expr = this:Expression_Trailing( this:Expression_11() );
+	local expr = this:Expression_Trailing(this:Expression_11());
 
 	while this:Accept("bshr") do
 		local inst = this:StartInstruction("bshr", expr.token);
@@ -1600,7 +1615,7 @@ function PARSER.Expression_10(this)
 end
 
 function PARSER.Expression_11(this)
-	local expr = this:Expression_Trailing( this:Expression_12() );
+	local expr = this:Expression_Trailing(this:Expression_12());
 
 	while this:Accept("add") do
 		local inst = this:StartInstruction("add", expr.token);
@@ -1614,7 +1629,7 @@ function PARSER.Expression_11(this)
 end
 
 function PARSER.Expression_12(this)
-	local expr = this:Expression_Trailing( this:Expression_13() );
+	local expr = this:Expression_Trailing(this:Expression_13());
 
 	while this:Accept("sub") do
 		local inst = this:StartInstruction("sub", expr.token);
@@ -1628,7 +1643,7 @@ function PARSER.Expression_12(this)
 end
 
 function PARSER.Expression_13(this)
-	local expr = this:Expression_Trailing( this:Expression_14() );
+	local expr = this:Expression_Trailing(this:Expression_14());
 
 	while this:Accept("div") do
 		local inst = this:StartInstruction("div", expr.token);
@@ -1643,7 +1658,7 @@ end
 
 function PARSER.Expression_14(this)
 
-	local expr = this:Expression_Trailing( this:Expression_15() );
+	local expr = this:Expression_Trailing(this:Expression_15());
 
 	while this:Accept("mul") do
 		local inst = this:StartInstruction("mul", expr.token);
@@ -1657,7 +1672,7 @@ function PARSER.Expression_14(this)
 end
 
 function PARSER.Expression_15(this)
-	local expr = this:Expression_Trailing( this:Expression_16() );
+	local expr = this:Expression_Trailing(this:Expression_16());
 
 	while this:Accept("exp") do
 		local inst = this:StartInstruction("exp", expr.token);
@@ -1671,7 +1686,7 @@ function PARSER.Expression_15(this)
 end
 
 function PARSER.Expression_16(this)
-	local expr = this:Expression_Trailing( this:Expression_17() );
+	local expr = this:Expression_Trailing(this:Expression_17());
 
 	while this:Accept("mod") do
 		local inst = this:StartInstruction("mod", expr.token);
@@ -1685,7 +1700,7 @@ function PARSER.Expression_16(this)
 end
 
 function PARSER.Expression_17(this)
-	local expr = this:Expression_Trailing( this:Expression_18() );
+	local expr = this:Expression_Trailing(this:Expression_18());
 
 	if this:Accept("iof") then
 		local inst = this:StartInstruction("iof", expr.token);
@@ -1780,7 +1795,7 @@ function PARSER.Expression_23(this)
 
 		local class = this.__token.data;
 
-		this:ExcludeWhiteSpace("Cast operator ( (%s) ) must not be succeeded by whitespace", name(class));
+		this:ExcludeWhiteSpace("Cast operator ((%s)) must not be succeeded by whitespace", name(class));
 
 		local expr = this:Expression_1();
 
@@ -1800,7 +1815,7 @@ function PARSER.Expression_23(this)
 			if (this:Accept("rpa")) then
 				local inst = this:StartInstruction("cast", token);
 
-				this:ExcludeWhiteSpace("Cast operator ( (%s) ) must not be succeeded by whitespace", name(class));
+				this:ExcludeWhiteSpace("Cast operator ((%s)) must not be succeeded by whitespace", name(class));
 
 				local expr = this:Expression_1();
 
@@ -1821,7 +1836,7 @@ function PARSER.Expression_24(this)
 
 		local expr = this:Expression_1();
 
-		this:Require("rpa", "Right parenthesis ( )) missing, to close grouped equation.");
+		this:Require("rpa", "Right parenthesis ()) missing, to close grouped equation.");
 
 		return this:EndInstruction(inst, {expr = expr});
 	end
@@ -1867,7 +1882,7 @@ function PARSER.Expression_25(this)
 
 			end
 
-			this:Require("rpa", "Right parenthesis ( )) expected to close function parameters.")
+			this:Require("rpa", "Right parenthesis ()) expected to close function parameters.")
 
 			return this:EndInstruction(inst, {library = library; name = name.data; expressions = expressions});
 		end
@@ -1896,13 +1911,13 @@ function PARSER.Expression_27(this)
 		new = true;
 	end
 
-	if ( new ) then
+	if (new) then
 
 		local inst = this:StartInstruction("new", this.__token);
 
 		local class = this:Require("typ", "Type expected after new for constructor.");
 
-		this:Require("lpa", "Left parenthesis (( ) expected to open constructor parameters.")
+		this:Require("lpa", "Left parenthesis (() expected to open constructor parameters.")
 
 		local expressions = {};
 
@@ -1917,7 +1932,7 @@ function PARSER.Expression_27(this)
 
 		end
 
-		this:Require("rpa", "Right parenthesis ( )) expected to close constructor parameters.");
+		this:Require("rpa", "Right parenthesis ()) expected to close constructor parameters.");
 
 		return this:EndInstruction(inst, {class = class.data; expressions = expressions});
 	end
@@ -1940,7 +1955,7 @@ function PARSER.Expression_28(this)
 end
 
 function PARSER.InputParameters(this, inst)
-	this:Require("lpa", "Left parenthesis (( ) expected to open function parameters.");
+	this:Require("lpa", "Left parenthesis (() expected to open function parameters.");
 
 	inst.__lpa = this.__token;
 
@@ -1973,7 +1988,7 @@ function PARSER.InputParameters(this, inst)
 		end
 	end
 
-	this:Require("rpa", "Right parenthesis ( )) expected to close function parameters. %s", this.__next.data);
+	this:Require("rpa", "Right parenthesis ()) expected to close function parameters. %s", this.__next.data);
 
 	return params, table.concat(signature, ",");
 end
@@ -2045,7 +2060,7 @@ function PARSER.Expression_Trailing(this, expr)
 
 				end
 
-				this:Require("rpa", "Right parenthesis ( )) expected to close method parameters.");
+				this:Require("rpa", "Right parenthesis ()) expected to close method parameters.");
 
 				expr = this:EndInstruction(inst, {method = method.data; expressions = expressions});
 			else
@@ -2113,7 +2128,7 @@ function PARSER.Expression_Trailing(this, expr)
 
 			end
 
-			this:Require("rpa", "Right parenthesis ( )) expected to close call parameters.")
+			this:Require("rpa", "Right parenthesis ()) expected to close call parameters.")
 
 			expr = this:EndInstruction(inst, {expressions = expressions});
 		end
@@ -2123,13 +2138,13 @@ function PARSER.Expression_Trailing(this, expr)
 end
 
 function PARSER.GetCondition(this)
-	this:Require("lpa", "Left parenthesis ( () required, to open condition.");
+	this:Require("lpa", "Left parenthesis (() required, to open condition.");
 
 	local inst = this:StartInstruction("cond", this.__token);
 
 	local expr = this:Expression_1();
 
-	this:Require("rpa", "Right parenthesis ( )) missing, to close condition.");
+	this:Require("rpa", "Right parenthesis ()) missing, to close condition.");
 
 	return this:EndInstruction(inst, {expr = expr});
 end
@@ -2162,7 +2177,7 @@ function PARSER.ExpressionErr(this)
 	this:Exclude("leq", "Comparison operator (<) must be preceded by equation or value");
 	-- this:Exclude("inc", "Increment operator (++) must be preceded by variable");
 	-- this:Exclude("dec", "Decrement operator (--) must be preceded by variable");
-	this:Exclude("rpa", "Right parenthesis ( )) without matching left parenthesis");
+	this:Exclude("rpa", "Right parenthesis ()) without matching left parenthesis");
 	this:Exclude("lcb", "Left curly bracket ({) must be part of an table/if/while/for-statement block");
 	this:Exclude("rcb", "Right curly bracket (}) without matching left curly bracket");
 	this:Exclude("lsb", "Left square bracket ([) must be preceded by variable");
@@ -2262,15 +2277,17 @@ function PARSER.ClassStatment_1(this)
 		local expressions = {};
 
 		if (this:Accept("ass")) then
-			this:ExcludeWhiteSpace( "Assignment operator (=), must not be preceded by whitespace." );
+			this:ExcludeWhiteSpace("Assignment operator (=), must not be preceded by whitespace.");
 
 			expressions[1] = this:Expression_1();
 
 			while (this:Accept("com")) do
-				this:ExcludeWhiteSpace( "comma (,) must not be preceded by whitespace." );
+				this:ExcludeWhiteSpace("comma (,) must not be preceded by whitespace.");
 				expressions[#expressions + 1] = this:Expression_1();
 			end
 		end
+
+		this:Require("sep", "Statements must be separated by a semicolon (;) 2292")
 
 		return this:EndInstruction(inst, {type = type; expressions = expressions; variables = variables});
 	end
@@ -2375,7 +2392,7 @@ function PARSER.InterfaceStatment_1(this)
 
 		local name = this:Require("var", "Name expected for method, after %s", name(result.data));
 
-		this:Require("lpa", "Left parenthesis ( () expected to close method parameters.");
+		this:Require("lpa", "Left parenthesis (() expected to close method parameters.");
 
 		local params = {};
 
@@ -2394,7 +2411,7 @@ function PARSER.InterfaceStatment_1(this)
 
 		end
 
-		this:Require("rpa", "Right parenthesis ( )) expected to close method parameters.");
+		this:Require("rpa", "Right parenthesis ()) expected to close method parameters.");
 
 		local lcb = this:Accept("lcb");
 
@@ -2402,10 +2419,10 @@ function PARSER.InterfaceStatment_1(this)
 
 		local count = this:Require("num", "Method body must be return followed by return count as number.");
 
-		this:Accept("sep");
+		this:Require("sep", "Statements must be separated by a semicolon (;) 2411");
 
 		if (lcb) then
-			this:Require("rcb", "Right curly bracket ( }) expected to close method.");
+			this:Require("rcb", "Right curly bracket (}) expected to close method.");
 		end
 
 		return this:EndInstruction(inst, {params = params, result = result, name = name, count = count});

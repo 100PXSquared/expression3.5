@@ -1,6 +1,6 @@
 --[[
 	   ____      _  _      ___    ___       ____      ___      ___     __     ____      _  _          _        ___     _  _       ____
-	  F ___J    FJ  LJ    F _ ", F _ ",    F ___J    F __".   F __".   FJ    F __ ]    F L L]        /.\      F __".  FJ  L]     F___ J
+	  F ___J    FJ  LJ    F _ ", F _ ",    F ___J    F __".   F __".   FJ    F __]    F L L]        /.\      F __".  FJ  L]     F___ J
 	 J |___:    J \/ F   J `-' |J `-'(|   J |___:   J (___|  J (___|  J  L  J |--| L  J   \| L      //_\\    J |--\ LJ |  | L    `-__| L
 	 | _____|   /    \   |  __/F|  _  L   | _____|  J\___ \  J\___ \  |  |  | |  | |  | |\   |     / ___ \   | |  J |J J  F L     |__  (
 	 F L____:  /  /\  \  F |__/ F |_\  L  F L____: .--___) \.--___) \ F  J  F L__J J  F L\\  J    / L___J \  F L__J |J\ \/ /F  .-____] J
@@ -169,9 +169,9 @@ local function readFloat(ctx, msg)
 	local s = a * 65536 + b * 256 + c - 8388608;
 
 	if (s > 0) then
-		return tonumber( "0." .. s ) * 10 ^ e;
+		return tonumber("0." .. s) * 10 ^ e;
 	else
-		return tonumber( "-0." .. math.abs(s) ) * 10 ^ e;
+		return tonumber("-0." .. math.abs(s)) * 10 ^ e;
 	end
 end
 
@@ -271,7 +271,7 @@ local function queueMessage(ctx, msg, filter)
 	local queue = ctx.data.net_queue or {};
 
 	if (#queue >= NET_MAX) then
-		ctx:Throw("Attempt to send net stream, too meany streams queued.")
+		this:Throw("Attempt to send net stream, too meany streams queued.")
 	elseif (CLIENT) then
 		queue[#queue + 1] = {msg = msg};
 	else

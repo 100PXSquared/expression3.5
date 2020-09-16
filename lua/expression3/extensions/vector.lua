@@ -1,6 +1,6 @@
 --[[
 	   ____      _  _      ___    ___       ____      ___      ___     __     ____      _  _          _        ___     _  _       ____
-	  F ___J    FJ  LJ    F _ ", F _ ",    F ___J    F __".   F __".   FJ    F __ ]    F L L]        /.\      F __".  FJ  L]     F___ J
+	  F ___J    FJ  LJ    F _ ", F _ ",    F ___J    F __".   F __".   FJ    F __]    F L L]        /.\      F __".  FJ  L]     F___ J
 	 J |___:    J \/ F   J `-' |J `-'(|   J |___:   J (___|  J (___|  J  L  J |--| L  J   \| L      //_\\    J |--\ LJ |  | L    `-__| L
 	 | _____|   /    \   |  __/F|  _  L   | _____|  J\___ \  J\___ \  |  |  | |  | |  | |\   |     / ___ \   | |  J |J J  F L     |__  (
 	 F L____:  /  /\  \  F |__/ F |_\  L  F L____: .--___) \.--___) \ F  J  F L__J J  F L\\  J    / L___J \  F L__J |J\ \/ /F  .-____] J
@@ -111,16 +111,8 @@ extension:RegisterOperator("mul", "v,n", "v", 1, function(a, b)
 	return Vector((a.x * b), (a.y * b), (a.z * b));
 end, true);
 
-extension:RegisterOperator("mul", "n,v", "v", 1, function(a, b)
-	return Vector((a * b.x), (a * b.y), (a * b.z));
-end, true);
-
 extension:RegisterOperator("div", "v,n", "v", 1, function(a, b)
 	return Vector((a.x / b), (a.y / b), (a.z / b));
-end, true);
-
-extension:RegisterOperator("div", "n,v", "v", 1, function(a, b)
-	return Vector((a / b.x), (a / b.y), (a / b.z));
 end, true);
 
 --[[
@@ -237,13 +229,6 @@ extension:RegisterMethod("v", "rotated", "a", "v", 1, function(v, a)
 	return vec;
 end, true)
 
-extension:RegisterMethod("v", "toScreen", "", "v2", 1, function(v)
-	
-	local v2 = Vector(v.x, v.y, v.z):ToScreen()
-	return Vector2(v2.x, v2.y)
-
-end, true)
-
 --[[
 
 ]]
@@ -306,8 +291,8 @@ extension:RegisterMethod("v", "rotate", "n,n,n", "v", 1, function(v, p, y, r)
 end, true);
 
 extension:RegisterMethod("v", "dehomogenized", "", "v2", 1, function(v)
-	if (v.z == 0) then return { x = v.x, y = v.y}; end
-	return { x = v.x / v.z, y = v.y / v.z };
+	if (v.z == 0) then return {x = v.x, y = v.y}; end
+	return {x = v.x / v.z, y = v.y / v.z};
 end, true);
 
 extension:RegisterMethod("v", "toRad", "", "v", 1, function(v)

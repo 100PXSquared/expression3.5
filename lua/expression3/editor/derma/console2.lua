@@ -48,7 +48,7 @@ local code = [[
 
 		<script>
 
-			var E3Console = { bufl : "", bufr : "" };
+			var E3Console = {bufl : "", bufr : ""};
 			var colleft = document.createElement('td');
 			var colright = document.createElement('td');
 			var table = document.getElementById("E3table");
@@ -187,7 +187,7 @@ local code = [[
 </html>
 ]]
 
-local CONSOLE = { }
+local CONSOLE = {}
 
 function CONSOLE:Init()
 
@@ -208,19 +208,19 @@ function CONSOLE:Init()
 end
 
 function CONSOLE:Write(where, line)
-	self:Call( string.format("E3Console.write.%s(%q);", where, line) );
+	self:Call(string.format("E3Console.write.%s(%q);", where, line));
 end
 
 function CONSOLE:WriteNewLine(where)
-	self:Call( string.format("E3Console.newLine.%s();", where) );
+	self:Call(string.format("E3Console.newLine.%s();", where));
 end
 
 function CONSOLE:setSize(where, line)
-	self:Call( string.format("E3Console.setSize.%s(%i);", where, size) );
+	self:Call(string.format("E3Console.setSize.%s(%i);", where, size));
 end
 
 function CONSOLE:setFontFace(where, face)
-	self:Call( string.format("E3Console.setFace.%s(%q);", where, face) );
+	self:Call(string.format("E3Console.setFace.%s(%q);", where, face));
 end
 
 function CONSOLE:ColorToHext(col)
@@ -229,11 +229,11 @@ end
 
 function CONSOLE:SetColor(where, col)
 	local color = self:ColorToHext(col)
-	self:Call( string.format("E3Console.setColor.%s(%q);", where, color) );
+	self:Call(string.format("E3Console.setColor.%s(%q);", where, color));
 end
 
 function CONSOLE:WriteText(where, line)
-	self:Call( string.format("E3Console.writeText.%s(%q);", where, line) );
+	self:Call(string.format("E3Console.writeText.%s(%q);", where, line));
 end
 
 function CONSOLE:ToBase64(path)
@@ -243,7 +243,7 @@ function CONSOLE:ToBase64(path)
 
 	local file = file.Open("materials\\" .. path, "rb", "GAME");
 
-	local b64 = "data:image/jpeg;base64," .. util.Base64Encode( file:Read( file:Size() ) );
+	local b64 = "data:image/jpeg;base64," .. util.Base64Encode(file:Read(file:Size()));
 
 	file:Close();
 
@@ -253,7 +253,7 @@ function CONSOLE:ToBase64(path)
 end
 
 function CONSOLE:WriteImage(where, path, size)
-	self:Call( string.format("E3Console.writeImage.%s(%q, %i);", where, self:ToBase64(path), size or 16) );
+	self:Call(string.format("E3Console.writeImage.%s(%q, %i);", where, self:ToBase64(path), size or 16));
 end
 
 function CONSOLE:BeginCB(where, func)
@@ -263,24 +263,24 @@ function CONSOLE:BeginCB(where, func)
 		func = string.format("lua.f%i();", id);
 	end
 
-	self:Call( string.format("E3Console.beginCB.%s(%q);", where, func) );
+	self:Call(string.format("E3Console.beginCB.%s(%q);", where, func));
 end
 
 function CONSOLE:EndCB(where)
-	self:Call( string.format("E3Console.endCB.%s();", where) );
+	self:Call(string.format("E3Console.endCB.%s();", where));
 end
 
 function CONSOLE:Flush(where)
-	self:Call( "E3Console.flush()" );
+	self:Call("E3Console.flush()");
 end
 
 function CONSOLE:WriteValues(where, values)
 	local hascb = false;
 	local tValues = #values;
 
-	if (tValues > 1 and isfunction( values[1]) ) then
+	if (tValues > 1 and isfunction(values[1])) then
 		hascb = true;
-		self:BeginCB(where, values[1] );
+		self:BeginCB(where, values[1]);
 	end
 
 	local start = (hascb and 2 or 1);
@@ -288,12 +288,12 @@ function CONSOLE:WriteValues(where, values)
 	for i = start, tValues do
 		local value = values[i];
 
-		if ( IsColor(value) ) then
+		if (IsColor(value)) then
 			self:SetColor(where, value);
 			continue;
 		end
 
-		if ( istable(value) ) then
+		if (istable(value)) then
 
 			if (value.image) then
 				self:WriteImage(where, value.image, value.size);
@@ -335,7 +335,7 @@ end
 
 function CONSOLE:WriteLine(left, right, ...)
 	local right = {right, ...};
-	if not istable(left) then left = { left }; end
+	if not istable(left) then left = {left}; end
 
 	self:WriteValues("left", left);
 	self:WriteValues("right", right);
@@ -350,13 +350,13 @@ end
 function CONSOLE:SetBackGroundColorL(coloR, g, b)
 	if g and b then coloR = Color(coloR, g, b); end
 	if IsColor(coloR) then coloR = self:ColorToHext(coloR); end
-	self:Call( string.format("E3Console.set.bgcolor.left(%q);", tostring(coloR)));
+	self:Call(string.format("E3Console.set.bgcolor.left(%q);", tostring(coloR)));
 end
 
 function CONSOLE:SetBackGroundColorR(coloR, g, b)
 	if g and b then coloR = Color(coloR, g, b); end
 	if IsColor(coloR) then coloR = self:ColorToHext(coloR); end
-	self:Call( string.format("E3Console.set.bgcolor.right(%q);", tostring(coloR)));
+	self:Call(string.format("E3Console.set.bgcolor.right(%q);", tostring(coloR)));
 end
 
 --[[
@@ -388,7 +388,7 @@ function CONSOLE:Warn(level, ...)
 	self:WriteLine(left, right)
 end
 
---[[function CONSOLE:ConsoleMessage( msg )
+--[[function CONSOLE:ConsoleMessage(msg)
 	self:WriteLine("JavaScript", msg);
 end]]
 
@@ -399,25 +399,25 @@ end]]
 function CONSOLE:SetDefaultBackGroundColorL(coloR, g, b)
 	if g and b then coloR = Color(coloR, g, b); end
 	if IsColor(coloR) then coloR = self:ColorToHext(coloR); end
-	self:Call( string.format("E3Console.default.bgcolor.left(%q);", tostring(coloR)));
+	self:Call(string.format("E3Console.default.bgcolor.left(%q);", tostring(coloR)));
 end
 
 function CONSOLE:SetDefaultBackGroundColorR(coloR, g, b)
 	if g and b then coloR = Color(coloR, g, b); end
 	if IsColor(coloR) then coloR = self:ColorToHext(coloR); end
-	self:Call( string.format("E3Console.default.bgcolor.right(%q);", tostring(coloR)));
+	self:Call(string.format("E3Console.default.bgcolor.right(%q);", tostring(coloR)));
 end
 
 function CONSOLE:SetDefaultTextColorL(coloR, g, b)
 	if g and b then coloR = Color(coloR, g, b); end
 	if IsColor(coloR) then coloR = self:ColorToHext(coloR); end
-	self:Call( string.format("E3Console.default.color.left(%q);", tostring(coloR)));
+	self:Call(string.format("E3Console.default.color.left(%q);", tostring(coloR)));
 end
 
 function CONSOLE:SetDefaultTextColorR(coloR, g, b)
 	if g and b then coloR = Color(coloR, g, b); end
 	if IsColor(coloR) then coloR = self:ColorToHext(coloR); end
-	self:Call( string.format("E3Console.default.color.right(%q);", tostring(coloR)));
+	self:Call(string.format("E3Console.default.color.right(%q);", tostring(coloR)));
 end
 
 vgui.Register("GOLEM_Console2", CONSOLE, "DHTML");

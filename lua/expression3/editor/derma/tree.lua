@@ -31,7 +31,7 @@ function PANEL:BuildControls()
 	self.srch_pnl:Dock(TOP);
 
 	self.root_tree = self:Add("DTree");
-	self.root_tree:SetBackgroundColor(Color(0, 0, 0));
+	self.root_tree:SetBackgroundColor(Color(30, 30, 30));
 	self.root_tree:SetWide(200);
 	self.root_tree:DockMargin(5, 5, 5, 5);
 	self.root_tree:Dock(FILL);
@@ -41,7 +41,7 @@ function PANEL:BuildControls()
 	self.ctrl_pnl:DockMargin(5, 5, 5, 5);
 	self.ctrl_pnl:Dock(BOTTOM);
 
-	self.srch_txt = self.srch_pnl:SetupTextBox( "Search", "fugue/binocular.png", FILL, function(_, str)
+	self.srch_txt = self.srch_pnl:SetupTextBox("Search", "fugue/binocular.png", FILL, function(_, str)
 		self:SearchAll(str, true);
 	end, nil);
 
@@ -198,7 +198,7 @@ end
 
 function PANEL:ApplyCustomSkin(node)
 	node:SetIcon(self.m_sDefIcon);
-	node.Label:SetTextColor(Color( 230, 230, 230 ) )
+	node.Label:SetTextColor(Color(230, 230, 230))
 
 	local icon_open = Material(self.m_sExpandedIcon);
 	local icon_small = Material(self.m_sUnexpandedIcon);
@@ -221,7 +221,7 @@ end
 local addNode;
 
 addNode = function(self, pnl, frs, scnd, ...)
-	if not pnl.subnodes then pnl.subnodes = { }; end
+	if not pnl.subnodes then pnl.subnodes = {}; end
 
 	local node = pnl.subnodes[frs];
 

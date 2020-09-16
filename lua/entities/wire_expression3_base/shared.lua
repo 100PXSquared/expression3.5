@@ -1,6 +1,6 @@
 --[[
 	   ____      _  _      ___    ___       ____      ___      ___     __     ____      _  _          _        ___     _  _       ____
-	  F ___J    FJ  LJ    F _ ", F _ ",    F ___J    F __".   F __".   FJ    F __ ]    F L L]        /.\      F __".  FJ  L]     F___ J
+	  F ___J    FJ  LJ    F _ ", F _ ",    F ___J    F __".   F __".   FJ    F __]    F L L]        /.\      F __".  FJ  L]     F___ J
 	 J |___:    J \/ F   J `-' |J `-'(|   J |___:   J (___|  J (___|  J  L  J |--| L  J   \| L      //_\\    J |--\ LJ |  | L    `-__| L
 	 | _____|   /    \   |  __/F|  _  L   | _____|  J\___ \  J\___ \  |  |  | |  | |  | |\   |     / ___ \   | |  J |J J  F L     |__  (
 	 F L____:  /  /\  \  F |__/ F |_\  L  F L____: .--___) \.--___) \ F  J  F L__J J  F L\\  J    / L___J \  F L__J |J\ \/ /F  .-____] J
@@ -260,7 +260,7 @@ function ENT:Execute(func, ...) -- This is the new one.
 
 			local info = debug.getinfo(i, "Sln");
 
-			if ( !info ) then
+			if (!info) then
 				break;
 			end
 
@@ -334,7 +334,7 @@ if (stackTrace and #stackTrace > 0) then
 		self:WriteToLogger("{\n");
 		for level, info in pairs(stackTrace) do
 			if (info.what == "C") then
-				self:WriteToLogger(string.format( "\t%i: C function\t\"%s\"\n", level, info.name));
+				self:WriteToLogger(string.format("\t%i: C function\t\"%s\"\n", level, info.name));
 			else
 				self:WriteToLogger(string.format("\t%i: Line %d\t\"%s\"\t\t%s\n", level, info.currentline, info.name, info.short_src));
 			end
@@ -422,7 +422,7 @@ function ENT:Invoke(where, result, count, udf, ...)
 				result, count = "_nil", 0;
 			end
 
-			if ( (result ~= r or count > c) and not optional ) then
+			if ((result ~= r or count > c) and not optional) then
 				local msg = string.format("Invoked function with incorrect return type %q:%i expected, got %q:%i (%s).", name(result), count, name(r), c, where);
 
 				if udf.scr and udf.scr.entity ~= self then
@@ -562,7 +562,7 @@ function ENT:SendNetMessage(name, target, ...)
 
 	if CLIENT then net.WriteEntity(target); end
 
-	net.WriteTable( {...} );
+	net.WriteTable({...});
 
 	local context = EXPR_LIB.GetExecuting();
 
@@ -615,7 +615,7 @@ net.Receive("Expression3.EntMessage", function()
 
 		net.WriteString(name);
 
-		net.WriteTable( values );
+		net.WriteTable(values);
 
 		net.Send(target);
 	end
@@ -636,7 +636,7 @@ EXPR_LIB.RegisterPermission("SendToGolem", "fugue/terminal--arrow.png", "This ga
 EXPR_PRINT_GOLEM = 0;
 EXPR_PRINT_CHAT = 1;
 
-function ENT:SendToOwner( type, ... )
+function ENT:SendToOwner(type, ...)
 	if type == EXPR_PRINT_CHAT then
 		self:SendNetMessage("ChatMessage", self.player, ...);
 	else
@@ -653,7 +653,7 @@ function ENT:NetChatMessage(target, values)
 	end
 
 	if CLIENT then
-		chat.AddText( unpack(values) );
+		chat.AddText(unpack(values));
 	end
 
 	return true;
@@ -670,7 +670,7 @@ function ENT:NetGolemMessage(target, values)
 	end
 
 	if CLIENT then
-		Golem.Print( unpack(values) );
+		Golem.Print(unpack(values));
 	end
 
 	return true;

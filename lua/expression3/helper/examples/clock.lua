@@ -39,8 +39,8 @@ server {
 
     function void buildHours(int x, int y, int hour) {
         string h = math.toString(hour);
-        angle ang = gate.toWorld( new angle(0, -90, 90) );
-        vector pos = gate.toWorld( new vector(x, y, 0) * 60);
+        angle ang = gate.toWorld(new angle(0, -90, 90));
+        vector pos = gate.toWorld(new vector(x, y, 0) * 60);
         
         hologram frst = hololib.create("models/sprops/misc/alphanum/alphanum_" + h[1] + ".mdl");
         frst.setColor(new color(0, 0, 0));
@@ -58,13 +58,13 @@ server {
             snd.setPos(pos - (frst.forward() * 5));
             snd.setAng(ang);
             snd.parent(gate);
-        }
-    }
+       }
+   }
     
     function void buildMinute(int x, int y, int minute) {
         hologram h = hololib.create("cube");
         h.setScale(new vector(0.1));
-        h.setPos( gate.toWorld( new vector(x, y, 0) * 70) );
+        h.setPos(gate.toWorld(new vector(x, y, 0) * 70));
         h.parent(gate);
         
         if (minute % 5 == 0) {
@@ -72,8 +72,8 @@ server {
             int hour = minute / 5;
             if (hour == 0) hour = 12;
             buildHours(x, y, hour);
-        }
-    }
+       }
+   }
         
     function void buildDisplay(int minute) {
         int step = ((2*math.pi()) / 60);
@@ -82,14 +82,14 @@ server {
         int y = math.cos(j);
         
         buildMinute(x, y, minute);
-    }
+   }
     
     int i = 0;
     
     timer.create("buildDisplay", 0.1, 60, function() {
         buildDisplay(i);
         i += 1;
-    });
+   });
 
 /***********************************************************************************
     CLOCK HANDS
@@ -118,11 +118,11 @@ server {
         
             vector of = gate.up() * 1;
             vector center = gate.getPos();
-            vector aimpos = gate.toWorld( new vector(x, y, 0) * 70);
+            vector aimpos = gate.toWorld(new vector(x, y, 0) * 70);
             angle ang = (center - aimpos).toAngle();
             hs.setPos((center + ((aimpos - center) * 0.5)) + (ang.forward() * 4) + of);
             hs.setAng(ang);
-        };
+       };
         
         function void updateMinutes(int minutes) {
             int step = ((2*math.pi()) / 60);
@@ -132,11 +132,11 @@ server {
             
             vector of = gate.up() * 2;
             vector center = gate.getPos();
-            vector aimpos = gate.toWorld( new vector(x, y, 0) * 60);
+            vector aimpos = gate.toWorld(new vector(x, y, 0) * 60);
             angle ang = (center - aimpos).toAngle();
             hm.setPos((center + ((aimpos - center) * 0.5)) + (ang.forward() * 5) + of);
             hm.setAng(ang);
-        };
+       };
         
         function void updateHours(int hours, int minutes) {
             int step = ((2*math.pi()) / 12);
@@ -146,19 +146,19 @@ server {
             
             vector of = gate.up() * 3;
             vector center = gate.getPos();
-            vector aimpos = gate.toWorld( new vector(x, y, 0) * 60);
+            vector aimpos = gate.toWorld(new vector(x, y, 0) * 60);
             angle ang = (center - aimpos).toAngle();
             hh.setPos((center + ((aimpos - center) * 0.5)) + (ang.forward() * 13) + of);
             hh.setAng(ang);
-        };
+       };
             
         timer.create("moveHands", 1, 0, function() {
             date now = new date(time.now());
             updateSeconds(now.second);
             updateMinutes(now.minute);
             updateHours(now.hour, now.minute);
-        });
-    });
+       });
+   });
     
 /***********************************************************************************
     CLOCK TEXT
@@ -179,22 +179,22 @@ server {
                 letter.setPos(pos);
                 letter.setAng(ang);
                 parent = letter;
-            }
+           }
             
             text = text.sub(2);
             pos -= (parent.forward() * 5);
-        }
-    }
+       }
+   }
     
     timer.create("buildText", 5, 1, function() {
-        angle ang = gate.toWorld( new angle(0, -90, 90) );
+        angle ang = gate.toWorld(new angle(0, -90, 90));
         
-        vector pos = gate.toWorld( new vector(-10, -25, 0.5));
+        vector pos = gate.toWorld(new vector(-10, -25, 0.5));
         holoString("Expression 3", bg, pos, ang);
         
-        pos = gate.toWorld( new vector(10, -10, 0.5));
+        pos = gate.toWorld(new vector(10, -10, 0.5));
         holoString("Clock", bg, pos, ang);
-    });
+   });
     
     
 }

@@ -121,7 +121,7 @@ function HELPER_PANEL:Init()
 
 	self.cls_btn:SetVisible(false);
 
-	self.expt_btn = self.ctrl_pnl:SetupTextBox( "Export Custom Helper Data", "fugue/disk-black.png", RIGHT, function(_, str)
+	self.expt_btn = self.ctrl_pnl:SetupTextBox("Export Custom Helper Data", "fugue/disk-black.png", RIGHT, function(_, str)
 		if str ~= "" then
 			EXPR_DOCS.SaveChangedDocs(str .. ".txt");
 			self:WriteLine(Color(255, 255, 255), "Exported Custom Helpers");
@@ -251,7 +251,7 @@ function HELPER_PANEL:AddOptionsMenu(node, callback)
 		local menu = DermaMenu();
 
 		if callback then
-			menu:AddOption( "Edit", function()
+			menu:AddOption("Edit", function()
 				local kv, csv = callback();
 
 				self:OpenEditor(kv, csv);
@@ -265,7 +265,7 @@ function HELPER_PANEL:AddOptionsMenu(node, callback)
 
 		if not node.isBookMarked then
 
-			menu:AddOption( "Bookmark", function()
+			menu:AddOption("Bookmark", function()
 				
 				node.isBookMarked = true;
 				node.bookMark = self:AddNode("Bookmarks", node:GetText());
@@ -284,7 +284,7 @@ function HELPER_PANEL:AddOptionsMenu(node, callback)
 
 		if node.isBookMarked then
 
-			menu:AddOption( "Remove Bookmark", function()
+			menu:AddOption("Remove Bookmark", function()
 				if node.bookMark then
 					node.bookMark:Remove();
 				else
@@ -296,7 +296,7 @@ function HELPER_PANEL:AddOptionsMenu(node, callback)
 			end):SetIcon("fugue/book.png");
 
 			if node.BookMarkOff then
-				menu:AddOption( "Goto", function()
+				menu:AddOption("Goto", function()
 					self.root_tree:SetSelectedItem(node.BookMarkOff);
 					node.BookMarkOff:ExpandTo(true);
 					self:ScrollTo(node);
@@ -310,7 +310,7 @@ function HELPER_PANEL:AddOptionsMenu(node, callback)
 
 end
 
-function HELPER_PANEL:Paint( w, h ) 
+function HELPER_PANEL:Paint(w, h) 
 	surface.SetDrawColor(30, 30, 30, 255)
 	surface.DrawRect(0, 0, w, h)
 end

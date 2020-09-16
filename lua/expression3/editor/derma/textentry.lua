@@ -3,15 +3,15 @@
 	Author: Rusketh
 ============================================================================================================================================*/
 
-local PANEL = { };
+local PANEL = {};
 
 AccessorFunc(PANEL, "m_bBackground", "DrawBackground");
 AccessorFunc(PANEL, "m_colBackground", "BackgroundColor");
 
 AccessorFunc(PANEL, "m_bBorder", "DrawBorder", FORCE_BOOL);
 AccessorFunc(PANEL, "m_colBorder", "BorderColor");
-AccessorFunc(PANEL, "m_nBorderRadius", "BorderRadius", FORCE_NUMBER );
-AccessorFunc(PANEL, "m_nBorderMargin", "BorderMargin", FORCE_NUMBER );
+AccessorFunc(PANEL, "m_nBorderRadius", "BorderRadius", FORCE_NUMBER);
+AccessorFunc(PANEL, "m_nBorderMargin", "BorderMargin", FORCE_NUMBER);
 
 function PANEL:Init()
 
@@ -103,7 +103,7 @@ function PANEL:DockIcon(dock)
 	self:InvalidateLayout(false);
 end
 
-function PANEL:PerformLayout( w, h )
+function PANEL:PerformLayout(w, h)
 	local m = self.m_nBorderMargin;
 	
 	self.pnl_btn:SizeToContentsX()
@@ -201,7 +201,7 @@ importButtonFunction("GetIconCentered");
 importButtonFunction("GetTooltip");
 importButtonFunction("GetMaterial");
 
-vgui.Register( "GOLEM_TextEntry", PANEL, "EditablePanel" );
+vgui.Register("GOLEM_TextEntry", PANEL, "EditablePanel");
 
 /*============================================================================================================================================
 	Make this a pop up

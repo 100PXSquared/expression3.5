@@ -1,6 +1,6 @@
 --[[
 	   ____      _  _      ___    ___       ____      ___      ___     __     ____      _  _          _        ___     _  _       ____
-	  F ___J    FJ  LJ    F _ ", F _ ",    F ___J    F __".   F __".   FJ    F __ ]    F L L]        /.\      F __".  FJ  L]     F___ J
+	  F ___J    FJ  LJ    F _ ", F _ ",    F ___J    F __".   F __".   FJ    F __]    F L L]        /.\      F __".  FJ  L]     F___ J
 	 J |___:    J \/ F   J `-' |J `-'(|   J |___:   J (___|  J (___|  J  L  J |--| L  J   \| L      //_\\    J |--\ LJ |  | L    `-__| L
 	 | _____|   /    \   |  __/F|  _  L   | _____|  J\___ \  J\___ \  |  |  | |  | |  | |\   |     / ___ \   | |  J |J J  F L     |__  (
 	 F L____:  /  /\  \  F |__/ F |_\  L  F L____: .--___) \.--___) \ F  J  F L__J J  F L\\  J    / L___J \  F L__J |J\ \/ /F  .-____] J
@@ -115,7 +115,7 @@ extension:RegisterMethod("ed", "removeFromWhiteList", "e", "", 0, function(a, e)
 
 	a.bl = nil;
 
-	a.wl = a.wl or { };
+	a.wl = a.wl or {};
 
 	a.wl[e] = nil;
 
@@ -125,7 +125,7 @@ extension:RegisterMethod("ed", "addWhiteList", "e", "", 0, function(a, e)
 
 	a.bl = nil;
 
-	a.wl = a.wl or { };
+	a.wl = a.wl or {};
 
 	a.wl[e] = true;
 
@@ -135,7 +135,7 @@ extension:RegisterMethod("ed", "addWhiteList", "t", "", 0, function(a, f)
 
 	a.bl = nil;
 
-	a.wl = a.wl or { };
+	a.wl = a.wl or {};
 
 	for i = 1, #f.tbl do
 		local v = f.tbl[i];
@@ -159,7 +159,7 @@ extension:RegisterMethod("ed", "removeFromBlackList", "e", "", 0, function(a, e)
 
 	a.wl = nil;
 
-	a.bl = a.bl or { };
+	a.bl = a.bl or {};
 
 	a.bl[e] = nil;
 
@@ -169,7 +169,7 @@ extension:RegisterMethod("ed", "addBlackList", "e", "", 0, function(a, e)
 
 	a.wl = nil;
 
-	a.bl = a.bl or { };
+	a.bl = a.bl or {};
 
 	a.bl[e] = true;
 
@@ -179,7 +179,7 @@ extension:RegisterMethod("ed", "addBlackList", "t", "", 0, function(a, f)
 
 	a.wl = nil;
 
-	a.bl = a.bl or { };
+	a.bl = a.bl or {};
 
 	for i = 1, #f.tbl do
 		local v = f.tbl[i];
@@ -199,7 +199,7 @@ extension:RegisterMethod("ed", "excludeClass", "s", "", 0, function(a, c)
 
 	a.ic = nil;
 
-	a.ec = a.ec or { };
+	a.ec = a.ec or {};
 
 	a.ec[c] = true;
 
@@ -209,7 +209,7 @@ extension:RegisterMethod("ed", "includeClass", "s", "", 0, function(a, c)
 
 	a.ec = nil;
 
-	a.ic = a.ic or { };
+	a.ic = a.ic or {};
 
 	a.ic[c] = true;
 
@@ -224,7 +224,7 @@ extension:RegisterMethod("ed", "excludeModel", "s", "", 0, function(a, m)
 
 	a.im = nil;
 
-	a.em = a.em or { };
+	a.em = a.em or {};
 
 	a.em[m] = true;
 
@@ -234,7 +234,7 @@ extension:RegisterMethod("ed", "includeModel", "s", "", 0, function(a, m)
 
 	a.em = nil;
 
-	a.im = a.im or { };
+	a.im = a.im or {};
 
 	a.im[m] = true;
 
@@ -253,7 +253,7 @@ extension:RegisterMethod("ed", "excludePlayerPpops", "p", "", 0, function(a, p)
 
 	a.ip = nil;
 
-	a.ep = a.ep or { };
+	a.ep = a.ep or {};
 
 	a.ep[p] = true;
 
@@ -263,7 +263,7 @@ extension:RegisterMethod("ed", "includePlayerPpops", "p", "", 0, function(a, p)
 
 	a.ep = nil;
 
-	a.ip = a.ip or { };
+	a.ip = a.ip or {};
 
 	a.ip[p] = true;
 
@@ -326,12 +326,12 @@ end, true);
 
 extension:RegisterMethod("ed", "clipToSphere", "v,n", "", 0, function(a, v, r)
 
-	local t = { };
+	local t = {};
 
 	for i = 1, #a.a do
 		local e = a.a[i];
 
-		if IsValid(e) and v:Distance( e:GetPos() ) <= r then
+		if IsValid(e) and v:Distance(e:GetPos()) <= r then
 			t[#t + 1] = e;
 		end
 
@@ -343,12 +343,12 @@ end, true);
 
 extension:RegisterMethod("ed", "clipFromSphere", "v,n", "", 0, function(a, v, r)
 
-	local t = { };
+	local t = {};
 
 	for i = 1, #a.a do
 		local e = a.a[i];
 
-		if IsValid(e) and v:Distance( e:GetPos() ) > r then
+		if IsValid(e) and v:Distance(e:GetPos()) > r then
 			t[#t + 1] = e;
 		end
 
@@ -360,7 +360,7 @@ end, true);
 
 extension:RegisterMethod("ed", "clipToBox", "v,v", "", 0, function(a, mn, mx)
 
-	local t = { };
+	local t = {};
 
 	for i = 1, #a.a do
 		local e = a.a[i];
@@ -387,7 +387,7 @@ end, true);
 
 extension:RegisterMethod("ed", "clipFromBox", "v,v", "", 0, function(a, mn, mx)
 
-	local t = { };
+	local t = {};
 
 	for i = 1, #a.a do
 		local e = a.a[i];
@@ -416,7 +416,7 @@ extension:RegisterMethod("ed", "clipFromRegion", "v,v", "", 0, function(a, o, p)
 
 	local d = p:Dot(o);
 
-	local t = { };
+	local t = {};
 
 	for i = 1, #a.a do
 		local e = a.a[i];
@@ -488,7 +488,7 @@ end, true);
 extension:RegisterMethod("ed", "toArray", "", "t", 1, function(a)
 	local t = {};
 
-	for k, v in pairs( a.a ) do
+	for k, v in pairs(a.a) do
 		t[k] = {"e", v};
 	end
 

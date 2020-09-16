@@ -1,8 +1,8 @@
 --[[
 	   ____      _  _      ___    ___       ____      ___      ___     __     ____      _  _          _        ___     _  _       ____   
-	  F ___J    FJ  LJ    F _ ", F _ ",    F ___J    F __".   F __".   FJ    F __ ]    F L L]        /.\      F __".  FJ  L]     F___ J  
+	  F ___J    FJ  LJ    F _ ", F _ ",    F ___J    F __".   F __".   FJ    F __]    F L L]        /.\      F __".  FJ  L]     F___ J  
 	 J |___:    J \/ F   J `-' |J `-'(|   J |___:   J (___|  J (___|  J  L  J |--| L  J   \| L      //_\\    J |--\ LJ |  | L    `-__| L 
-	 | _____|   /    \   |  __/F|  _  L   | _____|  J\___ \  J\___ \  |  |  | |  | |  | |\   |     / ___ \   | |  J |J J  F L     |__  ( 
+	 | _____|   /    \   |  __/F|  _  L   | _____|  J\___ \  J\___ \  |  |  | |  | |  | |\   |     / ___ \   | |  J |J J  F L     |__  (
 	 F L____:  /  /\  \  F |__/ F |_\  L  F L____: .--___) \.--___) \ F  J  F L__J J  F L\\  J    / L___J \  F L__J |J\ \/ /F  .-____] J 
 	J________LJ__//\\__LJ__|   J__| \\__LJ________LJ\______JJ\______JJ____LJ\______/FJ__L \\__L  J__L   J__LJ______/F \\__//   J\______/F
 	|________||__/  \__||__L   |__|  J__||________| J______F J______F|____| J______F |__L  J__|  |__L   J__||______F   \__/     J______F 
@@ -43,7 +43,7 @@ local KEYWORDS = {
 		["extends"] = {"ext", "extends"},
 		["instanceof"] = {"iof", "instanceof"},
 		["super"] = {"sup", "super"},
-		["nil"] = {"void", "nil"},
+		["null"] = {"void", "nil"},
 	}
 }
 
@@ -53,50 +53,50 @@ local KEYWORDS = {
 
 local TOKENS = {
 	EXPADV = {
-		["+"] = { "add", "addition" },
-		["-"] = { "sub", "subtract" },
-		["*"] = { "mul", "multiplier" },
-		["/"] = { "div", "division" },
-		["%"] = { "mod", "modulus" },
-		["^"] = { "exp", "power" },
-		["="] = { "ass", "assign" },
-		["+="] = { "aadd", "increase" },
-		["-="] = { "asub", "decrease" },
-		["*="] = { "amul", "multiplier" },
-		["/="] = { "adiv", "division" },
-		["++"] = { "inc", "increment" },
-		["--"] = { "dec", "decrement" },
-		["=="] = { "eq", "equal" },
-		["!="] = { "neq", "unequal" },
-		["<"] = { "lth", "less" },
-		["<="] ={ "leq", "less or equal" },
-		[">"] ={ "gth", "greater" },
-		[">="] ={ "geq", "greater or equal" },
-		["&"] ={ "band", "and" },
-		["|"] ={ "bor", "or" },
-		["^^"] ={ "bxor", "or" },
-		[">>"] ={ "bshr", ">>" },
-		["<<"] ={ "bshl", "<<" },
-		["!"] ={ "not", "not" },
-		["&&"] ={ "and", "and" },
-		["||"] ={ "or", "or" },
-		["?"] ={ "qsm", "?" },
-		[":"] ={ "col", "colon" },
-		[";"] ={ "sep", "semicolon" },
-		[","] ={ "com", "comma" },
-		["$"] ={ "dlt", "delta" },
-		["#"] ={ "len", "length" },
-		["~"] ={ "cng", "changed" },
-		["->"] ={ "wc", "connect" },
-		["."] ={ "prd", "period" },
-		["("] ={ "lpa", "left parenthesis" },
-		[")"] ={ "rpa", "right parenthesis" },
-		["{"] ={ "lcb", "left curly bracket" },
-		["}"] ={ "rcb", "right curly bracket" },
-		["["] ={ "lsb", "left square bracket" },
-		["]"] ={ "rsb", "right square bracket" },
-		['@'] ={ "dir", "directive operator" },
-		["..."] ={ "varg", "varargs" },
+		["+"] = {"add", "addition"},
+		["-"] = {"sub", "subtract"},
+		["*"] = {"mul", "multiplier"},
+		["/"] = {"div", "division"},
+		["%"] = {"mod", "modulus"},
+		["^"] = {"exp", "power"},
+		["="] = {"ass", "assign"},
+		["+="] = {"aadd", "increase"},
+		["-="] = {"asub", "decrease"},
+		["*="] = {"amul", "multiplier"},
+		["/="] = {"adiv", "division"},
+		["++"] = {"inc", "increment"},
+		["--"] = {"dec", "decrement"},
+		["=="] = {"eq", "equal"},
+		["!="] = {"neq", "unequal"},
+		["<"] = {"lth", "less"},
+		["<="] ={"leq", "less or equal"},
+		[">"] ={"gth", "greater"},
+		[">="] ={"geq", "greater or equal"},
+		["&"] ={"band", "and"},
+		["|"] ={"bor", "or"},
+		["^^"] ={"bxor", "or"},
+		[">>"] ={"bshr", ">>"},
+		["<<"] ={"bshl", "<<"},
+		["!"] ={"not", "not"},
+		["&&"] ={"and", "and"},
+		["||"] ={"or", "or"},
+		["?"] ={"qsm", "?"},
+		[":"] ={"col", "colon"},
+		[";"] ={"sep", "semicolon"},
+		[","] ={"com", "comma"},
+		["$"] ={"dlt", "delta"},
+		["#"] ={"len", "length"},
+		["~"] ={"cng", "changed"},
+		["->"] ={"wc", "connect"},
+		["."] ={"prd", "period"},
+		["("] ={"lpa", "left parenthesis"},
+		[")"] ={"rpa", "right parenthesis"},
+		["{"] ={"lcb", "left curly bracket"},
+		["}"] ={"rcb", "right curly bracket"},
+		["["] ={"lsb", "left square bracket"},
+		["]"] ={"rsb", "right square bracket"},
+		['@'] ={"dir", "directive operator"},
+		["..."] ={"varg", "varargs"},
 	}
 }
 
@@ -113,10 +113,10 @@ for k, v in pairs(EXPR_CLASSES) do
 	end
 end
 
-local CLASSES = { EXPADV = clstbl; };
+local CLASSES = {EXPADV = clstbl;};
 
 --[[
-	Notes: 	I plan on possibly making this compiler multi language capable.
+	Notes: 	I plan on possibly making this interpreter multi language capable.
 ]]
 
 local TOKENIZER = {};

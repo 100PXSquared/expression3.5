@@ -1,6 +1,6 @@
 --[[
 	   ____      _  _      ___    ___       ____      ___      ___     __     ____      _  _          _        ___     _  _       ____
-	  F ___J    FJ  LJ    F _ ", F _ ",    F ___J    F __".   F __".   FJ    F __ ]    F L L]        /.\      F __".  FJ  L]     F___ J
+	  F ___J    FJ  LJ    F _ ", F _ ",    F ___J    F __".   F __".   FJ    F __]    F L L]        /.\      F __".  FJ  L]     F___ J
 	 J |___:    J \/ F   J `-' |J `-'(|   J |___:   J (___|  J (___|  J  L  J |--| L  J   \| L      //_\\    J |--\ LJ |  | L    `-__| L
 	 | _____|   /    \   |  __/F|  _  L   | _____|  J\___ \  J\___ \  |  |  | |  | |  | |\   |     / ___ \   | |  J |J J  F L     |__  (
 	 F L____:  /  /\  \  F |__/ F |_\  L  F L____: .--___) \.--___) \ F  J  F L__J J  F L\\  J    / L___J \  F L__J |J\ \/ /F  .-____] J
@@ -62,7 +62,7 @@ function eTable.get(ctx, tbl, key, tp)
 		tbl_val = tbl.s
 		tbl_tp = tbl.stypes
 	else
-		ctx:Throw( "Attempt to use a non-number/string key in E2 table." )
+		ctx:Throw("Attempt to use a non-number/string key in E2 table.")
 	end
 
 	if not tbl_val then
@@ -70,23 +70,23 @@ function eTable.get(ctx, tbl, key, tp)
 	end
 
 	if not tbl_val[key] then
-		ctx:Throw( "Attempt to index field %s a nil value.", tostring(key) )
+		ctx:Throw("Attempt to index field %s a nil value.", tostring(key))
 	end
 
 	local valtp = tbl_tp[key]
 
 	if not convert_values_from_e2[valtp] then
-		ctx:Throw( "The value stored at index %s (of type '%s') cannot be converted.", tostring(key), valtp )
+		ctx:Throw("The value stored at index %s (of type '%s') cannot be converted.", tostring(key), valtp)
 	end
 
-	local val, new_valtp = convert_values_from_e2[valtp]( tbl_val[key] )
+	local val, new_valtp = convert_values_from_e2[valtp](tbl_val[key])
 
 	if tp == "_vr" then
 		return {new_valtp, val}
 	end
 
 	if new_valtp ~= tp then
-		ctx:Throw( "Attempted to index field %s, %s expected got %s.", tostring(key), tp, new_valtp )
+		ctx:Throw("Attempted to index field %s, %s expected got %s.", tostring(key), tp, new_valtp)
 	end
 
 	return val
@@ -108,7 +108,7 @@ function eTable.set(ctx, tbl, key, tp, value)
 		tbl_val = tbl.s
 		tbl_tp = tbl.stypes
 	else
-		ctx:Throw( "Attempt to use a non-number/string key in E2 table." )
+		ctx:Throw("Attempt to use a non-number/string key in E2 table.")
 	end
 
 	if tp == "_vr" then
@@ -117,7 +117,7 @@ function eTable.set(ctx, tbl, key, tp, value)
 	end
 
 	if not convert_values_to_e2[tp] then
-		ctx:Throw( "The specified value (of type '%s') cannot be converted.", tp )
+		ctx:Throw("The specified value (of type '%s') cannot be converted.", tp)
 	end
 
 	if tbl_val[key] ~= nil and value == nil then
@@ -128,7 +128,7 @@ function eTable.set(ctx, tbl, key, tp, value)
 		return
 	end
 
-	local val, new_valtp = convert_values_to_e2[tp]( value )
+	local val, new_valtp = convert_values_to_e2[tp](value)
 
 	tbl_val[key] = val
 	tbl_tp[key] = new_valtp
@@ -154,9 +154,9 @@ extension:RegisterWiredOutport("e2t", "TABLE");
 extension:RegisterConstructor("e2t", "...", function(ctx,...)
 	local t = table.Copy(DEFAULT)
 	local n = 0
-	for k,v in pairs( {...} ) do
+	for k,v in pairs({...}) do
 		n = n + 1
-		eTable.set( ctx, t, n, "_vr", v )
+		eTable.set(ctx, t, n, "_vr", v)
 	end
 	return t
 end, false)
@@ -218,7 +218,7 @@ extension:RegisterMethod("e2t", "keys", "", "t", 1, function(tbl)
 	return {tbl = t, children = {}, parents = {}, size = #t};
 end, true);
 
---[[
+--[=[
 Can't make this function because I don't have access to e3 table's eTable.set function
 
 extension:RegisterMethod("e2t", "values", "", "t", 1, function(ctx, tbl)
@@ -226,12 +226,12 @@ extension:RegisterMethod("e2t", "values", "", "t", 1, function(ctx, tbl)
 
 	for key, value in pairs(tbl.n) do
 		if value ~= nil then
-			values[value[2] ] = eTable.get(ctx,tbl,key)
+			values[value[2]] = eTable.get(ctx,tbl,key)
 		end
 	end
 	for key, value in pairs(tbl.s) do
 		if value ~= nil then
-			values[value[2] ] = eTable.get(ctx,tbl,key)
+			values[value[2]] = eTable.get(ctx,tbl,key)
 		end
 	end
 
@@ -245,7 +245,7 @@ extension:RegisterMethod("e2t", "values", "", "t", 1, function(ctx, tbl)
 
 	return res;
 end, false);
-]]
+]=]
 
 --[[
 	Autogen methods and operators (type sepecific)
@@ -266,7 +266,7 @@ for _, k in pairs(VALID_KEYS) do
 		end, false);
 
 		extension:RegisterMethod("e2t", "type", k, "cls", 1, function(ctx, tbl, key)
-			local converted_variant = eTable.get( ctx, tbl, key, "_vr" )
+			local converted_variant = eTable.get(ctx, tbl, key, "_vr")
 
 			return converted_variant[1] or ""
 		end, false);
@@ -293,7 +293,7 @@ function extension.PostLoadClasses(this, classes)
 			end, false);
 
 			extension:RegisterMethod("e2t", "pop" .. c.name, "", id, 1, function(ctx, tbl)
-				local value = eTable.get( ctx, tbl, #tbl.n, id )
+				local value = eTable.get(ctx, tbl, #tbl.n, id)
 
 				if (not value or (value[1] ~= id and id ~= "_vr")) then
 					ctx:Throw(string.format("table.pop%s() got result %s, %s expected.", c.name, value[1], c.name));
@@ -305,13 +305,13 @@ function extension.PostLoadClasses(this, classes)
 			end, false);
 
 			extension:RegisterMethod("e2t", "shift" .. c.name, "", id, 1, function(ctx, tbl)
-				local value = eTable.get( ctx, tbl, 1, id )
+				local value = eTable.get(ctx, tbl, 1, id)
 
 				if (not value or (value[1] ~= id and id ~= "_vr")) then
 					ctx:Throw(string.format("table.shift%s() got result %s, %s expected.", c.name, value[1], c.name));
 				end
 
-				table.remove( tbl.n, 1 )
+				table.remove(tbl.n, 1)
 
 				return id ~= "_vr" and value[2] or value;
 			end, false);

@@ -1,6 +1,6 @@
 --[[
 	   ____      _  _      ___    ___       ____      ___      ___     __     ____      _  _          _        ___     _  _       ____
-	  F ___J    FJ  LJ    F _ ", F _ ",    F ___J    F __".   F __".   FJ    F __ ]    F L L]        /.\      F __".  FJ  L]     F___ J
+	  F ___J    FJ  LJ    F _ ", F _ ",    F ___J    F __".   F __".   FJ    F __]    F L L]        /.\      F __".  FJ  L]     F___ J
 	 J |___:    J \/ F   J `-' |J `-'(|   J |___:   J (___|  J (___|  J  L  J |--| L  J   \| L      //_\\    J |--\ LJ |  | L    `-__| L
 	 | _____|   /    \   |  __/F|  _  L   | _____|  J\___ \  J\___ \  |  |  | |  | |  | |\   |     / ___ \   | |  J |J J  F L     |__  (
 	 F L____:  /  /\  \  F |__/ F |_\  L  F L____: .--___) \.--___) \ F  J  F L__J J  F L\\  J    / L___J \  F L__J |J\ \/ /F  .-____] J
@@ -26,12 +26,12 @@ local max_sounds = 10; -- TODO: Make this convar!
   Utility functions
 ]]
 
-EXPR_SOUNDS = EXPR_SOUNDS or { };
+EXPR_SOUNDS = EXPR_SOUNDS or {};
 
 local function stopSound(context, index, fade)
 
   if isnumber(index) then
-    index = math.floor( index );
+    index = math.floor(index);
   end
 
   local sound = context.data.sounds[index];
@@ -41,8 +41,8 @@ local function stopSound(context, index, fade)
   end
 
 	if fade > 0 then
-    sound:FadeOut( fade );
-    timer.Simple( fade, function()
+    sound:FadeOut(fade);
+    timer.Simple(fade, function()
       stopSound(context, index, 0);
     end);
 	else
@@ -63,10 +63,10 @@ local function playSound(context, entity, duration, index, fade, file)
     return;
   end
 
-  file = string.Trim( string.gsub( file, "\\", "/") );
+  file = string.Trim(string.gsub(file, "\\", "/"));
 
   if isnumber(index) then
-    index = math.floor( index );
+    index = math.floor(index);
   end
 
   if context.data.sound_count >= maxsounds then
@@ -88,16 +88,16 @@ local function playSound(context, entity, duration, index, fade, file)
 	context.data.sounds = context.data.sounds + 1;
 
   if duration > 0 and fade > 0 then
-    timer.Create( "E3Gate-" .. entity:EntIndex() .. ";STOPSound_" .. index, duration, 0, function()
+    timer.Create("E3Gate-" .. entity:EntIndex() .. ";STOPSound_" .. index, duration, 0, function()
       stopSound(context, index, fade);
-    end );
+    end);
   end
 end
 
 local function volume(context, number, volume, fade)
 
   if isnumber(index) then
-    index = math.floor( index );
+    index = math.floor(index);
   end
 
   local sound = context.data.sounds[index];
@@ -115,7 +115,7 @@ end
 
 local function pitch(context, index, pitch, fade)
   if isnumber(index) then
-    index = math.floor( index );
+    index = math.floor(index);
   end
 
   local sound = context.data.sounds[index];
@@ -137,7 +137,7 @@ local function duration(file)
     return 0;
   end
 
-  file = string.Trim( string.gsub( file, "\\", "/") );
+  file = string.Trim(string.gsub(file, "\\", "/"));
 
   return SoundDuration(file) or 0;
 end
@@ -156,7 +156,7 @@ if SERVER then
   end);
 
   hook.Add("Expression3.Entity.Stop", "Expression3.Sounds",function(entity, ctx)
-    for _, sound in pairs( ctx.data.sounds ) do
+    for _, sound in pairs(ctx.data.sounds) do
       sound:Stop();
     end
 
@@ -164,11 +164,11 @@ if SERVER then
     ctx.data.sound_count = 0;
   end);
 
-  hook.Add("PlayerDisconnected", "Expression3.Sounds", function( ply )
+  hook.Add("PlayerDisconnected", "Expression3.Sounds", function(ply)
     for _, ctx in pairs(EXPR_LIB.GetAll()) do
       if (ctx.player == ply) then
 
-        for _, sound in pairs( ctx.data.sounds ) do
+        for _, sound in pairs(ctx.data.sounds) do
           sound:Stop();
         end
 
@@ -176,7 +176,7 @@ if SERVER then
         ctx.data.sound_count = 0;
       end
     end
-  end );
+  end);
 end
 
 --[[
@@ -213,7 +213,7 @@ ext_sound:RegisterFunction("sound", "duration", "s", "n", 1, duration, true);
 ext_sound:RegisterFunction("sound", "stopAll", "", "", 0, function(context)
   for index, sound in pairs(context.data.sounds) do
     sound:Stop();
-    timer.Remove( "E3Gate-" .. entity:EntIndex() .. ";STOPSound_" .. index );
+    timer.Remove("E3Gate-" .. entity:EntIndex() .. ";STOPSound_" .. index);
   end
 
   context.data.sounds = {}

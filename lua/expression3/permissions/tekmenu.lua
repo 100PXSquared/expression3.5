@@ -20,7 +20,7 @@ local colText = Color(85, 85, 85)
 	PANEL
 ****************************************************************************************************************************/
 
-local PANEL = { }
+local PANEL = {}
 
 function PANEL:Init()
 	self:SetWide(500)
@@ -39,7 +39,7 @@ function PANEL:Init()
 	self.btnClose:SetDrawBackground(false)
 
 	function self.btnAccept.DoClick()
-		if IsValid( self.entity ) then
+		if IsValid(self.entity) then
 			for perm, _ in pairs(self.features) do
 				EXPR_PERMS.Set(self.entity, LocalPlayer(), perm, EXPR_ALLOW);
 			end
@@ -48,7 +48,7 @@ function PANEL:Init()
 	end
 
 	function self.btnBlock.DoClick()
-		if IsValid( self.entity ) then
+		if IsValid(self.entity) then
 			for perm, _ in pairs(self.features) do
 				EXPR_PERMS.Set(self.entity, LocalPlayer(), perm, EXPR_DENY);
 			end
@@ -157,5 +157,5 @@ function PANEL:PerformLayout()
 	self.btnClose:SetPos(200,self:GetTall() - 20)
 end
 
-vgui.Register( "E3_TekMenu", PANEL, "DPanel" );
+vgui.Register("E3_TekMenu", PANEL, "DPanel");
 

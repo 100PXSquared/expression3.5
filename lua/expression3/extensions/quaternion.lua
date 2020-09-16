@@ -3,7 +3,7 @@
 		Quick math access
 	*****************************************************************************************************************************************************
 ]]--
-																--[ Author: ComposerFreak ]--
+																--{Author: ComposerFreak]--
 	local math = math
 	local deg2rad = math.pi / 180
 	local rad2deg = 180 / math.pi
@@ -51,13 +51,13 @@
 	extension:RegisterConstructor("q", "", function() return Quaternion(1,0,0,0) end, true);
 	extension:RegisterConstructor("q", "n,n,n,n", function(r,i,j,k) return Quaternion(r,i,j,k) end, true);
 	extension:RegisterConstructor("q", "v", function(v) return Quaternion(0, v.x, v.y, v.z) end, true);
-	extension:RegisterConstructor("q", "a", function(a) return angToQuat( Angle(a.p, a.y, a.r) ) end, true);
+	extension:RegisterConstructor("q", "a", function(a) return angToQuat(Angle(a.p, a.y, a.r)) end, true);
 	extension:RegisterConstructor("q", "e", function(e)
 		
 		local ph = e:GetPhysicsObject();
 		
 		if IsValid(ph) then
-			return angToQuat( ph:GetAngles() );
+			return angToQuat(ph:GetAngles());
 		end
 	end, true);
 
@@ -76,7 +76,7 @@
 		local roll = acos(clamp(y:Dot(yaw), -1, 1)) * rad2deg
 		if y.z < 0 then roll = -roll end
 
-		return angToQuat( Angle(ang.p, ang.y, roll) );
+		return angToQuat(Angle(ang.p, ang.y, roll));
 
 	end, true);
 
@@ -89,7 +89,7 @@
 ]]--
 	
 	local function qmul(a,b)
-		return Quaternion( 
+		return Quaternion(
 
 			(a.r * b.r) - (a.i * b.i) - (a.j * b.j) - (a.k * b.k),
 			(a.r * b.i) + (a.i * b.r) + (a.j * b.k) - (a.k * b.j),
@@ -104,7 +104,7 @@
 		local sq = sqrt((q.r * q.r) + (q.i * q.i) + (q.j * q.j) + (q.k * q.k))
 		if sq == 0 then return Quaternion(-1e+100,0,0,0) end
 
-		local x = Quaternion( (q.r / sq), (q.i / sq), (q.j / sq), (q.k / sq) )
+		local x = Quaternion((q.r / sq), (q.i / sq), (q.j / sq), (q.k / sq))
 		local y = acos(x.r)
 		local z = sqrt((x.r * x.r) + (x.i * x.i) + (x.j * x.j) + (x.k * x.k))
 
@@ -115,7 +115,7 @@
 	local function qexp(q)
 
 		local sq = sqrt((q.i * q.i) + (q.j * q.j) + (q.k * q.k))
-		local sine = sq == !0 and Quaternion( 0, (q.i * sin(sq) / sq), (q.j * sin(sq) / sq), (q.k * sin(sq) / sq) ) or Quaternion(0, 0, 0, 0)
+		local sine = sq == !0 and Quaternion(0, (q.i * sin(sq) / sq), (q.j * sin(sq) / sq), (q.k * sin(sq) / sq)) or Quaternion(0, 0, 0, 0)
 		local pow = exp(q.r)
 
 		return Quaternion((pow * cos(sq)), (pow * sine.i), (pow * sine.j), (pow * sine.k))
@@ -143,58 +143,58 @@
 ]]--
 
 	extension:RegisterOperator("add", "q,q", "q", 1, function(a,b)
-		return Quaternion( (a.r + b.r), (a.i + b.i), (a.j + b.j), (a.k + b.k) )
+		return Quaternion((a.r + b.r), (a.i + b.i), (a.j + b.j), (a.k + b.k))
 	end, true)
 
 	extension:RegisterOperator("add", "n,q", "q", 1, function(n,q)
-		return Quaternion( (n + q.r), q.i, q.j, q.k )
+		return Quaternion((n + q.r), q.i, q.j, q.k)
 	end, true)
 
 	extension:RegisterOperator("add", "q,n", "q", 1, function(q,n)
-		return Quaternion( (q.r + n), q.i, q.j, q.k )
+		return Quaternion((q.r + n), q.i, q.j, q.k)
 	end, true)
 
 	//
 
 	extension:RegisterOperator("sub", "q,q", "q", 1, function(a,b)
-		return Quaternion( (a.r - b.r), (a.i - b.i), (a.j - b.j), (a.k - b.k) )
+		return Quaternion((a.r - b.r), (a.i - b.i), (a.j - b.j), (a.k - b.k))
 	end, true)
 
 	extension:RegisterOperator("sub", "n,q", "q", 1, function(n,q)
-		return Quaternion( (n - q.r), -q.i, -q.j, -q.k )
+		return Quaternion((n - q.r), -q.i, -q.j, -q.k)
 	end, true)
 
 	extension:RegisterOperator("sub", "q,n", "q", 1, function(q,n)
-		return Quaternion( (q.r - n), q.i, q.j, q.k )
+		return Quaternion((q.r - n), q.i, q.j, q.k)
 	end, true)
 
 	//
 
 	extension:RegisterOperator("mul", "n,q", "q", 1, function(n,q)
-		return Quaternion( (n * q.r), (n * q.i), (n * q.j), (n * q.k) )
+		return Quaternion((n * q.r), (n * q.i), (n * q.j), (n * q.k))
 	end, true)
 
 	extension:RegisterOperator("mul", "q,n", "q", 1, function(q,n)
-		return Quaternion( (q.r * n), (q.i * n), (q.j * n), (q.k * n) )
+		return Quaternion((q.r * n), (q.i * n), (q.j * n), (q.k * n))
 	end, true)
 
 	extension:RegisterOperator("mul", "v,q", "q", 1, function(v,q)
 
-		return Quaternion( 
+		return Quaternion(
 			(-v.x * q.i) - (v.y * q.j) - (v.z * q.k),
 			 (v.x * q.r) + (v.y * q.k) - (v.z * q.j),
 			 (v.y * q.r) + (v.z * q.i) - (v.x * q.k),
-			 (v.z * q.r) + (v.x * q.j) - (v.y * q.i) )
+			 (v.z * q.r) + (v.x * q.j) - (v.y * q.i))
 
 	end, true)
 
 	extension:RegisterOperator("mul", "q,v", "q", 1, function(q,v)
 
-		return Quaternion( 
+		return Quaternion(
 			(-q.i * v.x) - (q.j * v.y) - (q.k * v.z),
 			 (q.r * v.x) + (q.j * v.z) - (q.k * v.y),
 			 (q.r * v.y) + (q.k * v.x) - (q.i * v.z),
-			 (q.r * v.z) + (q.i * v.y) - (q.j * v.x) )
+			 (q.r * v.z) + (q.i * v.y) - (q.j * v.x))
 
 	end, true)
 
@@ -208,17 +208,17 @@
 		
 		local divisor = ((q.r * q.r) + (q.i * q.i) + (q.j * q.j) + (q.k * q.k))
 
-		return Quaternion( 
+		return Quaternion(
 			(n * q.r) / divisor,
 			(-n * q.i) / divisor,
 			(-n * q.j) / divisor,
-			(-n * q.k) / divisor )
+			(-n * q.k) / divisor)
 
 	end, true)
 
 	extension:RegisterOperator("div", "q,n", "q", 1, function(q,n)
 
-		return Quaternion( (q.r / n), (q.i / n), (q.j / n), (q.k / n) )
+		return Quaternion((q.r / n), (q.i / n), (q.j / n), (q.k / n))
 		
 	end, true)
 
@@ -226,7 +226,7 @@
 		
 		local divisor = ((b.r * b.r) + (b.i * b.i) + (b.j * b.j) + (b.k * b.k))
 
-		return Quaternion( 
+		return Quaternion(
 
 			(a.r * b.r) + (a.i * b.i) + (a.j * b.j) + (a.k * b.k) / divisor,
 			(-a.r * b.i) + (a.i * b.r) - (a.j * b.k) + (a.k * b.j) / divisor, 
@@ -307,7 +307,7 @@
 
 	extension:RegisterMethod("q", "toString", "", "", 1, function(q)
 
-		local quatString = table.ToString( q, "Quaternion", true )
+		local quatString = table.ToString(q, "Quaternion", true)
 		return quatString;
 
 	end, true)
@@ -357,7 +357,7 @@
 
 	//
 
-	--[[ Get Quaternion ]]--
+	--[{Get Quaternion]]--
 
 	extension:RegisterMethod("q", "vec", "", "v", 1, function(q)
 		return Vector(q.i, q.j, q.k);
@@ -428,7 +428,7 @@
 		local qR, qI, qJ, qK = q.r, q.i, q.j, q.k
 		local qI2, qJ2, qK2 = 2 * qI, 2 * qJ, 2 * qK
 
-		return Vector( (qR * qR + qI * qI - qJ *qJ - qK * qK), (qJ2 * qI + qK2 * qR), (qK2 * qI - qJ2 * qR))
+		return Vector((qR * qR + qI * qI - qJ *qJ - qK * qK), (qJ2 * qI + qK2 * qR), (qK2 * qI - qJ2 * qR))
 
 	end, true)
 
@@ -437,7 +437,7 @@
 		local qR, qI, qJ, qK = q.r, q.i, q.j, q.k
 		local qI2, qJ2, qK2 = qI * 2, qJ * 2, qK *2
 
-		return Vector( (qK2 * qR - qI2 * qJ), (qI * qI - qR * qR + qK * qK - qJ * qJ), (-qI2 * qR - qJ2 * qK) )
+		return Vector((qK2 * qR - qI2 * qJ), (qI * qI - qR * qR + qK * qK - qJ * qJ), (-qI2 * qR - qJ2 * qK))
 		
 	end, true)
 
@@ -446,7 +446,7 @@
 		local qR, qI, qJ, qK = q.r, q.i, q.j, q.k
 		local qI2, qJ2, qK2 = 2 * qI, 2 * qJ, 2 * qK
 
-		return Vector( (qK2 * qR + qI2 * qK), (qJ2 * qK - qI2 * qR), (qR *qR - qI * qI - qJ *qJ + qK * qK) )
+		return Vector((qK2 * qR + qI2 * qK), (qJ2 * qK - qI2 * qR), (qR *qR - qI * qI - qJ *qJ + qK * qK))
 		
 	end, true)
 
@@ -522,9 +522,9 @@
 		local dot = ((a.r * b.r) + (a.i * b.i) + (a.j * b.j) + (a.k * b.k))
 
 		if dot < 0 then 
-			d = Quaternion( (a.r * range - b.r * t), (a.i * range - b.i * t), (a.j * range - b.j * t), (a.k * range - b.k * t) )
+			d = Quaternion((a.r * range - b.r * t), (a.i * range - b.i * t), (a.j * range - b.j * t), (a.k * range - b.k * t))
 		else
-			d = Quaternion( (a.r * range + b.r * t), (a.i * range + b.i * t), (a.j * range + b.j * t), (a.k * range + b.k * t) )
+			d = Quaternion((a.r * range + b.r * t), (a.i * range + b.i * t), (a.j * range + b.j * t), (a.k * range + b.k * t))
 		end
 
 		local len = sqrt((d.r * d.r) + (d.i * d.i) + (d.j * d.j) + (d.k * d.k))
@@ -539,7 +539,7 @@
 		local axis = a
 		axis:Normalize()
 
-		return Quaternion( (cos(ang)), (axis.x * sin(ang)), (axis.y * sin(ang)), (axis.z * sin(ang)) );
+		return Quaternion((cos(ang)), (axis.x * sin(ang)), (axis.y * sin(ang)), (axis.z * sin(ang)));
 
 	end, true)
 
@@ -553,13 +553,13 @@
 		local ang = ((len + 180) % 360 - 180) * deg2rad * 0.5
 		local sine = sin(ang)/len
 
-		return Quaternion( (cos(ang)), (axis.x * sine), (axis.y * sine), (axis.z * sine) )
+		return Quaternion((cos(ang)), (axis.x * sine), (axis.y * sine), (axis.z * sine))
 
 	end, true)
 
 	extension:RegisterMethod("q", "toAngle", "", "a", 1, function(q)
 
-		local sq = sqrt( (q.r * q.r), (q.i * q.i), (q.j * q.j), (q.k * q.k) )
+		local sq = sqrt((q.r * q.r), (q.i * q.i), (q.j * q.j), (q.k * q.k))
 		if sq == 0 then return Angle(0,0,0) end
 		local qR, qI, qJ, qK = q.r / sq, q.i / sq, q.j / sq, q.k / sq 
 
@@ -601,7 +601,7 @@
 		if sq == 0 then return Vector(0,0,1) end
 		local root = sqrt(sq)
 
-		return Vector( (q.i / root), (q.j / root), (q.k / root))
+		return Vector((q.i / root), (q.j / root), (q.k / root))
 
 	end, true)
 

@@ -15,7 +15,7 @@ extension:RegisterLibrary("permissions");
 extension:RegisterFunction("permissions", "getAll", "", "t", 1, function()
 	local t = {};
 
-	for k, _ in pairs( EXPR_LIB.PERMS ) do
+	for k, _ in pairs(EXPR_LIB.PERMS) do
 		t[#t + 1] = {"s", k};
 	end
 

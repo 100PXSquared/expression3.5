@@ -1,8 +1,8 @@
 --[[
 	   ____      _  _      ___    ___       ____      ___      ___     __     ____      _  _          _        ___     _  _       ____   
-	  F ___J    FJ  LJ    F _ ", F _ ",    F ___J    F __".   F __".   FJ    F __ ]    F L L]        /.\      F __".  FJ  L]     F___ J  
+	  F ___J    FJ  LJ    F _ ", F _ ",    F ___J    F __".   F __".   FJ    F __]    F L L]        /.\      F __".  FJ  L]     F___ J  
 	 J |___:    J \/ F   J `-' |J `-'(|   J |___:   J (___|  J (___|  J  L  J |--| L  J   \| L      //_\\    J |--\ LJ |  | L    `-__| L 
-	 | _____|   /    \   |  __/F|  _  L   | _____|  J\___ \  J\___ \  |  |  | |  | |  | |\   |     / ___ \   | |  J |J J  F L     |__  ( 
+	 | _____|   /    \   |  __/F|  _  L   | _____|  J\___ \  J\___ \  |  |  | |  | |  | |\   |     / ___ \   | |  J |J J  F L     |__  (
 	 F L____:  /  /\  \  F |__/ F |_\  L  F L____: .--___) \.--___) \ F  J  F L__J J  F L\\  J    / L___J \  F L__J |J\ \/ /F  .-____] J 
 	J________LJ__//\\__LJ__|   J__| \\__LJ________LJ\______JJ\______JJ____LJ\______/FJ__L \\__L  J__L   J__LJ______/F \\__//   J\______/F
 	|________||__/  \__||__L   |__|  J__||________| J______F J______F|____| J______F |__L  J__|  |__L   J__||______F   \__/     J______F 
@@ -35,8 +35,8 @@ EXPR3_DRAWSCREEN = false;
 if (SERVER) then
 	function ENT:Initialize()
 		self.BaseClass.BaseClass.Initialize(self);
-		self.Inputs = WireLib.CreateInputs( self, { } )
-		self.Outputs = WireLib.CreateOutputs( self, { } )
+		self.Inputs = WireLib.CreateInputs(self, {})
+		self.Outputs = WireLib.CreateOutputs(self, {})
 		self:SetUseType(SIMPLE_USE)
 	end
 end
@@ -61,7 +61,7 @@ if (CLIENT) then
 
 		Wire_Render(self)
 
-		self.GPU:RenderToGPU( function()
+		self.GPU:RenderToGPU(function()
 			self:RenderFromEvent();
 		end);
 
@@ -75,7 +75,7 @@ if (CLIENT) then
 	function ENT:RenderFromEvent()
 
 		if not self.NoScreenRefresh then
-			render.Clear( 0, 0, 0, 255 );
+			render.Clear(0, 0, 0, 255);
 		end
 
 		local status = false;
@@ -164,15 +164,15 @@ function ENT:GetCursor(ply)
 	local Normal, Pos, monitor, Ang
 	
 	-- Get monitor screen pos & size
-	local monitor = WireGPU_Monitors[ self:GetModel() ]
+	local monitor = WireGPU_Monitors[self:GetModel()]
 
 	-- Monitor does not have a valid screen point
 	if (not monitor) then
 		return -1,-1
 	end
 
-	Ang = self:LocalToWorldAngles( monitor.rot )
-	Pos = self:LocalToWorld( monitor.offset )
+	Ang = self:LocalToWorldAngles(monitor.rot)
+	Pos = self:LocalToWorld(monitor.offset)
 
 	Normal = Ang:Up()
 
@@ -189,7 +189,7 @@ function ENT:GetCursor(ply)
 	local B = Normal:Dot(Pos-Start) / A
 
 	if (B >= 0) then
-		local HitPos = WorldToLocal( Start + Dir * B, Angle(), Pos, Ang )
+		local HitPos = WorldToLocal(Start + Dir * B, Angle(), Pos, Ang)
 		local x = (0.5+HitPos.x/(monitor.RS*512/monitor.RatioX)) * 512
 		local y = (0.5-HitPos.y/(monitor.RS*512)) * 512
 		if (x < 0 or x > 512 or y < 0 or y > 512) then
@@ -205,10 +205,10 @@ end
 	Cursor Caculations
 ****************************************************************************************************************************/
 
-function ENT:ScreenToLocalVector( x, y )
-	local Monitor = WireGPU_Monitors[ self:GetModel() ];
+function ENT:ScreenToLocalVector(x, y)
+	local Monitor = WireGPU_Monitors[self:GetModel()];
 
-	if !Monitor then return Vector( 0, 0, 0) end
+	if !Monitor then return Vector(0, 0, 0) end
 
 	local scrSize = Monitor.RS;
 	local res = self.GPU.Resolution or 512;
@@ -216,15 +216,15 @@ function ENT:ScreenToLocalVector( x, y )
 	local x = x - (scrSize * 0.5) * (Monitor.RS / Monitor.RatioX);
 	local y = y - (scrSize * 0.5) * res;
 	
-	local Vec = Vector( x, -y, 0 )
+	local Vec = Vector(x, -y, 0)
 
-	Vec:Rotate( Monitor.rot )
+	Vec:Rotate(Monitor.rot)
 
 	return Vec + Monitor.offset
 end
 
-function ENT:ScreenToWorld( x, y )
-	return self:LocalToWorld( self:ScreenToLocalVector( x, y ) )
+function ENT:ScreenToWorld(x, y)
+	return self:LocalToWorld(self:ScreenToLocalVector(x, y))
 end
 
 /****************************************************************************************************************************

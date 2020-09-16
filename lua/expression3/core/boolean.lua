@@ -12,7 +12,7 @@
 	*****************************************************************************************************************************************************
 ]]--
 	
-	local class_bool = extension:RegisterClass("b", {"boolean", "bool"}, isbool, EXPR_LIB.NOTNIL);
+	local class_bool = extension:RegisterClass("b", {"bool"}, isbool, EXPR_LIB.NOTNIL);
 
 	extension:RegisterWiredInport("b", "NORMAL", function(i)
 		return i ~= 0;
@@ -29,10 +29,10 @@
 ]]--
 
 	extension:RegisterOperator("neq", "b,b", "b", 1);
-	extension:RegisterOperator( "eq", "b,b", "b", 1);
+	extension:RegisterOperator("eq", "b,b", "b", 1);
 	extension:RegisterOperator("and", "b,b", "b", 1);
-	extension:RegisterOperator( "or", "b,b", "b", 1);
-	extension:RegisterOperator( "is", "b", "b", 1);
+	extension:RegisterOperator("or", "b,b", "b", 1);
+	extension:RegisterOperator("is", "b", "b", 1);
 	extension:RegisterOperator("not", "b", "b", 1);
 	extension:RegisterOperator("ten", "b,b,b", "b", 1);
 

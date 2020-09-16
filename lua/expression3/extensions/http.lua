@@ -7,13 +7,13 @@ local request = function(ctx, url, suc, fail)
 
 	local entity = ctx.entity;
 
-	http.Fetch(url, function( contents, size, headers, code )
+	http.Fetch(url, function(contents, size, headers, code)
 		if not IsValid(entity) or not entity:IsRunning() then return; end
-		entity:Invoke( string.format("http.request(%q).sucess", url), "", 0, suc, {"s", contents});
-	end, function( err )
+		entity:Invoke(string.format("http.request(%q).sucess", url), "", 0, suc, {"s", contents});
+	end, function(err)
 		if not fail then return; end
 		if not IsValid(entity) or not entity:IsRunning() then return; end
-		entity:Invoke( string.format("http.request(%q).fail", url), "", 0, fail, {"s", err});
+		entity:Invoke(string.format("http.request(%q).fail", url), "", 0, fail, {"s", err});
 	end);
 
 	return true;
@@ -36,21 +36,21 @@ extension:RegisterFunction("http", "request", "s,f", "b", 1, request, false);
 extension:RegisterFunction("http", "request", "s,f,f", "b", 1, request, false);
 
 extension:RegisterFunction("http", "encode", "s", "s", 1, function(data)
-	local ndata = string.gsub( data, "[^%w _~%.%-]", function( str )
-		local nstr = string.format( "%X", string.byte( str ) )
+	local ndata = string.gsub(data, "[^%w _~%.%-]", function(str)
+		local nstr = string.format("%X", string.byte(str))
 
-		return "%" .. ( ( string.len( nstr ) == 1 ) and "0" or "" ) .. nstr
-	end )
+		return "%" .. ((string.len(nstr) == 1) and "0" or "") .. nstr
+	end)
 
-	return string.gsub( ndata, " ", "+" )
+	return string.gsub(ndata, " ", "+")
 end, true);
 
 extension:RegisterFunction("http", "encode", "s", "s", 1, function(data)
-	local ndata = string.gsub( data, "+", " " )
+	local ndata = string.gsub(data, "+", " ")
 
-	return string.gsub( ndata, "(%%%x%x)", function( str )
-		return string.char( tonumber( string.Right( str, 2 ), 16 ) )
-	end )
+	return string.gsub(ndata, "(%%%x%x)", function(str)
+		return string.char(tonumber(string.Right(str, 2), 16))
+	end)
 end, true);
 
 extension:EnableExtension()

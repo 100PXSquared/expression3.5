@@ -1,6 +1,6 @@
 --[[
 	   ____      _  _      ___    ___       ____      ___      ___     __     ____      _  _          _        ___     _  _       ____
-	  F ___J    FJ  LJ    F _ ", F _ ",    F ___J    F __".   F __".   FJ    F __ ]    F L L]        /.\      F __".  FJ  L]     F___ J
+	  F ___J    FJ  LJ    F _ ", F _ ",    F ___J    F __".   F __".   FJ    F __]    F L L]        /.\      F __".  FJ  L]     F___ J
 	 J |___:    J \/ F   J `-' |J `-'(|   J |___:   J (___|  J (___|  J  L  J |--| L  J   \| L      //_\\    J |--\ LJ |  | L    `-__| L
 	 | _____|   /    \   |  __/F|  _  L   | _____|  J\___ \  J\___ \  |  |  | |  | |  | |\   |     / ___ \   | |  J |J J  F L     |__  (
 	 F L____:  /  /\  \  F |__/ F |_\  L  F L____: .--___) \.--___) \ F  J  F L__J J  F L\\  J    / L___J \  F L__J |J\ \/ /F  .-____] J
@@ -571,7 +571,7 @@ if CLIENT then
 
 	local drawBG = function(w, h)
 		--Background color:
-		surface.SetDrawColor(Color( 20, 20, 20 ));
+		surface.SetDrawColor(Color(20, 20, 20));
 		surface.DrawRect(0, 0, w, h);
 
 		--Background image:
@@ -604,7 +604,7 @@ if CLIENT then
 		end
 
 		if text and text ~= "" then
-			draw.SimpleText(text, font, x, h - rh - 75, Color( 0, 0, 0, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER);
+			draw.SimpleText(text, font, x, h - rh - 75, Color(0, 0, 0, 255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER);
 		end
 	end
 
@@ -641,8 +641,8 @@ if CLIENT then
 
 		local x, y = w * 0.5, h * 0.5;
 		local color = Color(10, 10, 10, 255);
-		draw.SimpleText("Expression 3", font, x, y, color, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER );
-		draw.SimpleText(tool, font, x, y + 20, color, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER );
+		draw.SimpleText("Expression 3", font, x, y, color, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER);
+		draw.SimpleText(tool, font, x, y + 20, color, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER);
 
 	end;
 

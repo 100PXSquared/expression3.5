@@ -1,6 +1,6 @@
 --[[
 	   ____      _  _      ___    ___       ____      ___      ___     __     ____      _  _          _        ___     _  _       ____
-	  F ___J    FJ  LJ    F _ ", F _ ",    F ___J    F __".   F __".   FJ    F __ ]    F L L]        /.\      F __".  FJ  L]     F___ J
+	  F ___J    FJ  LJ    F _ ", F _ ",    F ___J    F __".   F __".   FJ    F __]    F L L]        /.\      F __".  FJ  L]     F___ J
 	 J |___:    J \/ F   J `-' |J `-'(|   J |___:   J (___|  J (___|  J  L  J |--| L  J   \| L      //_\\    J |--\ LJ |  | L    `-__| L
 	 | _____|   /    \   |  __/F|  _  L   | _____|  J\___ \  J\___ \  |  |  | |  | |  | |\   |     / ___ \   | |  J |J J  F L     |__  (
 	 F L____:  /  /\  \  F |__/ F |_\  L  F L____: .--___) \.--___) \ F  J  F L__J J  F L\\  J    / L___J \  F L__J |J\ \/ /F  .-____] J
@@ -46,15 +46,15 @@ end
 	Entity Initialize
 ****************************************************************************************************************************/
 
-function ENT:Initialize( )
+function ENT:Initialize()
 	self.BaseClass.Initialize(self);
 
 	self:PhysicsInit(SOLID_VPHYSICS);
 	self:SetMoveType(MOVETYPE_VPHYSICS);
 	self:SetSolid(SOLID_VPHYSICS);
 
-	self.Inputs = WireLib.CreateInputs( self, { } );
-	self.Outputs = WireLib.CreateOutputs( self, { } );
+	self.Inputs = WireLib.CreateInputs(self, {});
+	self.Outputs = WireLib.CreateOutputs(self, {});
 end
 
 
@@ -68,7 +68,7 @@ end
 	Wire Ports
 ****************************************************************************************************************************/
 
-local function SortPorts( PortA, PortB )
+local function SortPorts(PortA, PortB)
 	local TypeA = PortA.wire or "NORMAL"
 	local TypeB = PortB.wire or "NORMAL"
 
@@ -158,7 +158,7 @@ function ENT:BuildWiredPorts(sort_in, sort_out)
 	end
 
 	self.wire_outport_tbl = sort_out;
-	self.OutPorts = WireLib.AdjustSpecialOutputs( self, names_out, types_out )
+	self.OutPorts = WireLib.AdjustSpecialOutputs(self, names_out, types_out)
 
 	for name, wireport in pairs(self.OutPorts) do
 		local port = self.wire_outport_tbl[name];
@@ -171,7 +171,7 @@ function ENT:BuildWiredPorts(sort_in, sort_out)
 	-------------------------------------------------------------------------------
 
 	if self.extended then
-		WireLib.CreateWirelinkOutput( self.player, self, { true } )
+		WireLib.CreateWirelinkOutput(self.player, self, {true})
 	end
 end
 

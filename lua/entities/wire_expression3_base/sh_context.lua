@@ -1,6 +1,6 @@
 --[[
 	   ____      _  _      ___    ___       ____      ___      ___     __     ____      _  _          _        ___     _  _       ____
-	  F ___J    FJ  LJ    F _ ", F _ ",    F ___J    F __".   F __".   FJ    F __ ]    F L L]        /.\      F __".  FJ  L]     F___ J
+	  F ___J    FJ  LJ    F _ ", F _ ",    F ___J    F __".   F __".   FJ    F __]    F L L]        /.\      F __".  FJ  L]     F___ J
 	 J |___:    J \/ F   J `-' |J `-'(|   J |___:   J (___|  J (___|  J  L  J |--| L  J   \| L      //_\\    J |--\ LJ |  | L    `-__| L
 	 | _____|   /    \   |  __/F|  _  L   | _____|  J\___ \  J\___ \  |  |  | |  | |  | |\   |     / ___ \   | |  J |J J  F L     |__  (
 	 F L____:  /  /\  \  F |__/ F |_\  L  F L____: .--___) \.--___) \ F  J  F L__J J  F L\\  J    / L___J \  F L__J |J\ \/ /F  .-____] J
@@ -104,7 +104,7 @@ function CONTEXT.Trace(this, level, max)
 	local stack = {};
 
 	for i = level + 1, level + max do
-		local info = debug.getinfo( i, "Sln" );
+		local info = debug.getinfo(i, "Sln");
 
 		if (not info) then
 			continue;
@@ -208,15 +208,15 @@ function CONTEXT:PreExecute()
 
 		if used_ratio > 1 then
 
-			debug.sethook( nil );
+			debug.sethook(nil);
 
-			self:Throw( "CPU Soft Quota Exceeded!");
+			self:Throw("CPU Soft Quota Exceeded!");
 
 		--[[elseif self.cpu_total >= self:hardTimeLimit() then
 			
-			debug.sethook( nil );
+			debug.sethook(nil);
 
-			self:Throw( "CPU Hard Quota Exceeded!");]]
+			self:Throw("CPU Hard Quota Exceeded!");]]
 
 		end
 

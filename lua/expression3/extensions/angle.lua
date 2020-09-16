@@ -1,6 +1,6 @@
 --[[
 	   ____      _  _      ___    ___       ____      ___      ___     __     ____      _  _          _        ___     _  _       ____
-	  F ___J    FJ  LJ    F _ ", F _ ",    F ___J    F __".   F __".   FJ    F __ ]    F L L]        /.\      F __".  FJ  L]     F___ J
+	  F ___J    FJ  LJ    F _ ", F _ ",    F ___J    F __".   F __".   FJ    F __]    F L L]        /.\      F __".  FJ  L]     F___ J
 	 J |___:    J \/ F   J `-' |J `-'(|   J |___:   J (___|  J (___|  J  L  J |--| L  J   \| L      //_\\    J |--\ LJ |  | L    `-__| L
 	 | _____|   /    \   |  __/F|  _  L   | _____|  J\___ \  J\___ \  |  |  | |  | |  | |\   |     / ___ \   | |  J |J J  F L     |__  (
 	 F L____:  /  /\  \  F |__/ F |_\  L  F L____: .--___) \.--___) \ F  J  F L__J J  F L\\  J    / L___J \  F L__J |J\ \/ /F  .-____] J
@@ -61,24 +61,8 @@ extension:RegisterOperator("mul", "a,a", "a", 1, function(a, b)
 	return Angle(a.p * b.p, a.y * b.y, a.r * b.r);
 end, true);
 
-extension:RegisterOperator("mul", "a,n", "a", 1, function(a, b)
-	return Angle(a.p * b, a.y * b, a.r * b);
-end, true);
-
-extension:RegisterOperator("mul", "n,a", "a", 1, function(a, b)
-	return Angle(a * b.p, a * b.y, a * b.r);
-end, true);
-
 extension:RegisterOperator("div", "a,a", "a", 1, function(a, b)
 	return Angle(a.p / b.p, a.y / b.y, a.r / b.r);
-end, true);
-
-extension:RegisterOperator("div", "a,n", "a", 1, function(a, b)
-	return Angle(a.p / b, a.y / b, a.r / b);
-end, true);
-
-extension:RegisterOperator("div", "n,a", "a", 1, function(a, b)
-	return Angle(a / b.p, a / b.y, a / b.r);
 end, true);
 
 --[[

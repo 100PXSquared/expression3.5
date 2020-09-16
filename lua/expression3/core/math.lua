@@ -22,12 +22,12 @@
 		return math.huge
 	end
 
-	local function cot( radians )
-		return 1 / tan( radians );
+	local function cot(radians)
+		return 1 / tan(radians);
 	end
 
-	local function acot( radians )
-		return halfPi - atan( radians );
+	local function acot(radians)
+		return halfPi - atan(radians);
 	end
 
 --[[
@@ -44,7 +44,7 @@
 	*****************************************************************************************************************************************************
 ]]--
 
-	local class_num = extension:RegisterClass("n", {"number", "int", "integer", "double", "normal"}, isnumber, EXPR_LIB.NOTNIL);
+	local class_num = extension:RegisterClass("n", {"num", "normal"}, isnumber, EXPR_LIB.NOTNIL)
 
 	extension:RegisterWiredInport("n", "NORMAL");
 	extension:RegisterWiredOutport("n", "NORMAL");
@@ -67,14 +67,14 @@
 	extension:RegisterOperator("bshl", "n,n", "n", 1); -- Uses bit.lshift
 	extension:RegisterOperator("bshr", "n,n", "n", 1); -- Uses bit.rshift
 	extension:RegisterOperator("neq", "n,n", "b", 1);
-	extension:RegisterOperator( "eq", "n,n", "b", 1);
+	extension:RegisterOperator("eq", "n,n", "b", 1);
 	extension:RegisterOperator("lth", "n,n", "b", 1);
 	extension:RegisterOperator("leg", "n,n", "b", 1);
 	extension:RegisterOperator("gth", "n,n", "b", 1);
 	extension:RegisterOperator("geq", "n,n", "b", 1);
 
 	extension:RegisterOperator("ten", "b,n,n", "n", 1);
-	extension:RegisterOperator( "is", "n", "b", 1, tobool, true);
+	extension:RegisterOperator("is", "n", "b", 1, tobool, true);
 	extension:RegisterOperator("neg", "n", "n", 1);
 	extension:RegisterOperator("not", "n", "b", 1, function(context, number) return number == 0 end, true);
 

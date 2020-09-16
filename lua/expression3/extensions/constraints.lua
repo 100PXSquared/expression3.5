@@ -108,7 +108,7 @@ local function getContraints(ent, filter, first)
 
 	local arr = {};
 
-	for _, con in pairs( ent.Constraints ) do
+	for _, con in pairs(ent.Constraints) do
 		if IsValid(con) then
 			local constraint = toConstraint(con, ent);
 
