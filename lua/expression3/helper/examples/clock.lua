@@ -9,26 +9,32 @@ server {
 /***********************************************************************************
     CLOCK BODY
 ***********************************************************************************/
-    hologram bg = hololib.create("models/sprops/geometry/t_fdisc_12.mdl");
-    bg.setPos(gate.toWorld(new vector(0, 0, -2)));
-    bg.setAng(gate.toWorld(new angle(0, 0, -90)));
-    bg.setScale(new vector(13, 1, 13));
+    hologram bg = new hologram(
+		"models/sprops/geometry/t_fdisc_12.mdl",
+		gate.toWorld(new vector(0, 0, -2)),
+		gate.toWorld(new angle(0, 0, -90)),
+		new vector(13, 1, 13)
+	);
     bg.setMaterial("models/debug/debugwhite");
     bg.setColor(new color(145, 140, 125));
     bg.parent(gate);
     
-    hologram ring = hololib.create("models/sprops/geometry/fring_42.mdl");
-    ring.setPos(gate.toWorld(new vector(0, 0, 0)));
-    ring.setAng(gate.toWorld(new angle(0, 0, -90)));
-    ring.setScale(new vector(4.2, 1, 4.2));
+    hologram ring = new hologram(
+		"models/sprops/geometry/fring_42.mdl",
+		gate.toWorld(new vector(0, 0, 0)),
+		gate.toWorld(new angle(0, 0, -90)),
+		new vector(4.2, 1, 4.2)
+	);
     ring.setMaterial("models/debug/debugwhite");
     ring.setColor(new color(20, 20, 20));
     ring.parent(gate);
     
-    hologram cog = hololib.create("models/sprops/geometry/t_fdisc_12.mdl");
-    cog.setPos(gate.toWorld(new vector(0, 0, 2)));
-    cog.setAng(gate.toWorld(new angle(0, 0, -90)));
-    cog.setScale(new vector(1, 3, 1));
+    hologram cog = new hologram(
+		"models/sprops/geometry/t_fdisc_12.mdl",
+		gate.toWorld(new vector(0, 0, 2)),
+		gate.toWorld(new angle(0, 0, -90)),
+		new vector(1, 3, 1)
+	);
     cog.setMaterial("models/debug/debugwhite");
     cog.setColor(new color(0, 0, 0));
     cog.parent(gate);
@@ -42,29 +48,36 @@ server {
         angle ang = gate.toWorld(new angle(0, -90, 90));
         vector pos = gate.toWorld(new vector(x, y, 0) * 60);
         
-        hologram frst = hololib.create("models/sprops/misc/alphanum/alphanum_" + h[1] + ".mdl");
+        hologram frst = new hologram(
+			"models/sprops/misc/alphanum/alphanum_" + h[1] + ".mdl",
+			null,
+			ang,
+			new vector(0.5)
+		);
         frst.setColor(new color(0, 0, 0));
-        frst.setScale(new vector(0.5));
-        frst.setAng(ang);
         if (2 == #h) pos += (frst.forward() * 2.5);
-        
         frst.setPos(pos);
         frst.parent(gate);
         
         if (2 == #h) {
-            hologram snd = hololib.create("models/sprops/misc/alphanum/alphanum_" + h[2] + ".mdl");
+            hologram snd = new hologram(
+				"models/sprops/misc/alphanum/alphanum_" + h[2] + ".mdl",
+				pos - (frst.forward() * 5),
+				ang,
+				new vector(0.5)
+			);
             snd.setColor(new color(0, 0, 0));
-            snd.setScale(new vector(0.5));
-            snd.setPos(pos - (frst.forward() * 5));
-            snd.setAng(ang);
             snd.parent(gate);
        }
    }
     
     function void buildMinute(num x, num y, num minute) {
-        hologram h = hololib.create("cube");
-        h.setScale(new vector(0.1));
-        h.setPos(gate.toWorld(new vector(x, y, 0) * 70));
+        hologram h = new hologram(
+			"cube",
+			gate.toWorld(new vector(x, y, 0) * 70),
+			null,
+			new vector(0.1)
+		);
         h.parent(gate);
         
         if (minute % 5 == 0) {
@@ -96,18 +109,29 @@ server {
 ***********************************************************************************/
     
     timer.create("buildHands", 7, 1, function() {
-        
-        hologram hs = hololib.create("cube");
-        hs.setScale(new vector(6, 0.1, 0.1));
+        hologram hs = new hologram(
+			"cube",
+			null,
+			null,
+			new vector(6, 0.1, 0.1)
+		);
         hs.setColor(new color(227, 18, 53));
         hs.parent(gate);
         
-        hologram hm = hololib.create("cube");
-        hm.setScale(new vector(5, 0.1, 0.1));
+        hologram hm = new hologram(
+			"cube",
+			null,
+			null,
+			new vector(5, 0.1, 0.1)
+		);
         hm.parent(gate);
         
-        hologram hh = hololib.create("cube");
-        hh.setScale(new vector(3.5, 0.1, 0.1));
+        hologram hh = new hologram(
+			"cube",
+			null,
+			null,
+			new vector(3.5, 0.1, 0.1)
+		);
         hh.parent(gate);
         
         function void updateSeconds(num seconds) {
@@ -172,12 +196,14 @@ server {
                 string prefix = "models/sprops/misc/alphanum/alphanum_";
                 if (char.upper() != char) prefix += "l_";
                 
-                hologram letter = hololib.create(prefix + char + ".mdl");
+                hologram letter = new hologram(
+					prefix + char + ".mdl",
+					pos,
+					ang,
+					new vector(0.5)
+				);
                 letter.setColor(new color(0, 255, 255));
-                letter.setScale(new vector(0.5));
                 letter.parent(parent);
-                letter.setPos(pos);
-                letter.setAng(ang);
                 parent = letter;
            }
             
