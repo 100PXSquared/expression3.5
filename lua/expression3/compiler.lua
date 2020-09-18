@@ -390,6 +390,7 @@ local bannedVars = {
 	CLIENT = true,
 	CONTEXT = true,
 	VOID = true,
+	THROW = true,
 	_OPS = true,
 	_CONST = true,
 	_METH = true,
@@ -668,7 +669,7 @@ function COMPILER.writeOperationCall2(this, tbl, inst, op, vargs, expr1, ...)
 		this:writeArgsToBuffer(inst, vargs, expr1, ...);
 	end
 
-	this:writeToBuffer(inst, ")");
+	this:writeToBuffer(inst, ")\n");
 end
 
 --[[
@@ -688,7 +689,7 @@ function COMPILER.Compile_ROOT(this, inst, token, data)
 			price = price + p;
 		end
 
-		this:writeToBuffer(inst, "\n --PRICE: " .. price .. "\n");
+		this:writeToBuffer(inst, "-- PRICE: " .. price .. "\n");
 
 		for i = 1, #stmts do
 			this:addInstructionToBuffer(inst, stmts[i]);
@@ -709,7 +710,7 @@ function COMPILER.Compile_SEQ(this, inst, token, data)
 			price = price + p;
 		end
 
-		this:writeToBuffer(inst, "\n --PRICE: " .. price .. "\n");
+		this:writeToBuffer(inst, "-- PRICE: " .. price .. "\n");
 
 		for i = 1, #stmts do
 			this:addInstructionToBuffer(inst, stmts[i]);
@@ -720,7 +721,7 @@ function COMPILER.Compile_SEQ(this, inst, token, data)
 end
 
 function COMPILER.Compile_IF(this, inst, token, data)
-	this:writeToBuffer(inst, "if (");
+	this:writeToBuffer(inst, "if ");
 
 	local condition = data.condition;
 
@@ -740,7 +741,7 @@ function COMPILER.Compile_IF(this, inst, token, data)
 
 	this:addInstructionToBuffer(inst, condition);
 
-	this:writeToBuffer(inst, ") then\n");
+	this:writeToBuffer(inst, " then\n");
 
 	this:PushScope();
 
@@ -766,7 +767,7 @@ function COMPILER.Compile_IF(this, inst, token, data)
 end
 
 function COMPILER.Compile_ELSEIF(this, inst, token, data)
-	this:writeToBuffer(inst, "\nelseif (");
+	this:writeToBuffer(inst, "\nelseif ");
 
 	local condition = data.condition;
 
@@ -786,7 +787,7 @@ function COMPILER.Compile_ELSEIF(this, inst, token, data)
 
 	this:addInstructionToBuffer(inst, condition);
 
-	this:writeToBuffer(inst, ") then\n");
+	this:writeToBuffer(inst, " then\n");
 
 	this:PushScope();
 
@@ -847,7 +848,7 @@ function COMPILER.CheckState(this, state, token, msg, frst, ...)
 end
 
 function COMPILER.Compile_SERVER(this, inst, token, data)
-	this:writeToBuffer(inst, "if (SERVER) then\n");
+	this:writeToBuffer(inst, "if SERVER then\n");
 
 	if (not this:GetOption("server")) then
 		this:Throw(token, "Server block must not appear inside a Client block.")
@@ -869,7 +870,7 @@ function COMPILER.Compile_SERVER(this, inst, token, data)
 end
 
 function COMPILER.Compile_CLIENT(this, inst, token, data)
-	this:writeToBuffer(inst, "if (CLIENT) then\n");
+	this:writeToBuffer(inst, "if CLIENT then\n");
 
 	if (not this:GetOption("client")) then
 		this:Throw(token, "Client block must not appear inside a Server block.")
@@ -964,7 +965,7 @@ function COMPILER.Compile_GLOBAL(this, inst, token, data)
 
 	this.__defined = {};
 
-	this:writeToBuffer(inst, ";\n");
+	this:writeToBuffer(inst, "\n");
 
 	return "", 0, price;
 end
@@ -1126,7 +1127,7 @@ function COMPILER.Compile_ASS(this, inst, token, data)
 		end
 	end
 
-	this:writeToBuffer(inst, ";\n");
+	this:writeToBuffer(inst, "\n");
 
 	for i = 1, tVars do
 		local var = vars[i].data;
@@ -1135,17 +1136,17 @@ function COMPILER.Compile_ASS(this, inst, token, data)
 		if (data.class == "f") then
 			if (info.signature) then
 				local msg = string_format("Failed to assign function to delegate %s(%s), permater missmatch.", var, info.signature);
-				this:writeToBuffer(inst, "if (%s and %s.signature ~= %q) then CONTEXT:Throw(%q); %s = nil; end\n", var, var, info.signature, msg, var);
+				this:writeToBuffer(inst, "if %s and %s.signature ~= %q then THROW(%q); %s=nil end\n", var, var, info.signature, msg, var);
 			end
 
 			if (info.resultClass) then
 				local msg = string_format("Failed to assign function to delegate %s(%s), result type missmatch.", var, name(info.resultClass));
-				this:writeToBuffer(inst, "if (%s and %s.result ~= %q) then CONTEXT:Throw(%q); %s = nil; end\n", var, var, name(info.resultClass), msg, var);
+				this:writeToBuffer(inst, "if %s and %s.result ~= %q then THROW(%q); %s=nil end\n", var, var, name(info.resultClass), msg, var);
 			end
 
 			if (info.resultCount) then
 				local msg = string_format("Failed to assign function to delegate %s(%s), result count missmatch.", var, info.resultCount);
-				this:writeToBuffer(inst, "if (%s and %s.count ~= %i) then CONTEXT:Throw(%q); %s = nil; end\n", var, var, info.resultCount, msg, var);
+				this:writeToBuffer(inst, "if %s and %s.count ~= %i then THROW(%q); %s=nil end\n", var, var, info.resultCount, msg, var);
 			end
 		end
 	end
@@ -1189,7 +1190,7 @@ function COMPILER.Compile_AADD(this, inst, token, data)
 
 			this:addInstructionToBuffer(inst, expr);
 
-			this:writeToBuffer(inst, ";\n");
+			this:writeToBuffer(inst, "\n");
 
 			expr = fakeInstruction(inst, "__" .. var, r, 1);
 		end
@@ -1238,13 +1239,13 @@ function COMPILER.Compile_AADD(this, inst, token, data)
 
 			this:addInstructionToBuffer(inst, expr);
 
-			this:writeToBuffer(inst, ";\n");
+			this:writeToBuffer(inst, "\n");
 		else
 			this:writeToBuffer(inst, "%s = ", var);
 
 			this:writeOperationCall(inst, op, "var", expr);
 
-			this:writeToBuffer(inst, ";\n");
+			this:writeToBuffer(inst, "\n");
 		end
 
 		price = price + op.price;
@@ -1290,7 +1291,7 @@ function COMPILER.Compile_ASUB(this, inst, token, data)
 
 			this:addInstructionToBuffer(inst, expr);
 
-			this:writeToBuffer(inst, ";\n");
+			this:writeToBuffer(inst, "\n");
 
 			expr = fakeInstruction(inst, "__" .. var, r, 1);
 		end
@@ -1333,13 +1334,13 @@ function COMPILER.Compile_ASUB(this, inst, token, data)
 
 			this:addInstructionToBuffer(inst, expr);
 
-			this:writeToBuffer(inst, ";\n");
+			this:writeToBuffer(inst, "\n");
 		else
 			this:writeToBuffer(inst, "%s = ", var);
 
 			this:writeOperationCall(inst, op, "var", expr);
 
-			this:writeToBuffer(inst, ";\n");
+			this:writeToBuffer(inst, "\n");
 		end
 
 		price = price + op.price;
@@ -1385,7 +1386,7 @@ function COMPILER.Compile_ADIV(this, inst, token, data)
 
 			this:addInstructionToBuffer(inst, expr);
 
-			this:writeToBuffer(inst, ";\n");
+			this:writeToBuffer(inst, "\n");
 
 			expr = fakeInstruction(inst, "__" .. var, r, 1);
 		end
@@ -1428,13 +1429,13 @@ function COMPILER.Compile_ADIV(this, inst, token, data)
 
 			this:addInstructionToBuffer(inst, expr);
 
-			this:writeToBuffer(inst, ";\n");
+			this:writeToBuffer(inst, "\n");
 		else
 			this:writeToBuffer(inst, "%s = ", var);
 
 			this:writeOperationCall(inst, op, "var", expr);
 
-			this:writeToBuffer(inst, ";\n");
+			this:writeToBuffer(inst, "\n");
 		end
 
 		price = price + op.price;
@@ -1478,7 +1479,7 @@ function COMPILER.Compile_AMUL(this, inst, token, data)
 
 			this:addInstructionToBuffer(inst, expr);
 
-			this:writeToBuffer(inst, ";\n");
+			this:writeToBuffer(inst, "\n");
 
 			expr = fakeInstruction(inst, "__" .. var, r, 1);
 		end
@@ -1521,13 +1522,13 @@ function COMPILER.Compile_AMUL(this, inst, token, data)
 
 			this:addInstructionToBuffer(inst, expr);
 
-			this:writeToBuffer(inst, ";\n");
+			this:writeToBuffer(inst, "\n");
 		else
 			this:writeToBuffer(inst, "%s = ", var);
 
 			this:writeOperationCall(inst, op, "var", expr);
 
-			this:writeToBuffer(inst, ";\n");
+			this:writeToBuffer(inst, "\n");
 		end
 
 		price = price + op.price;
@@ -3082,9 +3083,9 @@ function COMPILER.Compile_LAMBDA(this, inst, token, data)
 		local class = param[1];
 
 		if (class ~= "_vr") then
-			this:writeToBuffer(inst, "if (%s == nil or %s[1] == nil) then CONTEXT:Throw(\"%s expected for %s, got void\"); end\n", var, var, name(class), var);
-			this:writeToBuffer(inst, "if (%s[1] ~= %q) then CONTEXT:Throw(\"%s expected for %s, got \" .. %s[1]); end\n", var, class, name(class), var, var);
-			this:writeToBuffer(inst, "%s = %s[2];\n", var, var);
+			this:writeToBuffer(inst, "if %s == nil or %s[1] == nil then THROW(\"%s expected for %s, got void\") end\n", var, var, name(class), var);
+			this:writeToBuffer(inst, "if %s[1] ~= %q then THROW(\"%s expected for %s, got \" .. %s[1]) end\n", var, class, name(class), var, var);
+			this:writeToBuffer(inst, "%s = %s[2]\n", var, var);
 			--this:writeToBuffer(inst, "print('called function')");
 		end
 	end
@@ -3187,7 +3188,7 @@ function COMPILER.Compile_RETURN(this, inst, token, data)
 		end
 	end
 
-	this:writeToBuffer(inst, ";\n");
+	this:writeToBuffer(inst, "\n");
 
 	if (count == -1) then
 		count = outCount;
@@ -3234,7 +3235,7 @@ function COMPILER.Compile_DELEGATE(this, inst, token, data)
 		info.resultCount = data.result_count;
 	end
 
-	this:writeToBuffer(inst, "\nlocal %s;\n", data.variable);
+	this:writeToBuffer(inst, "\nlocal %s\n", data.variable);
 
 	return nil, nil, EXPR_MIN;
 end
@@ -3245,9 +3246,9 @@ function COMPILER.Compile_FUNCT(this, inst, token, data)
 	local class, scope, info = this:AssignVariable(token, true, variable, "f");
 
 	if (info and info.prefix) then
-		this:writeToBuffer(inst, "local %s.%s = {op = function(", info.prefix, variable);
+		this:writeToBuffer(inst, "local %s.%s = {op=function(", info.prefix, variable);
 	else
-		this:writeToBuffer(inst, "local %s = {op = function(", variable);
+		this:writeToBuffer(inst, "local %s = {op=function(", variable);
 	end
 
 	this:PushScope();
@@ -3278,7 +3279,7 @@ function COMPILER.Compile_FUNCT(this, inst, token, data)
 		if (class ~= "_vr") then
 			this:writeToBuffer(inst, "if (%s == nil or %s[1] == nil) then CONTEXT:Throw(\"%s expected for %s, got void\"); end\n", var, var, name(class), var);
 			this:writeToBuffer(inst, "if (%s[1] ~= %q) then CONTEXT:Throw(\"%s expected for %s, got \" .. %s[1]); end\n", var, class, name(class), var, var);
-			this:writeToBuffer(inst, "%s = %s[2];\n", var, var);
+			this:writeToBuffer(inst, "%s = %s[2]\n", var, var);
 		end
 	end
 
@@ -3305,7 +3306,7 @@ function COMPILER.Compile_FUNCT(this, inst, token, data)
 		info.resultCount = count;
 	end
 
-	this:writeToBuffer(inst, "\nend,\nresult = %q, count = %i, scr = CONTEXT};\n", data.resultClass, count);
+	this:writeToBuffer(inst, "\nend,\nresult = %q, count = %i, scr = CONTEXT}\n", data.resultClass, count);
 
 	return nil, nil, EXPR_MIN;
 end
@@ -3618,7 +3619,7 @@ function COMPILER.Compile_SET(this, inst, token, data)
 
 		this:addInstructionToBuffer(inst, expr);
 
-		this:writeToBuffer(inst, ";\n");
+		this:writeToBuffer(inst, "\n");
 
 		return op.result, op.rCount, (op.price + p1 + p2 + p3);
 	end
@@ -3733,7 +3734,7 @@ function COMPILER.Compile_EACH(this, inst, token, data)
 		this:AssignVariable(token, true, data.kValue, data.kType,  nil);
 
 		if (data.kType ~= "_vr") then
-			this:writeToBuffer(inst, "if (_kt ~= %q) then continue end\n", data.kType);
+			this:writeToBuffer(inst, "if _kt ~= %q then continue end\n", data.kType);
 			this:writeToBuffer(inst, "local %s = _kv\n", data.kValue);
 		else
 			this:writeToBuffer(inst, "local %s = {_kt, _kv}\n", data.kValue);
@@ -3742,7 +3743,7 @@ function COMPILER.Compile_EACH(this, inst, token, data)
 
 	if (data.vType) then
 		if (data.vType ~= "_vr") then
-			this:writeToBuffer(inst, "if (_vt ~= %q) then continue end\n", data.vType);
+			this:writeToBuffer(inst, "if _vt ~= %q then continue end\n", data.vType);
 			this:writeToBuffer(inst, "local %s = _vv\n", data.vValue);
 		else
 			this:writeToBuffer(inst, "local %s = {_vt, _vv}\n", data.vValue);
@@ -3788,7 +3789,7 @@ function COMPILER.Compile_TRY(this, inst, token, data)
 
 	this:PopScope();
 
-	this:writeToBuffer(inst, "\nelseif (not ok) then\nerror(%q, 0);\nend\n", data.var.data);
+	this:writeToBuffer(inst, "\nelseif (not ok) then\nerror(%q, 0)\nend\n", data.var.data);
 end
 
 --[[
@@ -3971,7 +3972,7 @@ function COMPILER.Compile_CLASS(this, inst, token, data)
 
 	this:writeToBuffer(inst, "\n--START CLASS (%s, %q)\n", classname, class.hash);
 
-	this:writeToBuffer(inst, "\nlocal %s = {vars = {}; hash = %q};\n", classname, class.hash);
+	this:writeToBuffer(inst, "\nlocal %s = {vars={}; hash=%q}\n", classname, class.hash);
 
 	this:PushScope();
 
@@ -4044,14 +4045,14 @@ function COMPILER.Compile_CLASS(this, inst, token, data)
 	this:PopScope();
 
 	if (extends) then
-		--this:writeToBuffer(inst, "\nsetmetatable(%s, %s);\n", class.name, extends.name);
-		--this:writeToBuffer(inst, "\nsetmetatable(%s.vars, %s.vars);\n", class.name, extends.name);
+		--this:writeToBuffer(inst, "\nsetmetatable(%s, %s)\n", class.name, extends.name);
+		--this:writeToBuffer(inst, "\nsetmetatable(%s.vars, %s.vars)\n", class.name, extends.name);
 
-		this:writeToBuffer(inst, "\nsetmetatable(%s, {__index = %s});\n", class.name, extends.name);
-		this:writeToBuffer(inst, "\nsetmetatable(%s.vars, {__index = %s.vars});\n", class.name, extends.name);
+		this:writeToBuffer(inst, "\nsetmetatable(%s, {__index = %s})\n", class.name, extends.name);
+		this:writeToBuffer(inst, "\nsetmetatable(%s.vars, {__index = %s.vars})\n", class.name, extends.name);
 	end
 
-	this:writeToBuffer(inst, "\n%s.vars.__index = %s.vars;\n", class.name, class.name);
+	this:writeToBuffer(inst, "\n%s.vars.__index = %s.vars\n", class.name, class.name);
 
 	this:writeToBuffer(inst, "\n--END CLASS (%s, %q)\n", classname, class.hash);
 
@@ -4161,7 +4162,7 @@ function COMPILER.Compile_DEF_FIELD(this, inst, token, data)
 
 			this:addInstructionToBuffer(inst, arg);
 
-			this:writeToBuffer(inst, ";\n");
+			this:writeToBuffer(inst, "\n");
 		end
 	end
 
@@ -4206,7 +4207,7 @@ function COMPILER.Compile_SET_FIELD(this, inst, token, data)
 
 	this:addInstructionToBuffer(inst, expressions[2]);
 
-	this:writeToBuffer(inst, ";\n");
+	this:writeToBuffer(inst, "\n");
 
 	return info.class, 1, (p1 + p2);
 end
@@ -4250,7 +4251,7 @@ function COMPILER.Compile_CONSTCLASS(this, inst, token, data)
 
 	this:PopScope();
 
-	this:writeToBuffer(inst, "\nreturn this;\nend\n");
+	this:writeToBuffer(inst, "\nreturn this\nend\n");
 
 	return nil, nil, EXPR_LOW;
 end
@@ -4364,7 +4365,7 @@ function COMPILER.Compile_TOSTR(this, inst, token, data)
 	this:writeToBuffer(inst, "\n%s.__tostring = function(this)\n", userclass.name);
 
 	local error = string_format("Attempt to call user operator '%s.tostring()' using alien class of the same name.", userclass.name);
-	this:writeToBuffer(inst, "if(not CheckHash(%q, this)) then CONTEXT:Throw(%q); end", userclass.hash, error);
+	this:writeToBuffer(inst, "if not CheckHash(%q, this) then THROW(%q) end", userclass.hash, error);
 
 	this:Compile(data.block);
 	this:writeToBuffer(inst, data.block)

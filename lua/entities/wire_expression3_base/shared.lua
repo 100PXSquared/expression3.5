@@ -164,6 +164,9 @@ function ENT:BuildEnv(context, instance)
 		env.CLIENT = CLIENT;
 		env.CONTEXT = context.token;
 		env.VOID = EXPR_LIB._NIL_;
+		env.THROW = function(msg, fst, ...)
+			context:Throw(msg, fst, ...)
+		end
 
 	-- Main Operations
 		env._OPS	= instance.operators;
