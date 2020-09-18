@@ -655,8 +655,6 @@ end
 ]]
 
 function COMPILER.Compile_ROOT(this, inst, token, data)
-	this:writeToBuffer(inst, "local env = ...\n");
-
 	local stmts = data.stmts;
 
 	if stmts then
