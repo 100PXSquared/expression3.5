@@ -196,8 +196,8 @@ function PANEL:Init()
 	self.tbBottom:SetupButton("Save As", "icon16/disk_multiple.png", RIGHT, function() self:SaveFile(true, true) end)
 	self.tbBottom:SetupButton("Save", "icon16/disk.png", RIGHT, function() self:SaveFile(true) end)
 
-	self.tbRight:SetupButton("Increase font size", "icon16/zoom_in.png", BOTTOM, function() Golem.Font:ChangeFontSize(1) end)
-	self.tbRight:SetupButton("Decrease font size", "icon16/zoom_out.png", BOTTOM, function() Golem.Font:ChangeFontSize(-1) end)
+	self.tbRight:SetupButton("Increase font size", "icon16/magnifier_zoom_in.png", BOTTOM, function() Golem.Font:ChangeFontSize(1) end)
+	self.tbRight:SetupButton("Decrease font size", "icon16/magnifier_zoom_out.png", BOTTOM, function() Golem.Font:ChangeFontSize(-1) end)
 
 	self.tbRight:SetupButton("Options", "icon16/cog.png", TOP, function() self:NewMenuTab("options") end)
 	self.tbRight:SetupButton("Options2", "icon16/cog.png", TOP, function() self:NewMenuTab("options2") end)
@@ -221,7 +221,7 @@ function PANEL:Init()
 	self.btnHideSidebar = vgui.Create("GOLEM_ImageButton", self)
 	self.btnHideSidebar:Dock(LEFT)
 	self.btnHideSidebar:DockMargin(0, 5, 0, 5)
-	self.btnHideSidebar:SetMaterial(Material("diagona-icons/132.png"))
+	self.btnHideSidebar:SetMaterial(Material("icon16/resultset_previous.png"))
 	self.btnHideSidebar:DrawButton(false)
 	self.btnHideSidebar:SetIconCentered(true)
 	self.btnHideSidebar:SetIconFading(false)
@@ -233,14 +233,14 @@ function PANEL:Init()
 		if btn.Expanded then
 			btn.mov = true
 			self.pnlSideTabHolder:SizeTo(0, -1, 0.5, nil, nil, function()
-				btn:SetMaterial(Material("diagona-icons/131.png"))
+				btn:SetMaterial(Material("icon16/resultset_next.png"))
 				btn.Expanded = false
 				btn.mov = nil
 			end)
 		else
 			btn.mov = true
 			self.pnlSideTabHolder:SizeTo(265, -1, 0.5, nil, nil, function()
-				btn:SetMaterial(Material("diagona-icons/132.png"))
+				btn:SetMaterial(Material("icon16/resultset_previous.png"))
 				btn.Expanded = true
 				btn.mov = nil
 			end)
