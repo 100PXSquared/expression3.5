@@ -115,6 +115,15 @@ end
 
 local CLASSES = {EXPADV = clstbl;};
 
+local function sanitize(str, endquote)
+	str = string.gsub(str, "\\", "\\\\")
+	str = string.gsub(str, "%z", "\\x00");
+	str = string.gsub(str, "\n", "\\n");
+	str = string.gsub(str, "\r", "\\r");
+	str = string.gsub(str, endquote, "\\"..endquote);
+	return str;
+end
+
 --[[
 	Notes: 	I plan on possibly making this interpreter multi language capable.
 ]]
@@ -591,14 +600,10 @@ function TOKENIZER.Loop(this)
 		if (this.__char and this.__char == strChar) then
 			this:SkipChar();
 
-			-- Multi line strings need to be converted to lua syntax.
-			if (strChar == "'") then
-				local str = "[[" .. string.sub(this.__data, 1, string.len(this.__data)) .. "]]";
-				this:Replace(str);
-			else
-				local str = "\"" .. string.sub(this.__data, 1, string.len(this.__data)) .. "\"";
-				this:Replace(str);
-			end
+			local str = string.sub(this.__data, 1, string.len(this.__data))
+			str = sanitize(str, strChar)
+			str = strChar .. str .. strChar;
+			this:Replace(str);
 
 			if (not pattern) then
 				this:CreateToken("str", "string");
