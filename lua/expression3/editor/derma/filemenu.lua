@@ -86,12 +86,6 @@ function PANEL:SetUpBrowserNode(Node, Path, UpDir)
 		local Expanded = not Node.m_bExpanded
 
 		Node:SetExpanded(Expanded)
-
-		if not Expanded then
-			Node.Icon:SetImage("icon16/folder.png")
-		else
-			Node.Icon:SetImage("icon16/folder.png")
-		end
 	end
 
 	function Node.Label.DoDoubleClick()
