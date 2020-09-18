@@ -57,8 +57,6 @@ if SERVER then
 	end);
 
 	local function incSpawn(context)
-		context = tokens[context];
-
 		local count = EXPR_LIB.PropSpawnRate[context.player] or 0;
 
 		if count >= spawn_rate:GetInt() then
@@ -70,61 +68,64 @@ if SERVER then
 		return true;
 	end
 
+	function setAng(ent, ang)
+		if isnan(ang.pitch) or isnan(ang.yaw) or isnan(ang.roll) then return end
+		if math.abs(ang.pitch) == math.huge or math.abs(ang.yaw) == math.huge or math.abs(ang.roll) == math.huge then
+			return false
+		end -- SetAngles'ing inf crashes the server
+	
+		ang = Angle(ang)
+		ang:Normalize()
+	
+		return ent:SetAngles(ang)
+	end
+
 	function spawnProp(context, model, pos, ang, freeze)
-		context = tokens[context];
+		context = tokens[context]
 
 		if not incSpawn(context) then
-			return;
+			return
 		end
 
 		if EXPR_LIB.ModelBL[model] then
-			return;
+			return
 		end
 
-		if not (gamemode.Call("PlayerSpawnProp", context.player, model) ~= false) then
-			return;
+		if not gamemode.Call("PlayerSpawnProp", context.player, model) then
+			return
 		end
 
 		local p = context.player;
-		local e = ents.Create("prop_physics");
+		
+		local prop = MakeProp(p.player, pos, ang, model, {}, {})
 
-		if not e then return; end
-
-		e:SetOwner(p);
-
-		e:SetModel(model);
-
-		e:SetPos(pos or context.entity:GetPos());
-
-		e:SetAngles(ang or Angle(0, 0, 0));
-
-		e:Spawn();
-
-		undo.Create("E3 spawned prop");
-
-			undo.AddEntity(e);
-
-			undo.SetPlayer(p);
-
-		undo.Finish();
-
-		e.player = p;
-
-		local ph = e:GetPhysicsObject();
-
-		if freeze and ph then
-			ph:EnableMotion(false);
+		if not IsValid(prop) then
+			return
 		end
 
-		if ph then ph:Wake(); end
+		prop:Activate()
+
+		local phys = prop:GetPhysicsObject()
+
+		p:AddCleanup("props", prop)
+		undo.Create("E3 Prop" .. " (" .. model .. ")")
+			undo.AddEntity(prop)
+			undo.SetPlayer(p)
+		undo.Finish()
+
+		context.data.props[prop] = prop
+
+		if IsValid(phys) then
+			if ang ~= nil then setAng(phys, ang) end
+			phys:EnableMotion(not freeze)
+			phys:Wake()
+		end
 
 		if CPPI then
-			e:CPPISetOwner(p);
+			prop:CPPISetOwner(p)
 		end
 
-		context.data.props[e] = e;
-
-		return e;
+		return prop
 	end
 
 --[[
@@ -132,66 +133,60 @@ if SERVER then
 ]]
 
 	function spawnSeat(context, model, pos, ang, freeze)
-		context = tokens[context];
+		context = tokens[context]
 
 		if not incSpawn(context) then
-			return;
+			return
 		end
 
 		if not model or model == "" then
-			model = "models/nova/airboat_seat.mdl";
+			model = "models/nova/airboat_seat.mdl"
 		end
 		
 		if not (gamemode.Call("PlayerSpawnVehicle", context.player, model, "Seat_Airboat", list.Get("Vehicles").Seat_Airboat) ~= false) then
-			return;
+			return
 		end
 
-		local p = context.player;
-		local e = ents.Create("prop_vehicle_prisoner_pod");
+		local p = context.player
 
-		if not e then return; end
+		prop = ents.Create("prop_vehicle_prisoner_pod")
+		prop:SetModel(model)
+		prop:SetPos(pos or context.entity:GetPos())
+		prop:SetAngles(ang or Angle(0, 0, 0))
 
-		e:SetOwner(p);
+		prop:Spawn()
+		prop:SetKeyValue( "limitview", 0 )
 
-		e:SetModel(model);
+		table.Merge(prop, {HandleAnimation = function(_, ply) return ply:SelectWeightedSequence(ACT_HL2MP_SIT) end})
+		gamemode.Call("PlayerSpawnedVehicle", p, prop)
 
-		e:SetPos(pos or context.entity:GetPos());
-
-		e:SetAngles(ang or Angle(0, 0, 0));
-
-		e:Spawn();
-
-		e:SetKeyValue("limitview", 0);
-
-		table.Merge(e, {HandleAnimation = function(_, p) return p:SelectWeightedSequence(ACT_HL2MP_SIT); end});
-		
-		hook.Run("PlayerSpawnedVehicle", p, e);
-
-		undo.Create("E3 spawned seat");
-
-			undo.AddEntity(e);
-
-			undo.SetPlayer(p);
-
-		undo.Finish();
-
-		e.player = p;
-
-		local ph = e:GetPhysicsObject();
-
-		if freeze and ph then
-			ph:EnableMotion(false);
+		if not IsValid(prop) then
+			return
 		end
 
-		if ph then ph:Wake(); end
+		prop:Activate()
+
+		local phys = prop:GetPhysicsObject()
+
+		p:AddCleanup("vehicles", prop)
+		undo.Create("E3 Seat" .. " (" .. model .. ")")
+			undo.AddEntity(prop)
+			undo.SetPlayer(p)
+		undo.Finish()
+
+		context.data.props[prop] = prop
+
+		if IsValid(phys) then
+			if ang ~= nil then setAng(phys, ang) end
+			phys:EnableMotion(not freeze)
+			phys:Wake()
+		end
 
 		if CPPI then
-			e:CPPISetOwner(p);
+			prop:CPPISetOwner(p)
 		end
 
-		context.data.props[e] = e;
-
-		return e;
+		return prop
 	end
 	
 end
@@ -210,11 +205,11 @@ extension:RegisterFunction("prop", "spawn", "s,v,a", "e", 1, spawnProp, false);
 extension:RegisterFunction("prop", "spawn", "s,v,a,b", "e", 1, spawnProp, false);
 
 extension:RegisterFunction("prop", "spawn", "s,b", "e", 1, function(context, s, b)
-	spawnProp(context, s, nil, nil, b);
+	return spawnProp(context, s, nil, nil, b);
 end, false);
 
 extension:RegisterFunction("prop", "spawn", "s,v,b", "e", 1, function(context, s, v, b)
-	spawnProp(context, s, v, nil, b);
+	return spawnProp(context, s, v, nil, b);
 end, false);
 
 --[[
