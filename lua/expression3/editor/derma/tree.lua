@@ -60,7 +60,7 @@ function PANEL:BuildControls()
 		self:ExpandAll(true);
 	end);
 
-	self.rld_brn = self.ctrl_pnl:SetupButton("Reload", "icon16/refresh.png", LEFT, function()
+	self.rld_brn = self.ctrl_pnl:SetupButton("Reload", "icon16/arrow_refresh.png", LEFT, function()
 		self:DoReload();
 	end);
 end

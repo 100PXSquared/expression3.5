@@ -611,7 +611,7 @@ hook.Add("Expression3.LoadHelperNodes", "Expression3.SavedHelpers", function(pnl
 
 		local node = pnl:AddNode("Custom Helpers", filename)
 
-		node:SetIcon("icon16/cancel.png");
+		node:SetIcon("icon16/folder.png");
 
 		node.DoClick = function()
 			local ok, err = EXPR_DOCS.LoadCustomDocFile(path .. filename, "DATA");

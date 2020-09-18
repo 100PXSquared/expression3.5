@@ -115,7 +115,7 @@ function PANEL:BuildToolBar(Parent)
 	Expand:Dock(LEFT)
 	Expand:SetPadding(5)
 	Expand:SetTooltip("Expand Nodes")
-	Expand:SetMaterial(Material("icon16/cancel.png"))
+	Expand:SetMaterial(Material("icon16/arrow_out.png"))
 	self.ToolBar.Expand = Expand
 	self.ExpandedNodes = false
 
@@ -153,10 +153,10 @@ function PANEL:ExpandAll(Bool)
 
 	if not Bool then
 		Panel:SetTooltip("Expand Nodes")
-		Panel:SetMaterial(Material("icon16/cancel.png"))
+		Panel:SetMaterial(Material("icon16/arrow_out.png"))
 	else
 		Panel:SetTooltip("Collapse Nodes")
-		Panel:SetMaterial(Material("icon16/cancel.png"))
+		Panel:SetMaterial(Material("icon16/arrow_in.png"))
 	end
 end
 

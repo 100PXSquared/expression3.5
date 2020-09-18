@@ -89,8 +89,8 @@ function PANEL:AddEntity(entity)
 		local oNode = self:AddNode(oName);
 		local eNode = self:AddNode(oNode, eName);
 
-		oNode:SetIcon("icon16/cancel.png");
-		eNode:SetIcon("icon16/rosette.png");
+		oNode:SetIcon("icon16/user.png");
+		eNode:SetIcon("icon16/script.png");
 
 		self:AddEntityURLNode(eNode, entity);
 
