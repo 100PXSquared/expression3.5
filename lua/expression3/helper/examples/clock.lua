@@ -37,7 +37,7 @@ server {
     CLOCK FACE
 ***********************************************************************************/
 
-    function void buildHours(int x, int y, int hour) {
+    function void buildHours(num x, num y, num hour) {
         string h = math.toString(hour);
         angle ang = gate.toWorld(new angle(0, -90, 90));
         vector pos = gate.toWorld(new vector(x, y, 0) * 60);
@@ -61,7 +61,7 @@ server {
        }
    }
     
-    function void buildMinute(int x, int y, int minute) {
+    function void buildMinute(num x, num y, num minute) {
         hologram h = hololib.create("cube");
         h.setScale(new vector(0.1));
         h.setPos(gate.toWorld(new vector(x, y, 0) * 70));
@@ -69,22 +69,22 @@ server {
         
         if (minute % 5 == 0) {
             h.setColor(new color(0, 0, 0));
-            int hour = minute / 5;
+            num hour = minute / 5;
             if (hour == 0) hour = 12;
             buildHours(x, y, hour);
        }
    }
         
-    function void buildDisplay(int minute) {
-        int step = ((2*math.pi()) / 60);
-        int j = (step * minute) - (step * 15);
-        int x = math.sin(j);
-        int y = math.cos(j);
+    function void buildDisplay(num minute) {
+        num step = ((2*math.pi()) / 60);
+        num j = (step * minute) - (step * 15);
+        num x = math.sin(j);
+        num y = math.cos(j);
         
         buildMinute(x, y, minute);
    }
     
-    int i = 0;
+    num i = 0;
     
     timer.create("buildDisplay", 0.1, 60, function() {
         buildDisplay(i);
@@ -110,11 +110,11 @@ server {
         hh.setScale(new vector(3.5, 0.1, 0.1));
         hh.parent(gate);
         
-        function void updateSeconds(int seconds) {
-            int step = ((2*math.pi()) / 60);
-            int j = (step * seconds) - (step * 15);
-            int x = math.sin(j);
-            int y = math.cos(j);
+        function void updateSeconds(num seconds) {
+            num step = ((2*math.pi()) / 60);
+            num j = (step * seconds) - (step * 15);
+            num x = math.sin(j);
+            num y = math.cos(j);
         
             vector of = gate.up() * 1;
             vector center = gate.getPos();
@@ -124,11 +124,11 @@ server {
             hs.setAng(ang);
        };
         
-        function void updateMinutes(int minutes) {
-            int step = ((2*math.pi()) / 60);
-            int j = (step * minutes) - (step * 15);
-            int x = math.sin(j);
-            int y = math.cos(j);
+        function void updateMinutes(num minutes) {
+            num step = ((2*math.pi()) / 60);
+            num j = (step * minutes) - (step * 15);
+            num x = math.sin(j);
+            num y = math.cos(j);
             
             vector of = gate.up() * 2;
             vector center = gate.getPos();
@@ -138,11 +138,11 @@ server {
             hm.setAng(ang);
        };
         
-        function void updateHours(int hours, int minutes) {
-            int step = ((2*math.pi()) / 12);
-            int j = (step * hours) + ((step / 60) * minutes) - (step * 15);
-            int x = math.sin(j);
-            int y = math.cos(j);
+        function void updateHours(num hours, num minutes) {
+            num step = ((2*math.pi()) / 12);
+            num j = (step * hours) + ((step / 60) * minutes) - (step * 15);
+            num x = math.sin(j);
+            num y = math.cos(j);
             
             vector of = gate.up() * 3;
             vector center = gate.getPos();
