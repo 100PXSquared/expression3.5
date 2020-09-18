@@ -546,7 +546,7 @@ function COMPILER.Compile(this, inst)
 		inst.compiled = true;
 	end
 
-	return inst.result, inst.rCount, inst.price;
+	return inst.result == "" and "_nil" or inst.result, inst.rCount, inst.price;
 end
 
 --[[
@@ -2728,13 +2728,13 @@ function COMPILER.Compile_NEW(this, inst, token, data)
 		for k, expr in pairs(data.expressions) do
 			local r, c, p = this:Compile(expr);
 
-			ids[#ids + 1] = r;
-			price = price + p;
+			ids[#ids + 1] = r
+			price = price + p
 
 			if k == total then
 				if c > 1 then
 					for i = 2, c do
-						ids[#ids + 1] = r;
+						ids[#ids + 1] = r
 					end
 				end
 			end
@@ -2745,7 +2745,6 @@ function COMPILER.Compile_NEW(this, inst, token, data)
 
 			if i >= total then
 				local signature = string_format("%s(%s)", classname, args);
-
 				op = constructors[signature];
 			end
 

@@ -105,7 +105,7 @@ if SERVER then
 		end
 	end;
 
-	function Create(ctx, model, pos, ang)
+	function Create(ctx, model, pos, ang, scale)
 		ctx = tokens[ctx];
 		local ent, ply = ctx.entity, ctx.player;
 		local nrate, ncount = RateCounter[ply] or 0, PlayerCounter[ply] or 0
@@ -135,7 +135,18 @@ if SERVER then
 
 		if CPPI then holo:CPPISetOwner(ply) end
 
+		-- Input params will be tables due to how the language handles null and void, this just sets them correctly.
+		if istable(model) then model = nil end
+		if istable(pos) and #pos == 0 then pos = nil end
+		if istable(ang) and #ang == 0 then ang = nil end
+
 		SetModel(ctx, holo, model or "sphere");
+
+		if not scale then
+			holo:SetScale(Vector(1, 1, 1))
+		else
+			holo:SetScale(scale)
+		end
 
 		if not pos then
 			holo:SetPos(ent:GetPos());
@@ -290,18 +301,18 @@ end, IsValid);
 
 -- Hologram -> Entity
 extension:RegisterCastingOperator("e", "h", function(ctx, obj)
-	return obj;
-end, false);
+	return obj
+end, false)
 
 -- Entity <- Hologram
 extension:RegisterCastingOperator("h", "e", function(ctx, obj)
 	if not IsValid(obj) and obj:GetClass() == "wire_expression3_hologram" then
-		return obj;
+		return obj
 	end
 
-	ctx = tokens[ctx];
-	ctx:Throw("Attempted to cast none hologram entity to hologram.");
-end, false);
+	ctx = tokens[ctx]
+	ctx:Throw("Attempted to cast none hologram entity to hologram.")
+end, false)
 
 --[[
 	*****************************************************************************************************************************************************
@@ -309,25 +320,34 @@ end, false);
 	*****************************************************************************************************************************************************
 ]]--
 
-extension:RegisterConstructor("h", "", Create);
-extension:RegisterConstructor("h", "s", Create);
-extension:RegisterConstructor("h", "s,v", Create);
-extension:RegisterConstructor("h", "s,v,a", Create);
+local paramCombinations = {
+	"",
+	"s",
+	",v",
+	"s,v",
+	",,a",
+	",v,a",
+	"s,,a",
+	"s,v,a",
+	",,,v",
+	",,a,v",
+	",v,,v",
+	",v,a,v",
+	"s,,,v",
+	"s,,a,v",
+	"s,v,,v",
+	"s,v,a,v",
+}
+
+-- Loop through each variant of constructor/function params and register
+for i = 1, #paramCombinations do
+	extension:RegisterConstructor("h", paramCombinations[i], Create)
+	extension:RegisterFunction("hololib", "create", paramCombinations[i], "h", 1, Create)
+end
 
 --[[
 	*****************************************************************************************************************************************************
-		hololib constructors for reverse compatability
-	*****************************************************************************************************************************************************
-]]--
-
-extension:RegisterFunction("hololib", "create", "", "h", 1, Create);
-extension:RegisterFunction("hololib", "create", "s", "h", 1, Create);
-extension:RegisterFunction("hololib", "create", "s,v", "h", 1, Create);
-extension:RegisterFunction("hololib", "create", "s,v,a", "h", 1, Create);
-
---[[
-	*****************************************************************************************************************************************************
-		
+	
 	*****************************************************************************************************************************************************
 ]]--
 
