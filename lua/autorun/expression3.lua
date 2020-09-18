@@ -28,7 +28,7 @@ if (SERVER) then
 	
 	AddCSLuaFile("expression3/tokenizer.lua");
 	AddCSLuaFile("expression3/parser.lua");
-	AddCSLuaFile("expression3/interpreter.lua");
+	AddCSLuaFile("expression3/compiler.lua");
 	AddCSLuaFile("expression3/debuger.lua");
 	
 	AddCSLuaFile("expression3/editor.lua")

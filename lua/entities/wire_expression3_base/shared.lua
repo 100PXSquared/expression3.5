@@ -231,17 +231,16 @@ end
 
 function ENT:InitScript()
 	local main = CompileString(self.nativeScript, "Expression 3", false);
+	setfenv(main, self.context.env)
 
 	if (isstring(main)) then
 		self:HandelThrown(main);
 		return;
 	end
 
-	local init = main();
-
 	hook.Run("Expression3.Entity.Start", self, self.context);
 
-	self.context.status = self:Execute(init, self.context.env);
+	self.context.status = self:Execute(main, self.context.env);
 
 	self:PostInitScript();
 end

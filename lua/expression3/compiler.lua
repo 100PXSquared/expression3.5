@@ -655,8 +655,7 @@ end
 ]]
 
 function COMPILER.Compile_ROOT(this, inst, token, data)
-	this:writeToBuffer(inst, "\nreturn function(env)\n");
-	this:writeToBuffer(inst, "\nsetfenv(1,env)\n");
+	this:writeToBuffer(inst, "local env = ...\n");
 
 	local stmts = data.stmts;
 
@@ -674,8 +673,6 @@ function COMPILER.Compile_ROOT(this, inst, token, data)
 			this:addInstructionToBuffer(inst, stmts[i]);
 		end
 	end
-
-	this:writeToBuffer(inst, "\nend\n");
 
 	return "", 0, 0;
 end
