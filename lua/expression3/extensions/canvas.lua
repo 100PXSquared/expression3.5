@@ -21,6 +21,8 @@ extension:RegisterPermission("RenderCanvas", "fugue/palette-paint-brush.png", "T
 
 extension:SetClientState();
 
+local tokens = EXPR_TOKENS;
+
 --[[
 	*****************************************************************************************************************************************************
 		
@@ -184,6 +186,7 @@ local function preDraw(ctx)
 end
 
 extension:RegisterFunction("render", "setTexture", "cv", "", 1, function(ctx, cv)
+	context = tokens[context];
 	preDraw(ctx);
 
 	if cv and cv.mt then
@@ -195,6 +198,7 @@ extension:RegisterFunction("render", "setTexture", "cv", "", 1, function(ctx, cv
 end, false);
 
 extension:RegisterFunction("render", "pushCanvas", "cv", "", 1, function(ctx, cv)
+	context = tokens[context];
 	preDraw(ctx);
 
 	if cv then
@@ -206,6 +210,7 @@ extension:RegisterFunction("render", "pushCanvas", "cv", "", 1, function(ctx, cv
 end, false);
 
 extension:RegisterFunction("render", "popCanvas", "", "", 1, function(ctx, cv)
+	context = tokens[context];
 	preDraw(ctx);
 
 	if ctx.data.rt_deph > 0 then

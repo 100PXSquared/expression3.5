@@ -2,6 +2,8 @@
 	Szymekk made this extention for EA2, I have just ported it over.
 ]]
 
+local tokens = EXPR_TOKENS;
+
 local max_count, max_size;
 
 if CLIENT then
@@ -33,6 +35,7 @@ if CLIENT then TextureSize = max_size:GetInt(); end
 ]]
 
 local function Download(context, Name, url, Width, Height)
+	context = tokens[context];
 	if not context:canGetURL(url, "URLMaterials") then return; end
 
 	if IsValid(HTML) then HTML:Remove() end
@@ -110,6 +113,7 @@ end)
 ]]
 
 local download_material = function(context, Trace, Name, URL, Width, Height)
+	context = tokens[context];
 	if (context.data.materials[Name] || #context.data.materials < Component:ReadSetting("maxurlmaterials", 15)) && #URLQueue < 10 then
 		context.data.materials[Name] = context.data.materials[Name] or Material("debug/debugempty")
 		table.insert(URLQueue, {context, Name, URL, math.Clamp(Width or TextureSize, 1, TextureSize), math.Clamp(Height or TextureSize, 1, TextureSize)})
@@ -131,6 +135,7 @@ extension:RegisterFunction("render", "downloadURLMaterial", "s,s,n,n", "", 0, do
 extension:RegisterFunction("render", "downloadURLMaterial", "s,s", "", 0, download_material, false);
 
 extension:RegisterFunction("render", "setURLMaterial", "s", "", 0, function(context, name)
+	context = tokens[context];
 	if context.data.materials then
 		local mat = context.data.materials[name];
 		

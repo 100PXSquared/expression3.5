@@ -2,6 +2,8 @@ local extension = EXPR_LIB.RegisterExtension("applyforce");
 
 extension:SetSharedState();
 
+local tokens = EXPR_TOKENS;
+
 --[[
 	Fast Math access
 ]]
@@ -68,6 +70,7 @@ end
 extension:SetServerState();
 
 extension:RegisterMethod("e", "applyForce", "v", "", 0, function(context, e, v)
+	context = tokens[context];
 	if context:CanUseEntity(e) then
 		local ph = e:GetPhysicsObject();
 
@@ -78,6 +81,7 @@ extension:RegisterMethod("e", "applyForce", "v", "", 0, function(context, e, v)
 end, false);
 
 extension:RegisterMethod("e", "applyOffsetForce", "v", "", 0, function(context, e, v)
+	context = tokens[context];
 	if context:CanUseEntity(e) then
 		local ph = e:GetPhysicsObject();
 
@@ -88,6 +92,7 @@ extension:RegisterMethod("e", "applyOffsetForce", "v", "", 0, function(context, 
 end, false);
 
 extension:RegisterMethod("e", "applyAngForce", "a", "", 0, function(context, e, a)
+	context = tokens[context];
 	if context:CanUseEntity(e) then
 		local ph = e:GetPhysicsObject();
 
@@ -98,6 +103,7 @@ extension:RegisterMethod("e", "applyAngForce", "a", "", 0, function(context, e, 
 end, false);
 
 extension:RegisterMethod("ph", "applyForce", "v", "", 0, function(context, ph, v)
+	context = tokens[context];
 	if IsValid(ph) then
 		local e = ph:GetEntity();
 
@@ -108,6 +114,7 @@ extension:RegisterMethod("ph", "applyForce", "v", "", 0, function(context, ph, v
 end, false);
 
 extension:RegisterMethod("ph", "applyOffsetForce", "v", "", 0, function(context, ph, v)
+	context = tokens[context];
 	if IsValid(ph) then
 		local e = ph:GetEntity();
 
@@ -118,6 +125,7 @@ extension:RegisterMethod("ph", "applyOffsetForce", "v", "", 0, function(context,
 end, false);
 
 extension:RegisterMethod("ph", "applyAngForce", "a", "", 0, function(context, ph, a)
+	context = tokens[context];
 	if IsValid(ph) then
 		local e = ph:GetEntity();
 
@@ -128,6 +136,7 @@ extension:RegisterMethod("ph", "applyAngForce", "a", "", 0, function(context, ph
 end, false);
 
 extension:RegisterMethod("e", "applyTorque", "v", "", 0, function(context, e, v) 
+	context = tokens[context];
 	if context:CanUseEntity(e) then
 		local ph = e:GetPhysicsObject();
 
@@ -147,6 +156,7 @@ end, false);
 extension:SetServerState();
 
 extension:RegisterMethod("e", "setVel", "v", "", 0, function(context, e, v)
+	context = tokens[context];
 	if context:CanUseEntity(e) then
 		local ph = e:GetPhysicsObject();
 		if IsValid(ph) then
@@ -156,6 +166,7 @@ extension:RegisterMethod("e", "setVel", "v", "", 0, function(context, e, v)
 end, false);
 
 extension:RegisterMethod("ph", "setVel", "v", "", 0, function(context, ph, v)
+	context = tokens[context];
 	if IsValid(ph) then
 		local e = ph:GetEntity();
 		if IsValid(e) and context:CanUseEntity(e) then

@@ -1,14 +1,16 @@
 --[[
-	   ____      _  _      ___    ___       ____      ___      ___     __     ____      _  _          _        ___     _  _       ____
-	  F ___J    FJ  LJ    F _ ", F _ ",    F ___J    F __".   F __".   FJ    F __]    F L L]        /.\      F __".  FJ  L]     F___ J
-	 J |___:    J \/ F   J `-' |J `-'(|   J |___:   J (___|  J (___|  J  L  J |--| L  J   \| L      //_\\    J |--\ LJ |  | L    `-__| L
-	 | _____|   /    \   |  __/F|  _  L   | _____|  J\___ \  J\___ \  |  |  | |  | |  | |\   |     / ___ \   | |  J |J J  F L     |__  (
-	 F L____:  /  /\  \  F |__/ F |_\  L  F L____: .--___) \.--___) \ F  J  F L__J J  F L\\  J    / L___J \  F L__J |J\ \/ /F  .-____] J
+	   ____	  _  _	  ___	___	   ____	  ___	  ___	 __	 ____	  _  _		  _		___	 _  _	   ____
+	  F ___J	FJ  LJ	F _ ", F _ ",	F ___J	F __".   F __".   FJ	F __]	F L L]		/.\	  F __".  FJ  L]	 F___ J
+	 J |___:	J \/ F   J `-' |J `-'(|   J |___:   J (___|  J (___|  J  L  J |--| L  J   \| L	  //_\\	J |--\ LJ |  | L	`-__| L
+	 | _____|   /	\   |  __/F|  _  L   | _____|  J\___ \  J\___ \  |  |  | |  | |  | |\   |	 / ___ \   | |  J |J J  F L	 |__  (
+	 F L____:  /  /\  \  F |__/ F |_\  L  F L____: .--___) \.--___) \ F  J  F L__J J  F L\\  J	/ L___J \  F L__J |J\ \/ /F  .-____] J
 	J________LJ__//\\__LJ__|   J__| \\__LJ________LJ\______JJ\______JJ____LJ\______/FJ__L \\__L  J__L   J__LJ______/F \\__//   J\______/F
-	|________||__/  \__||__L   |__|  J__||________| J______F J______F|____| J______F |__L  J__|  |__L   J__||______F   \__/     J______F
+	|________||__/  \__||__L   |__|  J__||________| J______F J______F|____| J______F |__L  J__|  |__L   J__||______F   \__/	 J______F
 
 	::Network Extension::
 ]]
+
+local tokens = EXPR_TOKENS;
 
 local NET_MAX = 10;
 local NET_LIMIT = 512;
@@ -22,6 +24,8 @@ local extension = EXPR_LIB.RegisterExtension("network");
 extension:RegisterClass("usmg", "stream", istable, istable);
 
 local function writeBool(ctx, msg, bool)
+	ctx = tokens[ctx];
+
 	if (#msg.buffer > NET_LIMIT) then
 		ctx:Throw("Failed to write Boolean to stream, max stream size reached.");
 	end
@@ -33,6 +37,8 @@ local function writeBool(ctx, msg, bool)
 end
 
 local function readBool(ctx, msg)
+	ctx = tokens[ctx];
+
 	--msg.size = msg.size - 1;
 	msg.read = msg.read + 1;
 
@@ -51,6 +57,8 @@ extension:RegisterMethod("usmg", "readBool", "", "b", 1, readBool, false);
 ---------------------------------------------------------------------------------
 
 local function writeChar(ctx, msg, char, type)
+	ctx = tokens[ctx];
+
 	if (#msg.buffer > NET_LIMIT) then
 		ctx:Throw("Failed to write " .. (type or "Char") .. " to stream, max stream size reached.");
 	end
@@ -62,6 +70,8 @@ local function writeChar(ctx, msg, char, type)
 end
 
 local function readChar(ctx, msg, type)
+	ctx = tokens[ctx];
+
 	--msg.size = msg.size - 1;
 	msg.read = msg.read + 1;
 
@@ -80,6 +90,8 @@ extension:RegisterMethod("usmg", "readChar", "", "n", 1, readChar, false);
 ---------------------------------------------------------------------------------
 
 local function writeShort(ctx, msg, short)
+	ctx = tokens[ctx];
+
 	short = short + 32768;
 
 	local a = math.modf(short / 256);
@@ -89,6 +101,8 @@ local function writeShort(ctx, msg, short)
 end
 
 local function readShort(ctx, msg)
+	ctx = tokens[ctx];
+
 	return (readChar(ctx, msg, "Short") + 128) * 256 + readChar(ctx, msg, "Short") + 128 - 32768;
 end
 
@@ -98,29 +112,33 @@ extension:RegisterMethod("usmg", "readShort", "", "n", 1, readShort, false);
 ---------------------------------------------------------------------------------
 
 local function writeLong(ctx, msg, long)
+	ctx = tokens[ctx];
+
 	long = long + 2147483648;
 
 	local a = math.modf(long / 16777216);
 	long = long - a * 16777216;
 
-    local b = math.modf(long / 65536);
-    long = long - b * 65536;
+	local b = math.modf(long / 65536);
+	long = long - b * 65536;
 
-    local c = math.modf(long / 256);
-    long = long - c * 256;
+	local c = math.modf(long / 256);
+	long = long - c * 256;
 
-    writeChar(ctx, msg, a - 128, "Long");
-    writeChar(ctx, msg, b - 128, "Long");
-    writeChar(ctx, msg, c - 128, "Long");
-    writeChar(ctx, msg, long - 128, "Long");
+	writeChar(ctx, msg, a - 128, "Long");
+	writeChar(ctx, msg, b - 128, "Long");
+	writeChar(ctx, msg, c - 128, "Long");
+	writeChar(ctx, msg, long - 128, "Long");
 end
 
 local function readLong(ctx, msg)
+	ctx = tokens[ctx];
+
 	local a = readChar(ctx, msg, "Long") + 128;
 	local b = readChar(ctx, msg, "Long") + 128;
 	local c = readChar(ctx, msg, "Long") + 128;
 	local d = readChar(ctx, msg, "Long") + 128;
-    return a * 16777216 + b * 65536 + c * 256 + d - 2147483648;
+	return a * 16777216 + b * 65536 + c * 256 + d - 2147483648;
 end
 
 extension:RegisterMethod("usmg", "writeLong", "n", "", 0, writeLong, false);
@@ -129,6 +147,8 @@ extension:RegisterMethod("usmg", "readLong", "", "n", 1, readLong, false);
 ---------------------------------------------------------------------------------
 
 local function writeFloat(ctx, msg, float)
+	ctx = tokens[ctx];
+
 	local neg = float < 0;
 	float = math.abs(float);
 
@@ -161,6 +181,8 @@ local function writeFloat(ctx, msg, float)
 end
 
 local function readFloat(ctx, msg)
+	ctx = tokens[ctx];
+
 	local a = readChar(ctx, msg, "Float") + 128;
 	local b = readChar(ctx, msg, "Float") + 128;
 	local c = readChar(ctx, msg, "Float") + 128;
@@ -181,6 +203,8 @@ extension:RegisterMethod("usmg", "readFloat", "", "n", 1, readFloat, false);
 ---------------------------------------------------------------------------------
 
 local function writeString(ctx, msg, string)
+	ctx = tokens[ctx];
+
 	for i = 1, #string do
 		writeChar(ctx, msg, string[i]:byte() - 128, "String");
 	end
@@ -189,6 +213,8 @@ local function writeString(ctx, msg, string)
 end
 
 local function readString(ctx, msg)
+	ctx = tokens[ctx];
+
 	local str = "";
 	local char = readChar(ctx, msg, "String");
 
@@ -268,6 +294,8 @@ if (SERVER) then
 end
 
 local function queueMessage(ctx, msg, filter)
+	ctx = tokens[ctx];
+
 	local queue = ctx.data.net_queue or {};
 
 	if (#queue >= NET_MAX) then
@@ -355,6 +383,7 @@ extension:RegisterFunction("net", "sendToClients", "usmg,crf", "", 0, queueMessa
 extension:SetSharedState();
 
 extension:RegisterFunction("net", "receive", "s,f", "", 0, function(ctx, name, cb)
+	ctx = tokens[ctx];
 	ctx.data.net_callbacks = ctx.data.net_callbacks or {};
 	ctx.data.net_callbacks[name] = cb;
 end, false);

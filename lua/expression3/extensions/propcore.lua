@@ -2,6 +2,7 @@ local extension = EXPR_LIB.RegisterExtension("propcore");
 
 extension:SetSharedState();
 
+local tokens = EXPR_TOKENS;
 
 --[[
 	Prop Core methods
@@ -56,6 +57,7 @@ if SERVER then
 	end);
 
 	local function incSpawn(context)
+		context = tokens[context];
 
 		local count = EXPR_LIB.PropSpawnRate[context.player] or 0;
 
@@ -69,6 +71,7 @@ if SERVER then
 	end
 
 	function spawnProp(context, model, pos, ang, freeze)
+		context = tokens[context];
 
 		if not incSpawn(context) then
 			return;
@@ -129,6 +132,7 @@ if SERVER then
 ]]
 
 	function spawnSeat(context, model, pos, ang, freeze)
+		context = tokens[context];
 
 		if not incSpawn(context) then
 			return;
@@ -235,6 +239,8 @@ end, false);
 ]]
 
 extension:RegisterFunction("prop", "canSpawn", "", "b", 1, function(context)
+	context = tokens[context];
+
 	local count = EXPR_LIB.PropSpawnRate[context.player] or 0;
 
 	if count >= spawn_rate:GetInt() then
@@ -249,24 +255,28 @@ end, false);
 ]]
 
 extension:RegisterMethod("e", "remove", "", "", 0, function(context, e)
+	context = tokens[context];
 	if context:CanUseEntity(e) then
 		e:Remove();
 	end
 end, false);
 
 extension:RegisterMethod("e", "setPos", "v", "", 0, function(context, e, v)
+	context = tokens[context];
 	if context:CanUseEntity(e) then
 		e:SetPos(v);
 	end
 end, false);
 
 extension:RegisterMethod("e", "setAng", "a", "", 0, function(context, e, v)
+	context = tokens[context];
 	if context:CanUseEntity(e) then
 		e:SetAngles(v);
 	end
 end, false);
 
 extension:RegisterMethod("e", "setFrozen", "b", "", 0, function(context, e, b)
+	context = tokens[context];
 	if context:CanUseEntity(e) and ((not e.GetUnFreezable) or e:GetUnFreezable() ~= true) then
 		local ph = e:GetPhysicsObject();
 
@@ -286,6 +296,7 @@ extension:RegisterMethod("e", "isFrozen", "", "b", 1, function(context, e)
 end, false);
 
 extension:RegisterMethod("e", "setNotSolid", "b", "", 0, function(context, e, b)
+	context = tokens[context];
 	if context:CanUseEntity(e) then
 		local ph = e:GetPhysicsObject();
 
@@ -297,23 +308,27 @@ extension:RegisterMethod("e", "setNotSolid", "b", "", 0, function(context, e, b)
 end, false);
 
 extension:RegisterMethod("e", "setParent", "e", "", 0, function(context, e, p)
+	context = tokens[context];
 	if context:CanUseEntity(e) and IsValid(p) then
 		e:SetParent(p);
 	end
 end, false);
 
 extension:RegisterMethod("e", "unParent", "", "", 0, function(context, e)
+	context = tokens[context];
 	if context:CanUseEntity(e) then
 		e:SetParent(nil);
 	end
 end, false);
 
 extension:RegisterMethod("e", "getParent", "", "e", 1, function(context, e)
+	context = tokens[context];
 	if IsValid(e) then return e:GetParent(); end
 	--return Entity(0);
 end, false);
 
 extension:RegisterMethod("ph", "setPos", "v", "", 0, function(context, ph, v)
+	context = tokens[context];
 	if IsValid(ph) then
 		if context:CanUseEntity(ph:GetEntity()) then
 			ph:SetPos(v);
@@ -322,6 +337,7 @@ extension:RegisterMethod("ph", "setPos", "v", "", 0, function(context, ph, v)
 end, false);
 
 extension:RegisterMethod("ph", "setAng", "a", "", 0, function(context, ph, v)
+	context = tokens[context];
 	if IsValid(ph) then
 		if context:CanUseEntity(ph:GetEntity()) then
 			ph:SetAngles(v);
@@ -330,6 +346,7 @@ extension:RegisterMethod("ph", "setAng", "a", "", 0, function(context, ph, v)
 end, false);
 
 extension:RegisterMethod("ph", "setFrozen", "b", "", 0, function(context, ph, b)
+	context = tokens[context];
 	if IsValid(ph) then
 		if context:CanUseEntity(ph:GetEntity()) then
 			ph:EnableMotion(not b);

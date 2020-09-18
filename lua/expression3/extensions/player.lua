@@ -16,6 +16,8 @@ local extension = EXPR_LIB.RegisterExtension("player")
 
 extension:SetSharedState();
 
+local tokens = EXPR_TOKENS;
+
 --[[
 	Player Class
 ]]
@@ -51,6 +53,7 @@ extension:RegisterCastingOperator("e", "p", function(context, e)
 		return e;
 	end
 
+	context = tokens[context];
 	context:Throw("Attempted to cast none player entity to player.");
 end, false);
 

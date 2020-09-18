@@ -11,11 +11,12 @@
 		There is no good way to do this.
 ]]
 
+local tokens = EXPR_TOKENS;
+
 local eTable = {};
 local throwif = EXPR_LIB.ThrowIF;
 
 function eTable.get(ctx, tbl, key, type)
-
 	type = type or "_vr";
 
 	if(not tbl or not tbl.tbl) then
@@ -40,7 +41,6 @@ function eTable.get(ctx, tbl, key, type)
 end
 
 function eTable.set(ctx, tbl, key, type, value)
-
 	type = type or "_vr";
 
 	if(not tbl or not tbl.tbl) then
@@ -188,6 +188,8 @@ extension:RegisterMethod("t", "keys", "", "t", 1, function(tbl)
 end, true);
 
 extension:RegisterMethod("t", "values", "", "t", 1, function(ctx, tbl)
+	ctx = tokens[ctx];
+
 	local values = {};
 
 	for key, value in pairs(tbl.tbl) do
@@ -246,15 +248,19 @@ function extension.PostLoadClasses(this, classes)
 
 		if (id ~= "") then
 			extension:RegisterMethod("t", "push", id, "", 0, function(ctx, tbl, value)
+				ctx = tokens[ctx];
 				eTable.set(ctx, tbl, #tbl.tbl + 1, id, value);
 			end, false);
 
 			extension:RegisterMethod("t", "insert", "n," .. id, "", 0, function(ctx, tbl, key, value)
+				ctx = tokens[ctx];
 				table.insert(tbl.tbl, key, nil);
 				eTable.set(ctx, tbl, key, id, value);
 			end, false);
 
 			extension:RegisterMethod("t", "pop" .. c.name, "", id, 1, function(ctx, tbl)
+				ctx = tokens[ctx];
+
 				local value = tbl.tbl[#tbl.tbl];
 
 				if (not value or (value[1] ~= id and id ~= "_vr")) then
@@ -267,6 +273,8 @@ function extension.PostLoadClasses(this, classes)
 			end, false);
 
 			extension:RegisterMethod("t", "shift" .. c.name, "", id, 1, function(ctx, tbl)
+				ctx = tokens[ctx];
+
 				local value = tbl.tbl[1];
 
 				if (not value or (value[1] ~= id and id ~= "_vr")) then
@@ -285,11 +293,14 @@ function extension.PostLoadClasses(this, classes)
 			end, false);
 
 			extension:RegisterMethod("t", "unshift" .. c.name, id, "", 0, function(ctx, tbl, value)
+				ctx = tokens[ctx];
 				table.insert(tbl.tbl, 1, nil);
 				eTable.set(ctx, tbl, 1, id, value);
 			end, false);
 
 			extension:RegisterMethod("t", "contains", id, "b", 1, function(ctx, tbl, value)
+				ctx = tokens[ctx];
+
 				if (id == "_vr") then
 					for k, v in pairs(tbl.tbl) do
 						if (v and k == value[2]) then

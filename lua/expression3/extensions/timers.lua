@@ -10,6 +10,8 @@
 	::Timers/Time::
 ]]
 
+local tokens = EXPR_TOKENS;
+
 hook.Add("Expression3.Entity.BuildSandbox", "Expression3.Timers", function(entity, ctx, env)
 	ctx.data.timers = {};
 end);
@@ -19,6 +21,7 @@ local extension = EXPR_LIB.RegisterExtension("timers");
 extension:RegisterLibrary("timer");
 
 extension:RegisterFunction("timer", "simple", "n,f,...", "", 0, function(ctx, d, f, ...)
+	ctx = tokens[ctx];
 	local timers = ctx.data.timers;
 
 	timers[#timers + 1] = {
@@ -35,6 +38,7 @@ extension:RegisterFunction("timer", "simple", "n,f,...", "", 0, function(ctx, d,
 end, false);
 
 extension:RegisterFunction("timer", "create", "s,n,n,f,...", "", 0, function(ctx, n, d, r, f, ...)
+	ctx = tokens[ctx];
 	local timers = ctx.data.timers;
 
 	timers[n] = {
@@ -50,11 +54,13 @@ extension:RegisterFunction("timer", "create", "s,n,n,f,...", "", 0, function(ctx
 end, false);
 
 extension:RegisterFunction("timer", "remove", "s", "", 0, function(ctx, name)
+	ctx = tokens[ctx];
 	local timers = ctx.data.timers;
 	timers[name] = nil;
 end, false);
 
 extension:RegisterFunction("timer", "pause", "s", "", 0, function(ctx, name)
+	ctx = tokens[ctx];
 	local timers = ctx.data.timers;
 
 	if (timers[name]) then
@@ -63,6 +69,7 @@ extension:RegisterFunction("timer", "pause", "s", "", 0, function(ctx, name)
 end, false);
 
 extension:RegisterFunction("timer", "resume", "s", "", 0, function(ctx, name)
+	ctx = tokens[ctx];
 	local timers = ctx.data.timers;
 
 	if (timers[name]) then

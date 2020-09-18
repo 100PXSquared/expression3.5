@@ -1,3 +1,5 @@
+local tokens = EXPR_TOKENS;
+
 local extension = EXPR_LIB.RegisterExtension("ranger");
 
 extension:SetSharedState();
@@ -56,46 +58,56 @@ extension:RegisterAttribute("rd", "hit_entity", "e", "Entity");
 extension:RegisterFunction("ranger", "reset", "", "", 0, setDefaults, false);
 
 extension:RegisterFunction("ranger", "hitWater", "b", "", 0, function(ctx, value)
+	ctx = tokens[ctx];
 	ctx.data.ranger.hit_water = value;
 end, false);
 
 extension:RegisterFunction("ranger", "hitWater", "", "b", 1, function(ctx)
+	ctx = tokens[ctx];
 	return ctx.data.ranger.hit_water or false;
 end, false);
 
 
 extension:RegisterFunction("ranger", "hitEntities", "b", "", 0, function(ctx, value)
+	ctx = tokens[ctx];
 	ctx.data.ranger.hit_entitys = value;
 end, false);
 
 extension:RegisterFunction("ranger", "hitEntities", "", "b", 1, function(ctx)
+	ctx = tokens[ctx];
 	return ctx.data.ranger.hit_entitys or false;
 end, false);
 
 
 extension:RegisterFunction("ranger", "ignoreWorld", "b", "", 0, function(ctx, value)
+	ctx = tokens[ctx];
 	ctx.data.ranger.ignore_world = value;
 end, false);
 
 extension:RegisterFunction("ranger", "ignoreWorld", "", "b", 1, function(ctx)
+	ctx = tokens[ctx];
 	return ctx.data.ranger.ignore_world or false;
 end, false);
 
 
 extension:RegisterFunction("ranger", "defaultZero", "b", "", 0, function(ctx, value)
+	ctx = tokens[ctx];
 	ctx.data.ranger.default_zero = value;
 end, false);
 
 extension:RegisterFunction("ranger", "defaultZero", "", "b", 1, function(ctx)
+	ctx = tokens[ctx];
 	return ctx.data.ranger.default_zero or false;
 end, false);
 
 
 extension:RegisterFunction("ranger", "persist", "b", "", 0, function(ctx, value)
+	ctx = tokens[ctx];
 	ctx.data.ranger_persist = value;
 end, false);
 
 extension:RegisterFunction("ranger", "persist", "", "b", 1, function(ctx)
+	ctx = tokens[ctx];
 	return ctx.data.ranger_persist or false;
 end, false);
 
@@ -104,17 +116,20 @@ end, false);
 ]]
 
 extension:RegisterFunction("ranger", "filter", "e", "", 0, function(ctx, ent)
+	ctx = tokens[ctx];
 	local filter = ctx.data.ranger.filter;
 	filter[#filter + 1] = ent;
 end, false);
 
 extension:RegisterFunction("ranger", "filter", "p", "", 0, function(ctx, ent)
+	ctx = tokens[ctx];
 	local filter = ctx.data.ranger.filter;
 	filter[#filter + 1] = ent;
 end, false);
 
 extension:RegisterFunction("ranger", "filter", "t", "", 0, function(ctx, tbl)
 	if not tbl or not tbl.tbl then return; end
+	ctx = tokens[ctx];
 	
 	local filter = ctx.data.ranger.filter;
 	
@@ -129,6 +144,7 @@ extension:RegisterFunction("ranger", "filter", "t", "", 0, function(ctx, tbl)
 end, false);
 
 extension:RegisterFunction("ranger", "filter", "", "t", 1, function(ctx)
+	ctx = tokens[ctx];
 	local t = {};
 	local filter = ctx.data.ranger.filter;
 
@@ -140,6 +156,7 @@ extension:RegisterFunction("ranger", "filter", "", "t", 1, function(ctx)
 end, false);
 
 extension:RegisterFunction("ranger", "clearFilter", "", "", 0, function(ctx, ent)
+	ctx = tokens[ctx];
 	ctx.data.ranger.filter = {};
 end, false);
 
@@ -148,6 +165,8 @@ end, false);
 ]]
 
 local DoTrace = function(ctx, start, stop, min, max)
+
+	ctx = tokens[ctx];
 
 	local mask;
 	local persist = ctx.data.ranger_persist;

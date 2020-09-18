@@ -14,6 +14,8 @@ local extension = EXPR_LIB.RegisterExtension("entity");
 
 extension:SetSharedState();
 
+local tokens = EXPR_TOKENS;
+
 --[[
 	Entity Class
 ]]
@@ -305,18 +307,21 @@ end, true);
 extension:SetServerState();
 
 extension:RegisterMethod("e", "setMaterial", "s", "", 0, function(context, e, s)
+	context = tokens[context];
 	if context:CanUseEntity(e) and not BannedMats[s] then
 		e:SetMaterial(s);
 	end
 end, false);
 
 extension:RegisterMethod("e", "setSubMaterial", "n,s", "", 0, function(context, e, n, v)
+	context = tokens[context];
 	if context:CanUseEntity(e) then
 		e:SetSubMaterial(n,v);
 	end
 end, false);
 
 extension:RegisterMethod("e", "resetSubMaterials", "", "", 0, function(context, e)
+	context = tokens[context];
 	if context:CanUseEntity(e) then
 		e:SetSubMaterial();
 	end
@@ -336,6 +341,7 @@ end, true);
 extension:SetServerState();
 
 extension:RegisterMethod("e", "setColor", "c", "", 0, function(context, e, c)
+	context = tokens[context];
 	if context:CanUseEntity(e) then
 		e:SetColor(c);
 	end
@@ -356,6 +362,7 @@ end, true);
 extension:SetServerState();
 
 extension:RegisterMethod("e", "setGravity", "b", "", 0, function(context, e, b)
+	context = tokens[context];
 	if context:CanUseEntity(e) then
 		local ph = e:GetPhysicsObject();
 		if IsValid(ph) then
@@ -375,12 +382,14 @@ extension:RegisterMethod("e", "isOnFire", "", "b", 1, "IsOnFire");
 extension:SetServerState();
 
 extension:RegisterMethod("e", "ignite", "n", "", 0, function(context, e, n)
+	context = tokens[context];
 	if context:CanUseEntity(e) then
 		e:Ignite(n)
 	end
 end, false);
 
 extension:RegisterMethod("e", "extinguish", "", "", 0, function(context, e)
+	context = tokens[context];
 	if context:CanUseEntity(e) then
 		e:Extinguish();
 	end
@@ -393,6 +402,7 @@ end, false);
 extension:SetServerState();
 
 extension:RegisterMethod("e", "use", "", "", 0, function(context, e)
+	context = tokens[context];
 	if context:CanUseEntity(e) then
 		if e.Use then
 			e:Use(context.player,context.player,1,0)
@@ -447,6 +457,7 @@ end, true);
 extension:SetServerState();
 
 extension:RegisterMethod("e", "setMass", "n", "", 0, function(context, e, n)
+	context = tokens[context];
 	if context:CanUseEntity(e) then
 		local ph = e:GetPhysicsObject();
 
@@ -457,6 +468,7 @@ extension:RegisterMethod("e", "setMass", "n", "", 0, function(context, e, n)
 end, false);
 
 extension:RegisterMethod("ph", "setMass", "n", "", 0, function(context, ph, n)
+	context = tokens[context];
 	if context:CanUseEntity(e) then
 		if IsValid(ph) then
 			ph:SetMass(n);
@@ -660,12 +672,14 @@ end, true);
 ]]
 
 extension:RegisterMethod("e", "removeTrails", "", "", 0, function(context, e)
+	context = tokens[context];
 	if context:CanUseEntity(e) then
 		duplicator.EntityModifiers.trail(context.player, e, nil);
 	end
 end, false);
 
 extension:RegisterMethod("e", "setTrails", "n,n,n,s,c,n,b", "", 0, function(context, e, n1, n2, n3, s, c, n4, b)
+	context = tokens[context];
 	if context:CanUseEntity(e) then
 		if not string.find(s, '"', 1, true) then
 			duplicator.EntityModifiers.trail(context.player, e, {
@@ -700,6 +714,7 @@ end, true);
 ]]
 
 extension:RegisterMethod("e", "applyDamage", "n", "", 0, function(context, e, n)
+	context = tokens[context];
 	if context:CanUseEntity(e) then
 		if IsValid(e) then
 			e:TakeDamage(n, context.entity, context.player);

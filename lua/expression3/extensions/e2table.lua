@@ -152,6 +152,7 @@ extension:RegisterWiredOutport("e2t", "TABLE");
 ]]
 
 extension:RegisterConstructor("e2t", "...", function(ctx,...)
+	ctx = tokens[ctx];
 	local t = table.Copy(DEFAULT)
 	local n = 0
 	for k,v in pairs({...}) do
@@ -222,6 +223,7 @@ end, true);
 Can't make this function because I don't have access to e3 table's eTable.set function
 
 extension:RegisterMethod("e2t", "values", "", "t", 1, function(ctx, tbl)
+	ctx = tokens[ctx];
 	local values = {};
 
 	for key, value in pairs(tbl.n) do

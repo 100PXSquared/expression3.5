@@ -11,6 +11,8 @@
 	``````````````````````
 ]]
 
+local tokens = EXPR_TOKENS;
+
 local blankfunc = function() end;
 
 --[[
@@ -86,10 +88,12 @@ extension:RegisterPermission("RenderScreen", "fugue/monitor-screensaver.png", "T
 extension:RegisterLibrary("render");
 
 extension:RegisterFunction("render", "setScreenRefresh", "b", "", 0, function(ctx, b)
+	ctx = tokens[ctx];
 	ctx.entity.NoScreenRefresh = not b;
 end, false);
 
 extension:RegisterFunction("render", "getScreenRefresh", "", "b", 1, function(ctx)
+	ctx = tokens[ctx];
 	return not (ctx.entity.NoScreenRefresh or false);
 end, false);
 
@@ -182,22 +186,22 @@ end
 ]]--
 
 extension:RegisterFunction("render", "drawLine", "v2,v2", "", 0, function(ctx, s, e)
-	preDraw(ctx);
+	preDraw(tokens[ctx]);
 	surface.DrawLine(s.x, s.y, e.x, e.y);
 end, false);
 
 extension:RegisterFunction("render", "drawBox", "v2,v2", "", 0, function(ctx, p, w)
-	preDraw(ctx);
+	preDraw(tokens[ctx]);
 	surface.DrawTexturedRect(p.x, p.y, w.x, w.y, 0);
 end, false)
 
 extension:RegisterFunction("render", "drawBox", "v2,v2,n", "", 0, function(ctx, p, w, a)
-	preDraw(ctx);
+	preDraw(tokens[ctx]);
 	surface.DrawTexturedRectRotated(p.x, p.y, w.x, w.y, a);
 end, false);
 
 extension:RegisterFunction("render", "drawBoxOutline", "v2,v2", "", 0, function(ctx, p, w)
-	preDraw(ctx);
+	preDraw(tokens[ctx]);
 
 	local x, y = p.x, p.y;
 	local w, h = w.x, w.y;
@@ -206,17 +210,17 @@ extension:RegisterFunction("render", "drawBoxOutline", "v2,v2", "", 0, function(
 end, false);
 
 extension:RegisterFunction("render", "drawTriangle", "v2,v2,v2", "", 0, function(ctx, a, b, c)
-	preDraw(ctx);
+	preDraw(tokens[ctx]);
 	drawPoly({a, b, c});
 end, false);
 
 extension:RegisterFunction("render", "drawTriangleOutline", "v2,v2,v2", "", 0, function(ctx, a, b, c)
-	preDraw(ctx);
+	preDraw(tokens[ctx]);
 	drawPolyOutline({a, b, c});
 end, false);
 
 extension:RegisterFunction("render", "drawCircle", "v2,n", "", 0, function(ctx, p, r)
-	preDraw(ctx);
+	preDraw(tokens[ctx]);
 
 	local vertices = {}
 
@@ -228,7 +232,7 @@ extension:RegisterFunction("render", "drawCircle", "v2,n", "", 0, function(ctx, 
 end, false);
 
 extension:RegisterFunction("render", "drawCircleOutline", "v2,n", "", 0, function(ctx, p, r)
-	preDraw(ctx);
+	preDraw(tokens[ctx]);
 
 	local vertices = {};
 
@@ -240,7 +244,7 @@ extension:RegisterFunction("render", "drawCircleOutline", "v2,n", "", 0, functio
 end, false);
 
 extension:RegisterFunction("render", "drawPoly", "t", "", 0, function(ctx, tbl)
-	preDraw(ctx);
+	preDraw(tokens[ctx]);
 
 	local vertices = {};
 
@@ -254,7 +258,7 @@ extension:RegisterFunction("render", "drawPoly", "t", "", 0, function(ctx, tbl)
 end, false);
 
 extension:RegisterFunction("render", "drawPolyOutline", "t", "", 0, function(ctx, tbl)
-	preDraw(ctx);
+	preDraw(tokens[ctx]);
 
 	local vertices = {};
 
@@ -279,7 +283,7 @@ extension:RegisterFunction("render", "getTextSize", "s", "n", 2, function(str)
 end, true);
 
 extension:RegisterFunction("render", "drawText", "v2,s", "n", 2, function(ctx, p, str)
-	preText(ctx);
+	preText(tokens[ctx]);
 	surface.SetTextPos(p.x, p.y);
 	surface.DrawText(str);
 end, false);

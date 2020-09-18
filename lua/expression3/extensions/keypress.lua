@@ -2,6 +2,8 @@ local extension = EXPR_LIB.RegisterExtension("keypress")
 
 extension:SetSharedState();
 
+local tokens = EXPR_TOKENS;
+
 --[[
 	Permission
 ]]
@@ -12,70 +14,86 @@ extension:RegisterPermission("KeyPress", "fugue/controller-d-pad.png", "This E3 
 	Key press functions
 ]]
 
-extension:RegisterMethod("p", "keyForward", "", "b", 1, function(ctx, e)
-	return (IsValid(e) and e:IsPlayer() and ctx:ppPlayer(e, "KeyPress") and e:KeyDown(IN_FORWARD));
+extension:RegisterMethod("p", "keyForward", "", "b", 1, function(context, e)
+	context = tokens[context];
+	return (IsValid(e) and e:IsPlayer() and context:ppPlayer(e, "KeyPress") and e:KeyDown(IN_FORWARD));
 end, false);
 
-extension:RegisterMethod("p", "keyLeft", "", "b", 1, function(ctx, e)
-	return (IsValid(e) and e:IsPlayer() and ctx:ppPlayer(e, "KeyPress") and e:KeyDown(IN_MOVELEFT));
+extension:RegisterMethod("p", "keyLeft", "", "b", 1, function(context, e)
+	context = tokens[context];
+	return (IsValid(e) and e:IsPlayer() and context:ppPlayer(e, "KeyPress") and e:KeyDown(IN_MOVELEFT));
 end, false);
 
-extension:RegisterMethod("p", "keyBack", "", "b", 1, function(ctx, e)
-	return (IsValid(e) and e:IsPlayer() and ctx:ppPlayer(e, "KeyPress") and e:KeyDown(IN_BACK));
+extension:RegisterMethod("p", "keyBack", "", "b", 1, function(context, e)
+	context = tokens[context];
+	return (IsValid(e) and e:IsPlayer() and context:ppPlayer(e, "KeyPress") and e:KeyDown(IN_BACK));
 end, false);
 
-extension:RegisterMethod("p", "keyRight", "", "b", 1, function(ctx, e)
-	return (IsValid(e) and e:IsPlayer() and ctx:ppPlayer(e, "KeyPress") and e:KeyDown(IN_MOVERIGHT));
+extension:RegisterMethod("p", "keyRight", "", "b", 1, function(context, e)
+	context = tokens[context];
+	return (IsValid(e) and e:IsPlayer() and context:ppPlayer(e, "KeyPress") and e:KeyDown(IN_MOVERIGHT));
 end, false);
 
-extension:RegisterMethod("p", "keyJump", "", "b", 1, function(ctx, e)
-	return (IsValid(e) and e:IsPlayer() and ctx:ppPlayer(e, "KeyPress") and e:KeyDown(IN_JUMP));
+extension:RegisterMethod("p", "keyJump", "", "b", 1, function(context, e)
+	context = tokens[context];
+	return (IsValid(e) and e:IsPlayer() and context:ppPlayer(e, "KeyPress") and e:KeyDown(IN_JUMP));
 end, false);
 
-extension:RegisterMethod("p", "keyAttack1", "", "b", 1, function(ctx, e)
-	return (IsValid(e) and e:IsPlayer() and ctx:ppPlayer(e, "KeyPress") and e:KeyDown(IN_ATTACK));
+extension:RegisterMethod("p", "keyAttack1", "", "b", 1, function(context, e)
+	context = tokens[context];
+	return (IsValid(e) and e:IsPlayer() and context:ppPlayer(e, "KeyPress") and e:KeyDown(IN_ATTACK));
 end, false);
 
-extension:RegisterMethod("p", "keyAttack2", "", "b", 1, function(ctx, e)
-	return (IsValid(e) and e:IsPlayer() and ctx:ppPlayer(e, "KeyPress") and e:KeyDown(IN_ATTACK2));
+extension:RegisterMethod("p", "keyAttack2", "", "b", 1, function(context, e)
+	context = tokens[context];
+	return (IsValid(e) and e:IsPlayer() and context:ppPlayer(e, "KeyPress") and e:KeyDown(IN_ATTACK2));
 end, false);
 
-extension:RegisterMethod("p", "keyUse", "", "b", 1, function(ctx, e)
-	return (IsValid(e) and e:IsPlayer() and ctx:ppPlayer(e, "KeyPress") and e:KeyDown(IN_USE));
+extension:RegisterMethod("p", "keyUse", "", "b", 1, function(context, e)
+	context = tokens[context];
+	return (IsValid(e) and e:IsPlayer() and context:ppPlayer(e, "KeyPress") and e:KeyDown(IN_USE));
 end, false);
 
-extension:RegisterMethod("p", "keyReload", "", "b", 1, function(ctx, e)
-	return (IsValid(e) and e:IsPlayer() and ctx:ppPlayer(e, "KeyPress") and e:KeyDown(IN_RELOAD));
+extension:RegisterMethod("p", "keyReload", "", "b", 1, function(context, e)
+	context = tokens[context];
+	return (IsValid(e) and e:IsPlayer() and context:ppPlayer(e, "KeyPress") and e:KeyDown(IN_RELOAD));
 end, false);
 
-extension:RegisterMethod("p", "keyZoom", "", "b", 1, function(ctx, e)
-	return (IsValid(e) and e:IsPlayer() and ctx:ppPlayer(e, "KeyPress") and e:KeyDown(IN_ZOOM));
+extension:RegisterMethod("p", "keyZoom", "", "b", 1, function(context, e)
+	context = tokens[context];
+	return (IsValid(e) and e:IsPlayer() and context:ppPlayer(e, "KeyPress") and e:KeyDown(IN_ZOOM));
 end, false);
 
-extension:RegisterMethod("p", "keyWalk", "", "b", 1, function(ctx, e)
-	return (IsValid(e) and e:IsPlayer() and ctx:ppPlayer(e, "KeyPress") and e:KeyDown(IN_WALK));
+extension:RegisterMethod("p", "keyWalk", "", "b", 1, function(context, e)
+	context = tokens[context];
+	return (IsValid(e) and e:IsPlayer() and context:ppPlayer(e, "KeyPress") and e:KeyDown(IN_WALK));
 end, false);
 
-extension:RegisterMethod("p", "keySprint", "", "b", 1, function(ctx, e)
-	return (IsValid(e) and e:IsPlayer() and ctx:ppPlayer(e, "KeyPress") and e:KeyDown(IN_SPEED));
+extension:RegisterMethod("p", "keySprint", "", "b", 1, function(context, e)
+	context = tokens[context];
+	return (IsValid(e) and e:IsPlayer() and context:ppPlayer(e, "KeyPress") and e:KeyDown(IN_SPEED));
 end, false);
 
-extension:RegisterMethod("p", "keyLeftTurn", "", "b", 1, function(ctx, e)
-	return (IsValid(e) and e:IsPlayer() and ctx:ppPlayer(e, "KeyPress") and e:KeyDown(IN_LEFT));
+extension:RegisterMethod("p", "keyLeftTurn", "", "b", 1, function(context, e)
+	context = tokens[context];
+	return (IsValid(e) and e:IsPlayer() and context:ppPlayer(e, "KeyPress") and e:KeyDown(IN_LEFT));
 end, false);
 
-extension:RegisterMethod("p", "keyRightTurn", "", "b", 1, function(ctx, e)
-	return (IsValid(e) and e:IsPlayer() and ctx:ppPlayer(e, "KeyPress") and e:KeyDown(IN_RIGHT));
+extension:RegisterMethod("p", "keyRightTurn", "", "b", 1, function(context, e)
+	context = tokens[context];
+	return (IsValid(e) and e:IsPlayer() and context:ppPlayer(e, "KeyPress") and e:KeyDown(IN_RIGHT));
 end, false);
 
-extension:RegisterMethod("p", "keyDuck", "", "b", 1, function(ctx, e)
+extension:RegisterMethod("p", "keyDuck", "", "b", 1, function(context, e)
+	context = tokens[context];
 	if not IsValid(e) or not e:IsPlayer() then return false; end
-	if not ctx:ppPlayer(e, "KeyPress") then return false; end
+	if not context:ppPlayer(e, "KeyPress") then return false; end
 	return (e:KeyDown(IN_DUCK) or e:GetInfoNum("gmod_vehicle_viewmode", 0) >= 1);
 end, false);
 
-extension:RegisterMethod("p", "keyDown", "n", "b", 1, function(ctx, e, k)
-	return (IsValid(e) and e:IsPlayer() and ctx:ppPlayer(e, "KeyPress") and e:KeyDown(k));
+extension:RegisterMethod("p", "keyDown", "n", "b", 1, function(context, e, k)
+	context = tokens[context];
+	return (IsValid(e) and e:IsPlayer() and context:ppPlayer(e, "KeyPress") and e:KeyDown(k));
 end, false);
 
 --[[

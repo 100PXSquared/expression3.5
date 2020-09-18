@@ -108,6 +108,20 @@ end
 	Build Context
 ****************************************************************************************************************************/
 
+local Tokens = {};
+EXPR_TOKENS = Tokens;
+setmetatable(Tokens, {
+	__mode = "v";
+});
+local token_meta = {
+	__index = function()
+		error("attempt to index protected table", 2);
+	end;
+	__newindex = function()
+		error("attempt to index protected table", 2);
+	end;
+}
+
 function ENT:BuildContext(instance)
 	self.context = EXPR_CONTEXT.New();
 	self.context.data = {};
@@ -116,18 +130,22 @@ function ENT:BuildContext(instance)
 	self.context.player = self.player;
 	self.context.traceTable = instance.traceTbl;
 
+	local token = {};
+	setmetatable(token, token_meta);
+	Tokens[token] = self.context;
+	self.context.token = token;
+
 	self:BuildEnv(self.context, instance);
 
 	EXPR_LIB.RegisterContext(self.context);
 end
 
 local env_meta = {
-	_index = function(_, v)
-		error("Attempt to reach Lua environment " .. v, 1);
+	__index = function()
+		error("attempt to index protected table", 2);
 	end;
-
 	__newindex = function(_, v)
-		error("Attempt to write to lua environment " .. v, 1);
+		error("attempt to index protected table", 2);
 	end
 }
 
@@ -144,7 +162,7 @@ function ENT:BuildEnv(context, instance)
 		env.OUTPUT = {};
 		env.SERVER = SERVER;
 		env.CLIENT = CLIENT;
-		env.CONTEXT = context;
+		env.CONTEXT = context.token;
 		env.VOID = EXPR_LIB._NIL_;
 
 	-- Main Operations

@@ -2,7 +2,10 @@
 	Request function
 ]]
 
+local tokens = EXPR_TOKENS;
+
 local request = function(ctx, url, suc, fail)
+	ctx = tokens[ctx];
 	if not ctx:canGetURL(url, "HTTPRequests") then return false; end
 
 	local entity = ctx.entity;

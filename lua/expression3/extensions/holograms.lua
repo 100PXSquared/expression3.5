@@ -10,6 +10,8 @@
 	::Hologram Extension::
 ]]
 
+local tokens = EXPR_TOKENS;
+
 local Models;
 local RateCounter, PlayerCounter;
 local max, rate, clips, size, any;
@@ -104,6 +106,7 @@ if (SERVER) then
 	end;
 
 	function Create(ctx, model, pos, ang)
+		ctx = tokens[ctx];
 		local ent, ply = ctx.entity, ctx.player;
 		local nrate, ncount = RateCounter[ply] or 0, PlayerCounter[ply] or 0
 
@@ -296,6 +299,7 @@ extension:RegisterCastingOperator("h", "e", function(ctx, obj)
 		return obj;
 	end
 
+	ctx = tokens[ctx];
 	ctx:Throw("Attempted to cast none hologram entity to hologram.");
 end, false);
 
@@ -329,11 +333,13 @@ extension:RegisterFunction("hololib", "create", "s,v,a", "h", 1, Create);
 
 
 extension:RegisterFunction("hololib", "canCreate", "", "b", 1, function(ctx)
+	ctx = tokens[ctx];
 	local ply = ctx.player;
 	return not ((RateCounter[ply] or 0) >= rate or (PlayerCounter[ply] or 0) >= max);
 end, false);
 
 extension:RegisterMethod("h", "remove", "", "", 0, function(ctx, holo)
+	ctx = tokens[ctx];
 	if (IsValid(holo) and holo.player == ctx.player) then
 		holo:Remove();
 	end
@@ -344,10 +350,12 @@ end, false);
 ]]
 
 extension:RegisterFunction("hololib", "getByID", "n", "e", 1, function(ctx, id)
+	ctx = tokens[ctx];
 	return ctx.data.hologramIDs[id] or Entity(0);
 end, false);
 
 extension:RegisterMethod("h", "setID", "n", "", 0, function(ctx, holo, id)
+	ctx = tokens[ctx];
 	if id > 0 and IsValid(holo) and holo.IsHologram then
 		local known = ctx.data.hologramIDs[id];
 		if IsValid(known) then known.ID = -1 end
@@ -358,6 +366,7 @@ extension:RegisterMethod("h", "setID", "n", "", 0, function(ctx, holo, id)
 end, false)
 
 extension:RegisterMethod("h", "getID", "", "n", 1, function(ctx, holo)
+	ctx = tokens[ctx];
 	if (IsValid(holo) and holo.IsHologram) then
 		return holo.ID or -1;
 	end; return -1;
@@ -369,9 +378,12 @@ end, false)
 
 extension:RegisterMethod("h", "getModel", "", "s", 1, "GetModel", false);
 
-extension:RegisterMethod("h", "setModel", "s", "", 0, SetModel, false);
+extension:RegisterMethod("h", "setModel", "s", "", 0, function(ctx, holo, model)
+	SetModel(tokens[ctx], holo, model);
+end, false);
 
 extension:RegisterMethod("h", "setPos", "v", "", 0, function(ctx, holo, v)
+	ctx = tokens[ctx];
 	if (IsValid(holo) and holo.player == ctx.player) then
 		if not (v.x ~= v.x or v.y ~= v.y or v.z ~= v.z) then
 			holo:SetPos(v);
@@ -380,6 +392,7 @@ extension:RegisterMethod("h", "setPos", "v", "", 0, function(ctx, holo, v)
 end, false);
 
 extension:RegisterMethod("h", "moveTo", "v,n", "", 0, function(ctx, holo, v, n)
+	ctx = tokens[ctx];
 	if (IsValid(holo) and holo.player == ctx.player) then
 		if not (v.x ~= v.x or v.y ~= v.y or v.z ~= v.z) then
 			holo:MoveTo(v, n);
@@ -388,6 +401,7 @@ extension:RegisterMethod("h", "moveTo", "v,n", "", 0, function(ctx, holo, v, n)
 end, false);
 
 extension:RegisterMethod("h", "startMove", "v", "", 0, function(ctx, holo, v)
+	ctx = tokens[ctx];
 	if (IsValid(holo) and holo.player == ctx.player) then
 		if not (v.x ~= v.x or v.y ~= v.y or v.z ~= v.z) then
 			holo:StartMove(v);
@@ -396,6 +410,7 @@ extension:RegisterMethod("h", "startMove", "v", "", 0, function(ctx, holo, v)
 end, false);
 
 extension:RegisterMethod("h", "stopMove", "", "", 0, function(ctx, holo)
+	ctx = tokens[ctx];
 	if (IsValid(holo) and holo.player == ctx.player) then
 		holo:StopMove()
 	end
@@ -404,6 +419,7 @@ end, false);
 ----------------------------------------------------------------------------------------------
 
 extension:RegisterMethod("h", "setAng", "a", "", 0, function(ctx, holo, a)
+	ctx = tokens[ctx];
 	if (IsValid(holo) and holo.player == ctx.player) then
 		if not (a.p ~= a.p or a.y ~= a.y or a.r ~= a.r) then
 			holo:SetAngles(a);
@@ -412,6 +428,7 @@ extension:RegisterMethod("h", "setAng", "a", "", 0, function(ctx, holo, a)
 end, false);
 
 extension:RegisterMethod("h", "rotateTo", "a,n", "", 0, function(ctx, holo, a, n)
+	ctx = tokens[ctx];
 	if (IsValid(holo) and holo.player == ctx.player) then
 		if not (a.p ~= a.p or a.y ~= a.y or a.r ~= a.r) then
 			holo:RotateTo(a, n);
@@ -420,12 +437,14 @@ extension:RegisterMethod("h", "rotateTo", "a,n", "", 0, function(ctx, holo, a, n
 end, false);
 
 extension:RegisterMethod("h", "startRotate", "a", "", 0, function(ctx, holo, a)
+	ctx = tokens[ctx];
 	if (IsValid(holo) and holo.player == ctx.player) then
 		holo:StartRotate(a);
 	end
 end, false);
 
 extension:RegisterMethod("h", "stopRotate", "", "", 0, function(ctx, holo)
+	ctx = tokens[ctx];
 	if (IsValid(holo) and holo.player == ctx.player) then
 		holo:StopRotate();
 	end
@@ -434,42 +453,49 @@ end, false);
 ----------------------------------------------------------------------------------------------
 
 extension:RegisterMethod("h", "setScale", "v", "", 0, function(ctx, holo, v)
+	ctx = tokens[ctx];
 	if IsValid(holo) and holo.player == ctx.player then
 		holo:SetScale(v);
 	end
 end, false);
 
 extension:RegisterMethod("h", "setScaleUnits", "v", "", 0, function(ctx, holo, v)
+	ctx = tokens[ctx];
 	if IsValid(holo) and holo.player == ctx.player then
 		holo:SetScaleUnits(v);
 	end
 end, false);
 
 extension:RegisterMethod("h", "scaleTo", "v,n", "", 0, function(ctx, holo, v, n)
+	ctx = tokens[ctx];
 	if IsValid(holo) and holo.player == ctx.player then
 		holo:ScaleTo(v, n);
 	end
 end, false);
 
 extension:RegisterMethod("h", "scaleToUnits", "v,n", "", 0, function(ctx, holo, v, n)
+	ctx = tokens[ctx];
 	if IsValid(holo) and holo.player == ctx.player then
 		holo:ScaleToUnits(v, n);
 	end
 end, false);
 
 extension:RegisterMethod("h", "stopScale", "", "", 0, function(ctx, holo)
+	ctx = tokens[ctx];
 	if IsValid(holo) and holo.player == ctx.player then
 		holo:StopScale();
 	end
 end, false);
 
 extension:RegisterMethod("h", "getScale", "", "v", 1, function(ctx, holo)
+	ctx = tokens[ctx];
 	if IsValid(holo) and holo.GetScale then
 		return holo:GetScale();
 	end; return Vector(0, 0, 0);
 end, false);
 
 extension:RegisterMethod("h", "getScaleUnits", "", "v", 1, function(ctx, holo)
+	ctx = tokens[ctx];
 	if IsValid(holo) and holo.GetScale then
 		return holo:GetScaleUnits();
 	end; return Vector(0, 0, 0);
@@ -478,30 +504,35 @@ end, false);
 ----------------------------------------------------------------------------------------------
 
 extension:RegisterMethod("h", "setShading", "b", "", 0, function(ctx, holo, b)
+	ctx = tokens[ctx];
 	if IsValid(holo) and holo.player == ctx.player then
 		holo:SetShading(b);
 	end
 end, false);
 
 extension:RegisterMethod("h", "setShadow", "b", "", 0, function(ctx, holo, b)
+	ctx = tokens[ctx];
 	if IsValid(holo) and holo.player == ctx.player then
 		holo:DrawShadow(b);
 	end
 end, false);
 
 extension:RegisterMethod("h", "setVisible", "b", "", 0, function(ctx, holo, b)
+	ctx = tokens[ctx];
 	if IsValid(holo) and holo.player == ctx.player then
 		holo:SetVisible(b);
 	end
 end, false);
 
 extension:RegisterMethod("h", "isVisible", "", "b", 1, function(ctx, holo)
+	ctx = tokens[ctx];
 	if IsValid(holo) and holo.INFO then
 		return holo.INFO.VISIBLE or false;
 	end; return false;
 end, false);
 
 extension:RegisterMethod("h", "hasShading", "", "b", 1, function(ctx, holo)
+	ctx = tokens[ctx];
 	if IsValid(holo) and holo.INFO then
 		return holo.INFO.SHADING or false;
 	end; return false;
@@ -510,30 +541,35 @@ end, false);
 ----------------------------------------------------------------------------------------------
 
 extension:RegisterMethod("h", "pushClip", "n,v,v,b", "", 0, function(ctx, holo, n, v, v, b)
+	ctx = tokens[ctx];
 	if IsValid(holo) and holo.player == ctx.player then
 		holo:PushClip(n, v, v, b);
 	end
 end, false);
 
 extension:RegisterMethod("h", "removeClip", "n", "", 0, function(ctx, holo, n)
+	ctx = tokens[ctx];
 	if IsValid(holo) and holo.player == ctx.player then
 		holo:RemoveClip(n);
 	end
 end, false);
 
 extension:RegisterMethod("h", "enableClip", "n,b", "", 0, function(ctx, holo, n, b)
+	ctx = tokens[ctx];
 	if IsValid(holo) and holo.player == ctx.player then
 		holo:SetClipEnabled(n, b);
 	end
 end, false);
 
 extension:RegisterMethod("h", "setClipOrigin", "n,v", "", 0, function(ctx, holo, n, v)
+	ctx = tokens[ctx];
 	if IsValid(holo) and holo.player == ctx.player then
 		holo:SetClipOrigin(n, v);
 	end
 end, false);
 
 extension:RegisterMethod("h", "setClipNormal", "n,v", "", 0, function(ctx, holo, n, v)
+	ctx = tokens[ctx];
 	if IsValid(holo) and holo.player == ctx.player then
 		holo:SetClipNormal(n, v);
 	end
@@ -542,6 +578,7 @@ end, false);
 ----------------------------------------------------------------------------------------------
 
 extension:RegisterMethod("h", "setColor", "c", "", 0, function(ctx, holo, c)
+	ctx = tokens[ctx];
 	if IsValid(holo) and holo.player == ctx.player then
 		holo:SetColor(c);
 		holo:SetRenderMode(c.a == 255 and 0 or 4);
@@ -549,6 +586,7 @@ extension:RegisterMethod("h", "setColor", "c", "", 0, function(ctx, holo, c)
 end, false);
 
 extension:RegisterMethod("h", "getColor", "", "c", 1, function(ctx, holo)
+	ctx = tokens[ctx];
 	if IsValid(holo) then
 		return holo:GetColor();
 	end; return Color(0, 0, 0);
@@ -558,6 +596,7 @@ end, false);
 ----------------------------------------------------------------------------------------------
 
 extension:RegisterMethod("h", "setMaterial", "s", "", 0, function(ctx, holo, s)
+	ctx = tokens[ctx];
 	if IsValid(holo) and holo.player == ctx.player then
 		if not EXPR_LIB.BannedMats[s] then
 			holo:SetMaterial(s);
@@ -566,30 +605,35 @@ extension:RegisterMethod("h", "setMaterial", "s", "", 0, function(ctx, holo, s)
 end, false);
 
 extension:RegisterMethod("h", "getMaterial", "", "s", 1, function(ctx, holo)
+	ctx = tokens[ctx];
 	if IsValid(holo) and holo.player == ctx.player then
 		return holo:GetMaterial();
 	end; return "";
 end, false);
 
 extension:RegisterMethod("h", "getSkin", "", "n", 1, function(ctx, holo)
+	ctx = tokens[ctx];
 	if IsValid(holo) and holo.player == ctx.player then
 		return holo:GetSkin();
 	end; return 0;
 end, false);
 
 extension:RegisterMethod("h", "getSkinCount", "", "n", 1, function(ctx, holo)
+	ctx = tokens[ctx];
 	if IsValid(holo) and holo.player == ctx.player then
 		return holo:SkinCount();
 	end; return 0;
 end, false);
 
 extension:RegisterMethod("h", "setSkin", "n", "", 0, function(ctx, holo, n)
+	ctx = tokens[ctx];
 	if IsValid(holo) and holo.player == ctx.player then
 		holo:SetSkin(n);
 	end
 end, false);
 
 extension:RegisterMethod("h", "setBodygroup", "n,n", "", 0, function(ctx, holo, n1, n2)
+	ctx = tokens[ctx];
 	if IsValid(holo) and holo.player == ctx.player then
 		holo:SetBodygroup(n1, n2);
 	end
@@ -598,24 +642,28 @@ end, false);
 ----------------------------------------------------------------------------------------------
 
 extension:RegisterMethod("h", "parent", "e", "", 0, function(ctx, holo, e)
+	ctx = tokens[ctx];
 	if IsValid(holo) and holo.player == ctx.player and IsValid(e) then
 		holo:SetParent(e);
 	end
 end, false);
 
 extension:RegisterMethod("h", "parent", "h", "", 0, function(ctx, holo, h)
+	ctx = tokens[ctx];
 	if IsValid(holo) and holo.player == ctx.player and IsValid(h) then
 		holo:SetParent(h);
 	end
 end, false);
 
 extension:RegisterMethod("h", "parent", "p", "", 0, function(ctx, holo, p)
+	ctx = tokens[ctx];
 	if IsValid(holo) and holo.player == ctx.player and IsValid(p) then
 		holo:SetParent(p);
 	end
 end, false);
 
 extension:RegisterMethod("h", "parentAttachment", "e,s", "", 0, function(ctx, holo, e, s)
+	ctx = tokens[ctx];
 	if IsValid(holo) and holo.player == ctx.player and IsValid(e) then
 		holo:SetParent(e);
 		holo:Fire("SetParentAttachmentMaintainOffset", s, 0);
@@ -623,6 +671,7 @@ extension:RegisterMethod("h", "parentAttachment", "e,s", "", 0, function(ctx, ho
 end, false);
 
 extension:RegisterMethod("h", "parentAttachment", "h,s", "", 0, function(ctx, holo, h, s)
+	ctx = tokens[ctx];
 	if IsValid(holo) and holo.player == ctx.player and IsValid(h) then
 		holo:SetParent(h);
 		holo:Fire("SetParentAttachmentMaintainOffset", s, 0);
@@ -630,6 +679,7 @@ extension:RegisterMethod("h", "parentAttachment", "h,s", "", 0, function(ctx, ho
 end, false);
 
 extension:RegisterMethod("h", "parentAttachment", "p,s", "", 0, function(ctx, holo, p, s)
+	ctx = tokens[ctx];
 	if IsValid(holo) and holo.player == ctx.player and IsValid(p) then
 		holo:SetParent(p);
 		holo:Fire("SetParentAttachmentMaintainOffset", s, 0);
@@ -637,12 +687,14 @@ extension:RegisterMethod("h", "parentAttachment", "p,s", "", 0, function(ctx, ho
 end, false);
 
 extension:RegisterMethod("h", "unparent", "", "", 0, function(ctx, holo)
+	ctx = tokens[ctx];
 	if IsValid(holo) and holo.player == ctx.player then
 		holo:SetParent();
 	end
 end, false);
 
 extension:RegisterMethod("h", "getParentEntity", "", "", 0, function(ctx, holo)
+	ctx = tokens[ctx];
 	if IsValid(holo) and holo.player == ctx.player then
 		local parent = holo:GetParent();
 		if (IsValid(parent)) then return parent end
@@ -650,6 +702,7 @@ extension:RegisterMethod("h", "getParentEntity", "", "", 0, function(ctx, holo)
 end, false);
 
 extension:RegisterMethod("h", "getParentHologram", "", "", 0, function(ctx, holo)
+	ctx = tokens[ctx];
 	if IsValid(holo) and holo.player == ctx.player then
 		local parent = holo:GetParent();
 		if (IsValid(parent) and parent.IsHologram) then return parent end
@@ -657,6 +710,7 @@ extension:RegisterMethod("h", "getParentHologram", "", "", 0, function(ctx, holo
 end, false);
 
 extension:RegisterMethod("h", "getParentPlayer", "", "", 0, function(ctx, holo)
+	ctx = tokens[ctx];
 	if IsValid(holo) and holo.player == ctx.player then
 		local parent = holo:GetParent();
 		if (IsValid(parent) and parent:IsPlayer()) then return parent end
@@ -666,6 +720,7 @@ end, false);
 ----------------------------------------------------------------------------------------------
 
 extension:RegisterMethod("h", "setBonePos", "n,v", "", 0, function(ctx, holo, n, v)
+	ctx = tokens[ctx];
 	if IsValid(holo) and holo.player == ctx.player then
 		holo:SetBonePos(n, v);
 	end
@@ -673,6 +728,7 @@ end, false);
 
 
 extension:RegisterMethod("h", "setBoneAngle", "n,a", "", 0, function(ctx, holo, n, a)
+	ctx = tokens[ctx];
 	if IsValid(holo) and holo.player == ctx.player then
 		holo:SetBoneAngle(n, a);
 	end
@@ -680,30 +736,35 @@ end, false);
 
 
 extension:RegisterMethod("h", "setBoneScale", "n,v", "", 0, function(ctx, holo, n, v)
+	ctx = tokens[ctx];
 	if IsValid(holo) and holo.player == ctx.player then
 		holo:SetBoneScale(n, v);
 	end
 end, false);
 
 extension:RegisterMethod("h", "jiggleBone", "n,b", "", 0, function(ctx, holo)
+	ctx = tokens[ctx];
 	if IsValid(holo) and holo.player == ctx.player then
 		holo:SetBoneJiggle(n,b);
 	end
 end, false);
 
 extension:RegisterMethod("h", "getBonePos", "n", "v", 1, function(ctx, holo, n)
+	ctx = tokens[ctx];
 	if IsValid(holo) and holo.player == ctx.player then
 		return holo:GetBonePos(n);
 	end; return Vector(0, 0, 0);
 end, false);
 
 extension:RegisterMethod("h", "getBoneAng", "n", "a", 1, function(ctx, holo, n)
+	ctx = tokens[ctx];
 	if IsValid(holo) and holo.player == ctx.player then
 		return holo:GetBoneAngle(n);
 	end; return Angle(0, 0, 0);
 end, false);
 
 extension:RegisterMethod("h", "getBoneScale", "n", "v", 1, function(ctx, holo, n)
+	ctx = tokens[ctx];
 	if IsValid(holo) and holo.player == ctx.player then
 		return holo:GetBoneScale(n);
 	end; return Vector(0, 0, 0);
@@ -725,6 +786,7 @@ end, false);
 ----------------------------------------------------------------------------------------------
 
 local SetAnimation1 = function(ctx, holo, a, b, c)
+	ctx = tokens[ctx];
 	if IsValid(holo) and holo.player == ctx.player then
 		holo:SetHoloAnimation(a, b, c);
 	end
@@ -735,6 +797,7 @@ extension:RegisterMethod("h", "setAnimation", "n,n", "", 0, SetAnimation1, false
 extension:RegisterMethod("h", "setAnimation", "n,n,n", "", 0, SetAnimation1, false);
 
 local SetAnimation2 = function(ctx, holo, a, b, c)
+	ctx = tokens[ctx];
 	if IsValid(holo) and holo.player == ctx.player then
 		holo:SetHoloAnimation(holo:LookupSequence(a), b, c);
 	end
@@ -745,36 +808,42 @@ extension:RegisterMethod("h", "setAnimation", "s,n", "", 0, SetAnimation2, false
 extension:RegisterMethod("h", "setAnimation", "s", "", 0, SetAnimation2, false);
 
 extension:RegisterMethod("h", "animationLength", "", "n", 1, function(ctx, holo)
+	ctx = tokens[ctx];
 	if IsValid(holo) and holo.player == ctx.player then
 		return holo:SequenceDuration() or 0;
 	end; return 0;
 end, false);
 
 extension:RegisterMethod("h", "setPose", "s,n", "", 0, function(ctx, holo, s, n)
+	ctx = tokens[ctx];
 	if IsValid(holo) and holo.player == ctx.player then
 		holo:SetPoseParameter(s, n);
 	end
 end, false);
 
 extension:RegisterMethod("h", "getPose", "", "n", 1, function(ctx, holo)
+	ctx = tokens[ctx];
 	if IsValid(holo) and holo.player == ctx.player then
 		return holo:GetPoseParameter() or 0;
 	end; return 0;
 end, false);
 
 extension:RegisterMethod("h", "getAnimation", "", "n", 1, function(ctx, holo)
+	ctx = tokens[ctx];
 	if IsValid(holo) and holo.player == ctx.player then
 		return holo:GetSequence() or 0;
 	end; return 0;
 end, false);
 
 extension:RegisterMethod("h", "getAnimationName", "n", "s", 1, function(ctx, holo, n)
+	ctx = tokens[ctx];
 	if IsValid(holo) and holo.player == ctx.player then
 		return holo:GetSequenceName(n) or "";
 	end; return "";
 end, false);
 
 extension:RegisterMethod("h", "setAnimationRate", "n", "", 0, function(ctx, holo, n)
+	ctx = tokens[ctx];
 	if IsValid(holo) and holo.player == ctx.player then
 		holo:SetPlaybackRate(n);
 	end
