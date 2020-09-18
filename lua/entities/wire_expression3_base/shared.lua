@@ -370,7 +370,7 @@ end
 function ENT:HandelThrown(thrown, stackTrace)
 	print("HandelThrown", self, thrown);
 
-	self:SendToOwner(false, Color(255,0,0), "One of your Expression3 gate's has errored (see golem console).");
+	self:SendToOwner(false, Color(255,0,0), "One of your Expression3 gates has errored (see golem console).");
 
 	if not thrown then
 		self:WriteToLogger(Color(255,0,0), "Suffered an unkown error (no reason given).");
@@ -393,7 +393,7 @@ function ENT:HandelThrown(thrown, stackTrace)
 			self:FlushLogger();
 
 			if IsValid(thrown.ctx.entity) then
-				thrown.ctx.entity:SendToOwner(false, Color(255,0,0), "One of your Expression3 gate's has errored (see golem console).");
+				thrown.ctx.entity:SendToOwner(false, Color(255,0,0), "One of your Expression3 gates has errored (see golem console).");
 				thrown.ctx.entity:WriteToLogger(Color(255,0,0), "Suffered a ", thrown.state, " error:\n")
 				thrown.ctx.entity:WriteToLogger(Color(0,255, 255), "Message: ", Color(255, 255, 255), "A function executed from a remote source threw an error.", "\n")
 				thrown.ctx.entity:WriteToLogger(Color(0,255, 255), "Thrown error: ", Color(255, 255, 255), thrown.msg, "\n");
