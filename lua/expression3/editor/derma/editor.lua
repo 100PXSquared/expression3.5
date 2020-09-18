@@ -1,10 +1,10 @@
-/*=============================================================================
+--[[===========================================================================
 	Golem Editor
 	Author: Oskar
 	Credits:
 		Andreas "Syranide" Svensson for making the E2 editor
 		Rusketh and Divran for all the help making this a reality
-=============================================================================*/
+=============================================================================]]
 
 local math_max 						= math.max
 local math_min 						= math.min
@@ -36,7 +36,7 @@ local input_IsKeyDown 				= input.IsKeyDown
 local draw_SimpleText 				= draw.SimpleText
 local draw_WordBox 					= draw.WordBox
 
-local BookmarkMaterial 				= Material("diagona-icons/152.png")
+local BookmarkMaterial 				= Material("icon16/star.png")
 
 local C_white = Color(255, 255, 255)
 

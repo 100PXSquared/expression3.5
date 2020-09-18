@@ -52,11 +52,11 @@ function PANEL:BuildControls()
 		self:SearchAll(str, true);
 	end;
 
-	self.ctrl_pnl:SetupButton("Close All", "icon16/arrow_up.png", LEFT, function()
+	self.ctrl_pnl:SetupButton("Close All", "icon16/arrow_in.png", LEFT, function()
 		self:ExpandAll(false);
 	end);
 
-	self.ctrl_pnl:SetupButton("Expand All", "icon16/arrow_down.png", LEFT, function()
+	self.ctrl_pnl:SetupButton("Expand All", "icon16/arrow_out.png", LEFT, function()
 		self:ExpandAll(true);
 	end);
 
