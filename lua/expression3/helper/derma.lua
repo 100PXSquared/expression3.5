@@ -5,8 +5,8 @@ if SERVER then return; end
 *********************************************************************************/
 local EDITOR_PANEL = {};
 
-local tick = Material("fugue/tick.png");
-local cross = Material("fugue/exclamation-red.png");
+local tick = Material("icon16/tick.png");
+local cross = Material("icon16/cross.png");
 
 function EDITOR_PANEL:Init()
 	self.items = {};
@@ -112,7 +112,7 @@ function HELPER_PANEL:Init()
 	self.srch_pnl:SetParent(self);
 	self.srch_pnl:Dock(TOP);
 
-	self.cls_btn = self.srch_pnl:SetupButton("Expand Browser", "fugue/arrow-090.png", RIGHT, function()
+	self.cls_btn = self.srch_pnl:SetupButton("Expand Browser", "icon16/arrow_up.png", RIGHT, function()
 		self.cls_btn:SetVisible(false);
 		self.srch_pnl:InvalidateLayout()
 		self:CloseHTML();
@@ -121,7 +121,7 @@ function HELPER_PANEL:Init()
 
 	self.cls_btn:SetVisible(false);
 
-	self.expt_btn = self.ctrl_pnl:SetupTextBox("Export Custom Helper Data", "fugue/disk-black.png", RIGHT, function(_, str)
+	self.expt_btn = self.ctrl_pnl:SetupTextBox("Export Custom Helper Data", "icon16/disk.png", RIGHT, function(_, str)
 		if str ~= "" then
 			EXPR_DOCS.SaveChangedDocs(str .. ".txt");
 			self:WriteLine(Color(255, 255, 255), "Exported Custom Helpers");
@@ -191,10 +191,10 @@ function HELPER_PANEL:Reload()
 	local Classes = self:AddNode("Classes");
 	local Operators = self:AddNode("Operators");
 
-	Links:SetIcon("fugue/globe-network.png");
-	Examples:SetIcon("fugue/blue-folder--plus.png");
-	CustomHelpers:SetIcon("fugue/blue-folder-horizontal-open.png");
-	BookMarks:SetIcon("fugue/book-bookmark.png");
+	Links:SetIcon("icon16/link.png");
+	Examples:SetIcon("icon16/folder.png");
+	CustomHelpers:SetIcon("icon16/folder.png");
+	BookMarks:SetIcon("icon16/star.png");
 
 	self:AddHTMLCallback(BookMarks, function()
 		return EXPR_DOCS.toHTML({
@@ -256,12 +256,12 @@ function HELPER_PANEL:AddOptionsMenu(node, callback)
 
 				self:OpenEditor(kv, csv);
 
-			end):SetIcon("fugue/pencil.png");
+			end):SetIcon("icon16/pencil.png");
 		end
 
 		menu:AddOption("Copy to clipboard", function()
 			SetClipboardText(node:GetText());
-		end):SetIcon("fugue/document-copy.png");
+		end):SetIcon("icon16/page_copy.png");
 
 		if not node.isBookMarked then
 
@@ -278,7 +278,7 @@ function HELPER_PANEL:AddOptionsMenu(node, callback)
 
 				self:AddOptionsMenu(node.bookMark);
 
-			end):SetIcon("fugue/book-open-bookmark.png");
+			end):SetIcon("icon16/star.png");
 
 		end
 
@@ -293,14 +293,14 @@ function HELPER_PANEL:AddOptionsMenu(node, callback)
 
 				node.bookMark = nil;
 				node.isBookMarked = false;
-			end):SetIcon("fugue/book.png");
+			end):SetIcon("icon16/delete.png");
 
 			if node.BookMarkOff then
 				menu:AddOption("Goto", function()
 					self.root_tree:SetSelectedItem(node.BookMarkOff);
 					node.BookMarkOff:ExpandTo(true);
 					self:ScrollTo(node);
-				end):SetIcon("fugue/eye--arrow.png");
+				end):SetIcon("icon16/application_go.png");
 			end
 
 		end

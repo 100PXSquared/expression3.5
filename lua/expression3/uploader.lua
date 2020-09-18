@@ -608,11 +608,11 @@ if CLIENT then
 		end
 	end
 
-	local icon_error = Material("fugue/exclamation-red.png");
-	local icon_request = Material("fugue/monitor-network.png");
-	local icon_validate = Material("fugue/eye--arrow.png");
-	local icon_upload = Material("fugue/drive-upload.png");
-	local icon_receive = Material("fugue/question.png");
+	local icon_error = Material("icon16/error.png");
+	local icon_request = Material("icon16/page_link.png");
+	local icon_validate = Material("icon16/hourglass.png");
+	local icon_upload = Material("icon16/connect.png");
+	local icon_receive = Material("icon16/help.png");
 
 	UPLOADER.DrawUploadScreen = function(w, h, tool)
 		local state, per = UPLOADER.GetState();

@@ -32,7 +32,7 @@ extension:SetClientState();
 
 extension:RegisterLibrary("http");
 
-extension:RegisterPermission("HTTPRequests", "fugue/drive-upload.png", "This gate is allowed to make http requests the filter setting will still be applied.");
+extension:RegisterPermission("HTTPRequests", "icon16/page_link.png", "This gate is allowed to make HTTP requests. The filter setting will still be applied.");
 
 
 extension:RegisterFunction("http", "request", "s,f", "b", 1, request, false);

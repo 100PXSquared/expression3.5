@@ -8,7 +8,7 @@ local tokens = EXPR_TOKENS;
 	Permission
 ]]
 
-extension:RegisterPermission("KeyPress", "fugue/controller-d-pad.png", "This E3 gate is allowed to sniff your keypresses.");
+extension:RegisterPermission("KeyPress", "icon16/keyboard.png", "This E3 gate is allowed to sniff your keypresses.");
 
 --[[
 	Key press functions

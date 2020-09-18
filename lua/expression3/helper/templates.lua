@@ -120,8 +120,8 @@ local function addSaveStateIcon(pnl, node, docs, i, keyvalues)
 		local btn = pnl:EmbedButton(node, "GOLEM_StateBox", 24, 0);
 
 		--btn:AddState("v", nil, nil);
-		btn:AddState("n", false, "fugue/minus-small-circle.png");
-		btn:AddState("y", true, "fugue/tick-small-circle.png");
+		btn:AddState("n", false, "icon16/tick.png");
+		btn:AddState("y", true, "icon16/cross.png");
 
 		if i then
 			btn:PollFromCallback(function()
@@ -152,9 +152,9 @@ local function state(n)
 end
 
 local function stateIcon(node, n)
-	if n == EXPR_SERVER then node:SetIcon("fugue/state-server.png") end
-	if n == EXPR_CLIENT then node:SetIcon("fugue/state-client.png") end
-	return node:SetIcon("fugue/state-shared.png");
+	if n == EXPR_SERVER then node:SetIcon("expression3/state_server.png") end
+	if n == EXPR_CLIENT then node:SetIcon("expression3/state_client.png") end
+	return node:SetIcon("expression3/state_shared.png");
 end
 
 /*********************************************************************************
@@ -567,7 +567,7 @@ hook.Add("Expression3.LoadHelperNodes", "Expression3.Examples", function(pnl)
 			return editor:NewTab("editor", sCode, path, filename);
 		end;
 
-		node:SetIcon("fugue/script-text.png");
+		node:SetIcon("icon16/script.png");
 	end
 
 end);
@@ -588,8 +588,8 @@ hook.Add("Expression3.LoadHelperNodes", "Expression3.Links", function(pnl)
 		end;
 	end
 
-	addLink("Git Hub", "https://github.com/Rusketh/ExpAdv3", "e3_github.png");
-	addLink("Video Tutorials", "https://www.youtube.com/playlist?list=PLOxsj9mdwMARIj7m9MkFkV1mno6nc1TpN", "e3_youtube.png");
+	addLink("GitHub", "https://github.com/Rusketh/ExpAdv3", "expression3/github.png");
+	addLink("Video Tutorials", "https://www.youtube.com/playlist?list=PLOxsj9mdwMARIj7m9MkFkV1mno6nc1TpN", "expression3/youtube.png");
 
 	hook.Run("Expression3.LoadHelperLinks", addLink);
 
@@ -611,7 +611,7 @@ hook.Add("Expression3.LoadHelperNodes", "Expression3.SavedHelpers", function(pnl
 
 		local node = pnl:AddNode("Custom Helpers", filename)
 
-		node:SetIcon("fugue/xfn.png");
+		node:SetIcon("icon16/cancel.png");
 
 		node.DoClick = function()
 			local ok, err = EXPR_DOCS.LoadCustomDocFile(path .. filename, "DATA");
@@ -639,7 +639,7 @@ hook.Add("Expression3.AddGolemTabTypes", "HelperTab", function(editor)
 		end
 
 		local Panel = vgui.Create("GOLEM_E3Helper")
-		local Sheet = self.pnlSideTabHolder:AddSheet("", Panel, "fugue/question.png", function(pnl) self:CloseMenuTab(pnl:GetParent(), true) end)
+		local Sheet = self.pnlSideTabHolder:AddSheet("", Panel, "icon16/help.png", function(pnl) self:CloseMenuTab(pnl:GetParent(), true) end)
 		self.pnlSideTabHolder:SetActiveTab(Sheet.Tab)
 		self.Helper = Sheet
 		Sheet.Panel:RequestFocus()
@@ -649,5 +649,5 @@ hook.Add("Expression3.AddGolemTabTypes", "HelperTab", function(editor)
 		self.Helper = nil
 	end);
 
-	editor.tbRight:SetupButton("Helper", "fugue/question.png", TOP, function() editor:NewMenuTab("helper"); end)
+	editor.tbRight:SetupButton("Helper", "icon16/help.png", TOP, function() editor:NewMenuTab("helper"); end)
 end);

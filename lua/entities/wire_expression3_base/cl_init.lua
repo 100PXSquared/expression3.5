@@ -167,7 +167,7 @@ end
 
 properties.Add("expadv", {
 	MenuLabel = "Expression Advanced",
-	MenuIcon  = "fugue/gear.png",
+	MenuIcon  = "icon16/cog.png",
 	Order = 999,
 	Filter = Filter,
 	MenuOpen = MenuOpen,

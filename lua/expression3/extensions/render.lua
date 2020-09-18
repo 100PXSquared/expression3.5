@@ -83,7 +83,7 @@ extension:SetClientState();
 	*****************************************************************************************************************************************************
 ]]--
 
-extension:RegisterPermission("RenderScreen", "fugue/monitor-screensaver.png", "This gate is allowed to render to\nits inbuilt screen.");
+extension:RegisterPermission("RenderScreen", "icon16/monitor.png", "This gate is allowed to render to\nits inbuilt screen.");
 
 extension:RegisterLibrary("render");
 

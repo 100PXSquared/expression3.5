@@ -173,8 +173,8 @@ vgui.Register("GOLEM_StateBox", STATE, "GOLEM_ImageButton");
 local CHECK = {};
 
 function CHECK:Init()
-	self:AddState("tick", true, "fugue/tick.png", nil, Color(100, 100, 100));
-	self:AddState("cross", true, "fugue/cross-button.png", nil, Color(100, 100, 100));
+	self:AddState("tick", true, "icon16/tick.png", nil, Color(100, 100, 100));
+	self:AddState("cross", true, "icon16/cross.png", nil, Color(100, 100, 100));
 	self:SetValue(false, true);
 end
 

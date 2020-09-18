@@ -7,8 +7,8 @@ do
 	local PANEL = {};
 
 	function PANEL:Init()
-		self:AddTab("Permissions", "fugue/xfn.png", "GOLEM_E3PermissionTree");
-		self:AddTab("HTTP", "fugue/globe-network.png", "GOLEM_E3URLTree");
+		self:AddTab("Permissions", "icon16/shield.png", "GOLEM_E3PermissionTree");
+		self:AddTab("HTTP", "icon16/page_link.png", "GOLEM_E3URLTree");
 
 		self:SetActiveTab("Permissions");
 	end;
@@ -34,7 +34,7 @@ hook.Add("Expression3.AddGolemTabTypes", "PermssionsTab", function(editor)
 		end
 
 		local Panel = vgui.Create("GOLEM_E3Permissions")
-		local Sheet = self.pnlSideTabHolder:AddSheet("", Panel, "fugue/controller-d-pad.png", function(pnl) self:CloseMenuTab(pnl:GetParent(), true) end)
+		local Sheet = self.pnlSideTabHolder:AddSheet("", Panel, "icon16/shield.png", function(pnl) self:CloseMenuTab(pnl:GetParent(), true) end)
 		self.pnlSideTabHolder:SetActiveTab(Sheet.Tab)
 		self.Permissions = Sheet
 		Sheet.Panel:RequestFocus()
@@ -44,5 +44,5 @@ hook.Add("Expression3.AddGolemTabTypes", "PermssionsTab", function(editor)
 		self.Permissions = nil
 	end);
 
-	editor.tbRight:SetupButton("Permssions", "fugue/controller-d-pad.png", TOP, function() editor:NewMenuTab("permissions"); end)
+	editor.tbRight:SetupButton("Permssions", "icon16/shield.png", TOP, function() editor:NewMenuTab("permissions"); end)
 end);

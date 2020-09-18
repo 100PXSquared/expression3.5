@@ -13,9 +13,9 @@ function PANEL:Init()
 	self:DockPadding(5, 5, 5, 5);
 
 	self:BuildControls();
-	self:SetDefaultIcon("fugue/block.png");
-	self:SetExpandedIcon("fugue/toggle-small.png");
-	self:SetUnexpandedIcon("fugue/toggle-small-expand.png");
+	self:SetDefaultIcon("icon16/bricks.png");
+	self:SetExpandedIcon("icon16/bullet_toggle_minus.png");
+	self:SetUnexpandedIcon("icon16/bullet_toggle_plus.png");
 
 	self:DoReload();
 end
@@ -41,7 +41,7 @@ function PANEL:BuildControls()
 	self.ctrl_pnl:DockMargin(5, 5, 5, 5);
 	self.ctrl_pnl:Dock(BOTTOM);
 
-	self.srch_txt = self.srch_pnl:SetupTextBox("Search", "fugue/binocular.png", FILL, function(_, str)
+	self.srch_txt = self.srch_pnl:SetupTextBox("Search", "icon16/find.png", FILL, function(_, str)
 		self:SearchAll(str, true);
 	end, nil);
 
@@ -52,15 +52,15 @@ function PANEL:BuildControls()
 		self:SearchAll(str, true);
 	end;
 
-	self.ctrl_pnl:SetupButton("Close All", "fugue/arrow-090.png", LEFT, function()
+	self.ctrl_pnl:SetupButton("Close All", "icon16/arrow_up.png", LEFT, function()
 		self:ExpandAll(false);
 	end);
 
-	self.ctrl_pnl:SetupButton("Expand All", "fugue/arrow-270.png", LEFT, function()
+	self.ctrl_pnl:SetupButton("Expand All", "icon16/arrow_down.png", LEFT, function()
 		self:ExpandAll(true);
 	end);
 
-	self.rld_brn = self.ctrl_pnl:SetupButton("Reload", "fugue/arrow-circle.png", LEFT, function()
+	self.rld_brn = self.ctrl_pnl:SetupButton("Reload", "icon16/refresh.png", LEFT, function()
 		self:DoReload();
 	end);
 end
@@ -136,7 +136,7 @@ end
 	Reset Search Panel
 *********************************************************************************/
 do
-	local binocular = Material("fugue/binocular.png");
+	local binocular = Material("icon16/find.png");
 	
 	local cb = function(self, str)
 		self:SearchAll(str, true);

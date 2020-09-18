@@ -1,6 +1,6 @@
-/*============================================================================================================================================
+--[[==========================================================================================================================================
 	Golem Editor
-============================================================================================================================================*/
+==========================================================================================================================================]]--
 
 Golem = {}
 
@@ -16,7 +16,7 @@ function Golem.Create()
 	if Golem.Instance then return end
 	Golem.Instance = vgui.Create("GOLEM_IDE")
 	Golem.Instance:SetText("Expression 3 IDE - Golem")
-	Golem.Instance:SetIcon("fugue/application-sidebar-list.png") // Keep or not to keep, that is the question.
+	Golem.Instance:SetIcon("icon16/application_side_list.png") -- Keep or not to keep, that is the question.
 	Golem.Instance:Open()
 	
 	hook.Run("Expression3.GolemInit")

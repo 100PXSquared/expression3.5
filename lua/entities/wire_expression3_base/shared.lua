@@ -647,8 +647,8 @@ if SERVER then
 	util.AddNetworkString("SendToGolem");
 end
 
-EXPR_LIB.RegisterPermission("SendToChat", "fugue/balloon-ellipsis.png", "This gate is allowed to send messages to your chatbox.")
-EXPR_LIB.RegisterPermission("SendToGolem", "fugue/terminal--arrow.png", "This gate is allowed to send messages to your Golem console.")
+EXPR_LIB.RegisterPermission("SendToChat", "icon16/comment.png", "This gate is allowed to send messages to your chatbox.")
+EXPR_LIB.RegisterPermission("SendToGolem", "icon16/application_xp_terminal.png", "This gate is allowed to send messages to your Golem console.")
 
 EXPR_PRINT_GOLEM = 0;
 EXPR_PRINT_CHAT = 1;

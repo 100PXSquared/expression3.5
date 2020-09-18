@@ -176,7 +176,7 @@ function PANEL:Init()
 	end
 
 
-	self.tbBottom:SetupButton("Open", 	"fugue/blue-folder-horizontal-open.png", RIGHT, function()
+	self.tbBottom:SetupButton("Open", "icon16/folder.png", RIGHT, function()
 		local FileMenu = vgui.Create("GOLEM_FileMenu")
 		FileMenu:SetLoadFile()
 
@@ -193,15 +193,15 @@ function PANEL:Init()
 		FileMenu:MakePopup()
 	end)
 
-	self.tbBottom:SetupButton("Save As", "fugue/disks-black.png", RIGHT, function() self:SaveFile(true, true) end)
-	self.tbBottom:SetupButton("Save", 	"fugue/disk-black.png", RIGHT, function() self:SaveFile(true) end)
+	self.tbBottom:SetupButton("Save As", "icon16/disk_multiple.png", RIGHT, function() self:SaveFile(true, true) end)
+	self.tbBottom:SetupButton("Save", "icon16/disk.png", RIGHT, function() self:SaveFile(true) end)
 
-	self.tbRight:SetupButton("Increase font size.", "fugue/edit-size-up.png", BOTTOM, function() Golem.Font:ChangeFontSize(1) end)
-	self.tbRight:SetupButton("Decrease font size.", "fugue/edit-size-down.png", BOTTOM, function() Golem.Font:ChangeFontSize(-1) end)
+	self.tbRight:SetupButton("Increase font size", "icon16/zoom_in.png", BOTTOM, function() Golem.Font:ChangeFontSize(1) end)
+	self.tbRight:SetupButton("Decrease font size", "icon16/zoom_out.png", BOTTOM, function() Golem.Font:ChangeFontSize(-1) end)
 
-	self.tbRight:SetupButton("Options", "fugue/gear.png", TOP, function() self:NewMenuTab("options") end)
-	self.tbRight:SetupButton("Options2", "fugue/gear.png", TOP, function() self:NewMenuTab("options2") end)
-	self.tbRight:SetupButton("Open find & replace", "fugue/magnifier.png", TOP, function() self.pnlSearch:OpenFindWindow("find") end)
+	self.tbRight:SetupButton("Options", "icon16/cog.png", TOP, function() self:NewMenuTab("options") end)
+	self.tbRight:SetupButton("Options2", "icon16/cog.png", TOP, function() self:NewMenuTab("options2") end)
+	self.tbRight:SetupButton("Open find & replace", "icon16/text_replace.png", TOP, function() self.pnlSearch:OpenFindWindow("find") end)
 	
 	-- self.debugButton = self.tbRight:SetupStateButton({
 	-- 	{sTooltip = "A", sIcon = "fugue/ui-check-box.png"},
@@ -209,7 +209,7 @@ function PANEL:Init()
 	-- 	{sTooltip = "B", sIcon = "fugue/ui-check-box-uncheck.png"},
 	--}, TOP, function() end)
 
-	-- self.tbRight:SetupButton("Visit the wiki", 	"fugue/home.png", 		BOTTOM, function() end)
+	-- self.tbRight:SetupButton("Visit the wiki", "icon16/house.png", BOTTOM, function() end)
 
 	self.pnlSideTabHolder = vgui.Create("GOLEM_PropertySheet", self);
 	self.pnlSideTabHolder:Dock(LEFT)
@@ -288,7 +288,7 @@ function PANEL:Init()
 		end
 		
 		local Panel = vgui.Create("GOLEM_Options")
-		local Sheet = self.pnlSideTabHolder:AddSheet("", Panel, "fugue/gear.png", function(pnl) self:CloseMenuTab(pnl:GetParent(), true) end)
+		local Sheet = self.pnlSideTabHolder:AddSheet("", Panel, "icon16/cog.png", function(pnl) self:CloseMenuTab(pnl:GetParent(), true) end)
 		self.pnlSideTabHolder:SetActiveTab(Sheet.Tab)
 		self.Options = Sheet
 		Sheet.Panel:RequestFocus()
@@ -307,7 +307,7 @@ function PANEL:Init()
 		end
 		
 		local Panel = vgui.Create("GOLEM_Options2")
-		local Sheet = self.pnlSideTabHolder:AddSheet("", Panel, "fugue/gear.png", function(pnl) self:CloseMenuTab(pnl:GetParent(), true) end)
+		local Sheet = self.pnlSideTabHolder:AddSheet("", Panel, "icon16/cog.png", function(pnl) self:CloseMenuTab(pnl:GetParent(), true) end)
 		self.pnlSideTabHolder:SetActiveTab(Sheet.Tab)
 		self.Options2 = Sheet
 		Sheet.Panel:RequestFocus()
@@ -443,7 +443,7 @@ function PANEL:NewTab(sType, ...)
 		sLanguage = sLanguage or "e3"
 
 		local Editor = vgui.Create("GOLEM_Editor")
-		local Sheet = self.pnlTabHolder:AddSheet(sName or "generic", Editor, "fugue/script.png", function(pnl) self:CloseTab(pnl:GetParent(), true) end)
+		local Sheet = self.pnlTabHolder:AddSheet(sName or "generic", Editor, "icon16/script.png", function(pnl) self:CloseTab(pnl:GetParent(), true) end)
 		self.pnlTabHolder:SetActiveTab(Sheet.Tab)
 		Sheet.Panel:RequestFocus()
 		Golem.Syntax:Create(sLanguage, Editor)
@@ -932,7 +932,7 @@ end
 /*---------------------------------------------------------------------------
 Voice stuff
 ---------------------------------------------------------------------------*/
-local MicMaterial = Material("fugue/microphone.png")
+local MicMaterial = Material("icon16/telephone.png")
 
 function PANEL:ToggleVoice()
 	self.bVoice = not self.bVoice

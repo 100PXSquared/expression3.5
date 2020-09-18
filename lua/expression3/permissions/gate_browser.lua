@@ -25,7 +25,7 @@ end
 function PANEL:AddGlobalNode()
 	local oNode = self:AddNode("Global");
 
-	oNode:SetIcon("fugue/globe-network.png");
+	oNode:SetIcon("icon16/folder_lightbulb.png");
 
 	self:AddGlobalURLNode(oNode);
 
@@ -37,9 +37,9 @@ function PANEL:AddGlobalNode()
 		pNode:SetIcon(data[2]); -- icon
 		pNode:SetTooltip(data[3]); --desc
 
-		btn:AddState("allow", EXPR_ALLOW, "fugue/tick.png", "Allowed");
-		btn:AddState("deny", EXPR_DENY, "fugue/cross-button.png", "Denied");
-		btn:AddState("friends", EXPR_FRIEND, "fugue/hand-shake.png", "Friends Only");
+		btn:AddState("allow", EXPR_ALLOW, "icon16/tick.png", "Allowed");
+		btn:AddState("deny", EXPR_DENY, "icon16/cross.png", "Denied");
+		btn:AddState("friends", EXPR_FRIEND, "icon16/heart.png", "Friends Only");
 
 		btn:PollFromCallback(function()
 			return EXPR_PERMS.GetGlobal(LocalPlayer(), perm), true;
@@ -58,13 +58,13 @@ function PANEL:AddGlobalURLNode(oNode)
 	local pNode = self:AddNode(oNode, "URL Filter Mode");
 	local btn = self:EmbedButton(pNode, "GOLEM_StateBox", 24, 0);
 	
-	pNode:SetIcon("fugue/monitor-network.png");
-	pNode:SetTooltip("How are http and url requests handled.");
+	pNode:SetIcon("icon16/page_gear.png");
+	pNode:SetTooltip("How HTTP requests are handled.");
 
-	btn:AddState("deny", EXPR_DENY, "fugue/cross-button.png", "Denied");
-	btn:AddState("whitelist", EXPR_WHITE_LIST, "fugue/quill.png", "Use Whitelist");
-	btn:AddState("blacklist", EXPR_BLACK_LIST, "fugue/exclamation-circle.png", "Use blacklist");
-	btn:AddState("friends", EXPR_FRIENDS, "fugue/hand-shake.png", "Friends Only");
+	btn:AddState("deny", EXPR_DENY, "icon16/cross.png", "Denied");
+	btn:AddState("whitelist", EXPR_WHITE_LIST, "icon16/accept.png", "Use Whitelist");
+	btn:AddState("blacklist", EXPR_BLACK_LIST, "icon16/stop.png", "Use blacklist");
+	btn:AddState("friends", EXPR_FRIENDS, "icon16/heart.png", "Friends Only");
 
 	btn:PollFromCallback(function()
 		return EXPR_PERMS.GetGlobal(LocalPlayer(), "URL"), true;
@@ -89,8 +89,8 @@ function PANEL:AddEntity(entity)
 		local oNode = self:AddNode(oName);
 		local eNode = self:AddNode(oNode, eName);
 
-		oNode:SetIcon("fugue/xfn.png");
-		eNode:SetIcon("fugue/monitor-window-3d.png");
+		oNode:SetIcon("icon16/cancel.png");
+		eNode:SetIcon("icon16/rosette.png");
 
 		self:AddEntityURLNode(eNode, entity);
 
@@ -102,9 +102,9 @@ function PANEL:AddEntity(entity)
 			pNode:SetIcon(data[2]);
 			pNode:SetTooltip(data[3]);
 
-			btn:AddState("allow", EXPR_ALLOW, "fugue/tick.png", "Allowed");
-			btn:AddState("deny", EXPR_DENY, "fugue/cross-button.png", "Denied");
-			btn:AddState("global", EXPR_FRIEND, "fugue/globe-network.png");
+			btn:AddState("allow", EXPR_ALLOW, "icon16/tick.png", "Allowed");
+			btn:AddState("deny", EXPR_DENY, "icon16/cross.png", "Denied");
+			btn:AddState("global", EXPR_FRIEND, "icon16/world.png");
 
 			btn:PollFromCallback(function()
 				return EXPR_PERMS.Get(entity, LocalPlayer(), perm, true), true;
@@ -126,13 +126,13 @@ function PANEL:AddEntityURLNode(eNode, entity)
 	local pNode = self:AddNode(eNode, "URL Filter Mode");
 	local btn = self:EmbedButton(pNode, "GOLEM_StateBox", 24, 0);
 	
-	pNode:SetIcon("fugue/monitor-network.png");
-	pNode:SetTooltip("How are http and url requests handled.");
+	pNode:SetIcon("icon16/page_gear.png");
+	pNode:SetTooltip("How HTTP requests are handled.");
 
-	btn:AddState("deny", EXPR_DENY, "fugue/cross-button.png");
-	btn:AddState("whitelist", EXPR_WHITE_LIST, "fugue/quill.png");
-	btn:AddState("blacklist", EXPR_BLACK_LIST, "fugue/exclamation-circle.png");
-	btn:AddState("global", EXPR_GLOBAL, "fugue/globe-network.png");
+	btn:AddState("deny", EXPR_DENY, "icon16/cross.png");
+	btn:AddState("whitelist", EXPR_WHITE_LIST, "icon16/accept.png");
+	btn:AddState("blacklist", EXPR_BLACK_LIST, "icon16/stop.png");
+	btn:AddState("global", EXPR_GLOBAL, "icon16/world.png");
 
 	btn:PollFromCallback(function()
 		return EXPR_PERMS.GetURLPerm(entity, true), true;

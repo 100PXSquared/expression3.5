@@ -20,7 +20,7 @@ function PANEL:Init()
 	self.btnNewTab:SetFlat(true)
 	self.btnNewTab:SetOutlined(true)
 	self.btnNewTab:DrawButton(true)
-	self.btnNewTab:SetMaterial(Material("fugue/script--plus.png"))
+	self.btnNewTab:SetMaterial(Material("icon16/tab_add.png"))
 
 	self.btnNewTab.DoClick = function(btn)
 		self:GetParent():NewTab("editor", false, nil, "generic")

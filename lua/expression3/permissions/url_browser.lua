@@ -5,10 +5,10 @@ if SERVER then return; end
 *********************************************************************************/
 local PANEL = {};
 
-local add_icon = Material("fugue/plus-button.png");
-local save_icon = Material("fugue/disk-black.png");
-local edit_icon = Material("fugue/pencil.png");
-local del_icon = Material("fugue/cross-button.png");
+local add_icon = Material("icon16/add.png");
+local save_icon = Material("icon16/disk.png");
+local edit_icon = Material("icon16/pencil.png");
+local del_icon = Material("icon16/delete.png");
 
 function PANEL:Init()
 	self:Reload();
@@ -31,7 +31,7 @@ end
 
 function PANEL:LoadWhiteList()
 	self.node_white = self:AddNode("White List");
-	self.node_white:SetIcon("fugue/quill.png");
+	self.node_white:SetIcon("icon16/accept.png");
 
 	self.btn_white = self:EmbedButton(self.node_white, "GOLEM_ImageButton", 25, 0);
 	self.btn_white:SetMaterial(add_icon);
@@ -64,7 +64,7 @@ end
 
 function PANEL:LoadBlackList()
 	self.node_black = self:AddNode("Black List");
-	self.node_black:SetIcon("fugue/exclamation-circle.png");
+	self.node_black:SetIcon("icon16/stop.png");
 
 	self.btn_black = self:EmbedButton(self.node_black, "GOLEM_ImageButton", 25, 0);
 	self.btn_black:SetMaterial(add_icon);
@@ -139,7 +139,7 @@ function PANEL:LoadHistory()
 	self.node_history = self:AddNode("History");
 
 	local rfsh = self:EmbedButton(self.node_history, "GOLEM_ImageButton", 25, 0);
-	rfsh:SetIcon("fugue/arrow-circle.png");
+	rfsh:SetIcon("icon16/arrow_refresh.png");
 	rfsh:SetTooltip("Refresh history.");
 
 	rfsh.DoClick = function()
@@ -149,11 +149,11 @@ function PANEL:LoadHistory()
 			node:SetTooltip(url);
 
 			local wlst = self:EmbedButton(node, "GOLEM_ImageButton", 25, 0);
-			wlst:SetIcon("fugue/quill.png");
+			wlst:SetIcon("icon16/accept.png");
 			wlst:SetTooltip("Add to white list.");
 
 			local blst = self:EmbedButton(node, "GOLEM_ImageButton", 50, 0);
-			blst:SetIcon("fugue/exclamation-circle.png");
+			blst:SetIcon("icon16/stop.png");
 			blst:SetTooltip("Add to black list.");
 
 			wlst.DoClick = function()

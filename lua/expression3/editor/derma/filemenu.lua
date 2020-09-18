@@ -80,7 +80,7 @@ function PANEL:AddFolderToBrowser(RootNode, Path)
 end
 
 function PANEL:SetUpBrowserNode(Node, Path, UpDir)
-	Node.Icon:SetImage("fugue/blue-folder-horizontal.png")
+	Node.Icon:SetImage("icon16/folder.png")
 
 	Node.Expander.DoClick = function()
 		local Expanded = not Node.m_bExpanded
@@ -88,9 +88,9 @@ function PANEL:SetUpBrowserNode(Node, Path, UpDir)
 		Node:SetExpanded(Expanded)
 
 		if not Expanded then
-			Node.Icon:SetImage("fugue/blue-folder-horizontal.png")
+			Node.Icon:SetImage("icon16/folder.png")
 		else
-			Node.Icon:SetImage("fugue/blue-folder-horizontal-open.png")
+			Node.Icon:SetImage("icon16/folder.png")
 		end
 	end
 
@@ -108,14 +108,14 @@ function PANEL:BuildToolBar(Parent)
 	Refresh:Dock(RIGHT)
 	Refresh:SetPadding(5)
 	Refresh:SetTooltip("Refresh")
-	Refresh:SetMaterial(Material("fugue/arrow-retweet.png"))
+	Refresh:SetMaterial(Material("icon16/refresh.png"))
 	self.ToolBar.Refresh = Refresh
 
 	local Expand = vgui.Create("GOLEM_ImageButton", self.ToolBar)
 	Expand:Dock(LEFT)
 	Expand:SetPadding(5)
 	Expand:SetTooltip("Expand Nodes")
-	Expand:SetMaterial(Material("fugue/node-insert-child.png"))
+	Expand:SetMaterial(Material("icon16/cancel.png"))
 	self.ToolBar.Expand = Expand
 	self.ExpandedNodes = false
 
@@ -153,10 +153,10 @@ function PANEL:ExpandAll(Bool)
 
 	if not Bool then
 		Panel:SetTooltip("Expand Nodes")
-		Panel:SetMaterial(Material("fugue/node-insert-child.png"))
+		Panel:SetMaterial(Material("icon16/cancel.png"))
 	else
-		Panel:SetTooltip("Colapse Nodes")
-		Panel:SetMaterial(Material("fugue/node-insert-next.png"))
+		Panel:SetTooltip("Collapse Nodes")
+		Panel:SetMaterial(Material("icon16/cancel.png"))
 	end
 end
 
@@ -230,7 +230,7 @@ function PANEL:OpenFolder(Path, UpDir)
 	if UpDir then
 		local Parent = self.FileList:AddLine("", "..", "", "")
 		Parent.IsFolder = true
-		self:SetFileIcon(Parent, "fugue/blue-folder-horizontal-open.png")
+		self:SetFileIcon(Parent, "icon16/folder.png")
 
 		function Parent.OnDoubleClick()
 			self:OpenFolder(UpDir, self:GetUpDir(UpDir))
@@ -241,7 +241,7 @@ function PANEL:OpenFolder(Path, UpDir)
 	local Files, Folders = file.Find(Path .. "/*", "DATA")
 
 	for _, Folder in pairs(Folders) do
-		local Line = self:AddFile(Folder, Path, "fugue/blue-folder-horizontal.png")
+		local Line = self:AddFile(Folder, Path, "icon16/folder.png")
 		Line.IsFolder = true
 
 		function Line.OnDoubleClick()
@@ -251,7 +251,7 @@ function PANEL:OpenFolder(Path, UpDir)
 
 	for _, File in pairs(Files) do
 		if File:Right(4) == ".txt" then
-			local Line = self:AddFile(File, Path, "fugue/script.png")
+			local Line = self:AddFile(File, Path, "icon16/script.png")
 
 			function Line.OnSingleClick()
 				self.SavePath:SetText(File)
@@ -388,7 +388,7 @@ function PANEL:BuildPathBar(Parent)
 	self.Search:Dock(RIGHT)
 	self.Search:SetPadding(5)
 	self.Search:SetTooltip("Search (wild:*)")
-	self.Search:SetMaterial(Material("fugue/magnifier--plus.png"))
+	self.Search:SetMaterial(Material("icon16/find.png"))
 
 	function self.Search.DoClick()
 		local Query = self.PathEntry:GetValue()
@@ -407,7 +407,7 @@ function PANEL:DoSearch(Query, Path)
 	-- Return (/..)
 
 	local Parent = self.FileList:AddLine("", "..", "", "")
-	self:SetFileIcon(Parent, "fugue/blue-folder-horizontal-open.png")
+	self:SetFileIcon(Parent, "icon16/folder.png")
 
 	function Parent.OnDoubleClick()
 		self:OpenFolder(self.CurrentPath, self:GetUpDir(self.CurrentPath))
@@ -428,7 +428,7 @@ function PANEL:SearchDir(Query, Path)
 	local Files, Folders = file.Find(Path .. "/*" .. Query .. "*", "DATA", "nameasc")
 
 	for _, File in pairs(Files) do
-		local Line = self:AddFile(File, Path, "fugue/script.png")
+		local Line = self:AddFile(File, Path, "icon16/script.png")
 
 		function Line.OnSingleClick()
 			self.SavePath:SetText(File)
@@ -450,7 +450,7 @@ function PANEL:SearchDir(Query, Path)
 	end
 
 	for _, Folder in pairs(Folders) do
-		local Line = self:AddFile(Folder, Path, "fugue/blue-folder-horizontal.png")
+		local Line = self:AddFile(Folder, Path, "icon16/folder.png")
 
 		function Line.Action()
 			self:OpenFolder(Path .. "/" .. Folder, Path)
@@ -473,7 +473,7 @@ function PANEL:BuildOpenSave(Parent)
 	self.NewDir:Dock(RIGHT)
 	self.NewDir:SetPadding(5)
 	self.NewDir:SetTooltip("New Folder")
-	self.NewDir:SetMaterial(Material("fugue/blue-folder--plus.png"))
+	self.NewDir:SetMaterial(Material("icon16/folder_add.png"))
 
 	self.NewDir:SetIconFading(false)
 	self.NewDir:SetIconCentered(false)
@@ -513,7 +513,7 @@ function PANEL:SetSaveFile(Default, Path)
 
 	self:SetText("Save File:")
 	self.SaveOrLoad:SetTooltip("Save")
-	self.SaveOrLoad:SetMaterial(Material("fugue/disk.png"))
+	self.SaveOrLoad:SetMaterial(Material("icon16/disk.png"))
 
 	self.SavePath:SetText(Default or "")
 
@@ -533,7 +533,7 @@ function PANEL:SetLoadFile()
 
 	self:SetText("Load")
 	self.SaveOrLoad:SetTooltip("Open")
-	self.SaveOrLoad:SetMaterial(Material("fugue/blue-folder-horizontal-open.png"))
+	self.SaveOrLoad:SetMaterial(Material("icon16/folder_page.png"))
 
 	function self.SaveOrLoad.DoClick()
 		if self:DoLoadFile(self.CurrentPath, self.SavePath:GetValue()) then

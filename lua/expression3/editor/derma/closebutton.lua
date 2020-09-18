@@ -3,7 +3,7 @@
 	Author: Oskar
 ============================================================================================================================================*/
 
-local small_cross = Material("fugue/cross-button.png")
+local small_cross = Material("icon16/cross.png")
 
 local PANEL = {}
 

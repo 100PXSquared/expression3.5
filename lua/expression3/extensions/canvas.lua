@@ -17,7 +17,7 @@ local burst_counter = {};
 
 local extension = EXPR_LIB.RegisterExtension("render_targets");
 
-extension:RegisterPermission("RenderCanvas", "fugue/palette-paint-brush.png", "This gate is allowed to create and render to\ncanvases (render targets).");
+extension:RegisterPermission("RenderCanvas", "icon16/picture_empty.png", "This gate is allowed to create and render to\ncanvases (render targets).");
 
 extension:SetClientState();
 

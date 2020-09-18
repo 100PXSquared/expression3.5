@@ -4,7 +4,7 @@
 
 local extension = EXPR_LIB.RegisterExtension("permissions");
 
-extension:RegisterPermission("PropControl", "fugue/controller-d-pad.png", "This gate is allowed to alter your props.");
+extension:RegisterPermission("PropControl", "icon16/brick_edit.png", "This gate is allowed to alter your props.");
 
 extension:RegisterEvent("PermissionChanged", "p,s,b");
 

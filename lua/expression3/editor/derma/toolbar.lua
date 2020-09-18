@@ -6,15 +6,15 @@
 local PANEL = {}
 
 function PANEL:Init()
-	-- self.btnSave = self:SetupButton("Save", "fugue/disk-black.png", LEFT)
-	-- self.btnSaveAs = self:SetupButton("Save As", "fugue/disks-black.png", LEFT)
-	-- self.btnOpen = self:SetupButton("Open", "fugue/blue-folder-horizontal-open.png", LEFT)
-	-- self.btnNewTab = self:SetupButton("New tab", "fugue/script--plus.png", LEFT)
-	-- self.btnCloseTab = self:SetupButton("Close tab", "fugue/script--minus.png", LEFT)
+	-- self.btnSave = self:SetupButton("Save", "icon16/disk.png", LEFT)
+	-- self.btnSaveAs = self:SetupButton("Save As", "icon16/disk_multiple.png", LEFT)
+	-- self.btnOpen = self:SetupButton("Open", "icon16/folder_page.png", LEFT)
+	-- self.btnNewTab = self:SetupButton("New tab", "icon16/tab_add.png", LEFT)
+	-- self.btnCloseTab = self:SetupButton("Close tab", "icon16/tab_delete.png", LEFT)
 
-	-- self.btnOptions = self:SetupButton("Options", "fugue/gear.png", RIGHT)
-	-- self.btnHelp = self:SetupButton("Open user manual", "fugue/question.png", RIGHT)
-	-- self.btnWiki = self:SetupButton("Visit the wiki", "fugue/home.png", RIGHT)
+	-- self.btnOptions = self:SetupButton("Options", "icon16/cog.png", RIGHT)
+	-- self.btnHelp = self:SetupButton("Open user manual", "icon16/help.png", RIGHT)
+	-- self.btnWiki = self:SetupButton("Visit the wiki", "icon16/house.png", RIGHT)
 end
 
 

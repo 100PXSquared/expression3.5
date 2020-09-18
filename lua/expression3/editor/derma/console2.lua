@@ -370,11 +370,11 @@ function CONSOLE:Warn(level, ...)
 	level = level or 0;
 
 	if level == 1 then
-		left[1] = {image = "fugue/question.png", size = 16}
+		left[1] = {image = "icon16/help.png", size = 16}
 	elseif level == 2 then
-		left[1] = {image = "fugue/exclamation-circle.png", size = 16}
+		left[1] = {image = "icon16/error.png", size = 16}
 	elseif level == 3 then
-		left[1] = {image = "fugue/exclamation-red.png", size = 16}
+		left[1] = {image = "icon16/exclamation.png", size = 16}
 	end
 
 	if level == 3 then
