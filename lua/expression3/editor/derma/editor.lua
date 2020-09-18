@@ -489,7 +489,7 @@ function PANEL:_OnKeyCodeTyped(code)
 			local old_scroll = self.Scroll:Clone()
 
 			local str = self:GetSelection()
-			if (str ~= "") then -- If you have a selection
+			if str ~= "" then -- If you have a selection
 				self:SetSelection(str:rep(2)) -- Repeat it
 			else -- If you don't
 				-- Select the current line

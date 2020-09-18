@@ -110,7 +110,7 @@ function ENT:Think()
   local player = self:GetParent();
   self:SetAngles(Angle(0, RealTime() * -10, 0));
 
-  if (IsValid(player)) then
+  if IsValid(player) then
     local height = (player:OBBMaxs() - player:OBBMins()).z;
     local off = 20 + math.abs(math.sin(CurTime() * 0.5) * (height - 20));
     self:SetPos(player:GetPos() + Vector(0, 0, off));

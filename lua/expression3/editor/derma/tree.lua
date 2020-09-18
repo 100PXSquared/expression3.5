@@ -284,7 +284,7 @@ searchNodes = function(node, query)
 	
 	local visible = true;
 
-	if c == 0 and (not found) then
+	if c == 0 and not found then
 		visible = false;
 	end
 

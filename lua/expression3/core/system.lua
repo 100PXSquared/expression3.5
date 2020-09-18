@@ -29,16 +29,16 @@ local function func_invoke(context, result, count, func, ...)
 	local r = func.result;
 	local c = func.count;
 
-	if (r == nil or r == "" or c == -1) then
+	if r == nil or r == "" or c == -1 then
 		r, c = "_nil", 0;
 	end
 
-	if (result == nil or result == "" or count == -1) then
+	if result == nil or result == "" or count == -1 then
 		result, count = "_nil", 0;
 	end
 	
-	if (result ~= r or count > c) then
-		if (func.scr) then context = func.scr end
+	if result ~= r or count > c then
+		if func.scr then context = func.scr end
 		context:Throw("Invoked function with incorrect return type %q:%i expected, got %q:%i.", name(result), count, name(r), c);
 	end
 
@@ -185,10 +185,10 @@ end);
 extension:RegisterFunction("system", "throw", "er", "", 0, function(context, err)
 	err.stack = tokens[context]:Trace(1, 15);
 
-	if (err.stack) then
+	if err.stack then
 		local trace = err.stack[1];
 
-		if (trace) then
+		if trace then
 			err.char = trace[2];
 			err.line = trace[1];
 		end

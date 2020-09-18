@@ -106,7 +106,7 @@ local function buildRows(native)
 end
 
 EXPR_LIB.ShowDebug = function(native, name)
-	if (Golem) then
+	if Golem then
 		local inst = Golem:GetInstance();
 		
 		local rows, text = buildRows(native);
@@ -131,7 +131,7 @@ EXPR_LIB.ShowDebug = function(native, name)
 		if type(nFun)  ~= "string" then
 			inst.btnValidate:SetColor(Color(50, 255, 50));
 			inst.btnValidate:SetText("Native Output, Validated Sucessfuly");
-		elseif (nFun) then
+		elseif nFun then
 			inst:OnValidateError(false, nFun);
 			Golem.Print(Color(255, 255, 255), nFun);
 		end

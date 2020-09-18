@@ -59,7 +59,7 @@ function EXPR_DOCS.PrettyReturn(op)
 	local t = op["result type"];
 	local c = tonumber(op["result count"]) or 0;
 	
-	if (not t) or (t == "") or (t == "_nil") or (c == 0) then return ""; end
+	if not t or t == "" or t == "_nil" or c == 0 then return ""; end
 
 	if t[1] == "_" then t = t:sub(2); end
 

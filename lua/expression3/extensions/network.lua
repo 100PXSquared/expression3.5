@@ -26,7 +26,7 @@ extension:RegisterClass("usmg", "stream", istable, istable);
 local function writeBool(ctx, msg, bool)
 	ctx = tokens[ctx];
 
-	if (#msg.buffer > NET_LIMIT) then
+	if #msg.buffer > NET_LIMIT then
 		ctx:Throw("Failed to write Boolean to stream, max stream size reached.");
 	end
 
@@ -42,7 +42,7 @@ local function readBool(ctx, msg)
 	--msg.size = msg.size - 1;
 	msg.read = msg.read + 1;
 
-	if (msg.read > #msg.buffer) then
+	if msg.read > #msg.buffer then
 		ctx:Throw("Unable to read Boolean from empty stream.");
 	end
 
@@ -59,7 +59,7 @@ extension:RegisterMethod("usmg", "readBool", "", "b", 1, readBool, false);
 local function writeChar(ctx, msg, char, type)
 	ctx = tokens[ctx];
 
-	if (#msg.buffer > NET_LIMIT) then
+	if #msg.buffer > NET_LIMIT then
 		ctx:Throw("Failed to write " .. (type or "Char") .. " to stream, max stream size reached.");
 	end
 
@@ -75,7 +75,7 @@ local function readChar(ctx, msg, type)
 	--msg.size = msg.size - 1;
 	msg.read = msg.read + 1;
 
-	if (msg.read > #msg.buffer) then
+	if msg.read > #msg.buffer then
 		ctx:Throw("Unable to read " .. (type or "Char") .. " from empty stream.");
 	end
 
@@ -153,7 +153,7 @@ local function writeFloat(ctx, msg, float)
 	float = math.abs(float);
 
 	local e = 0;
-	if (float >= 1) then
+	if float >= 1 then
 		while (float >= 1) do
 			float = float / 10;
 			e = e + 1;
@@ -190,7 +190,7 @@ local function readFloat(ctx, msg)
 
 	local s = a * 65536 + b * 256 + c - 8388608;
 
-	if (s > 0) then
+	if s > 0 then
 		return tonumber("0." .. s) * 10 ^ e;
 	else
 		return tonumber("-0." .. math.abs(s)) * 10 ^ e;
@@ -289,7 +289,7 @@ end, true);
 	Send the data.
 ]]
 
-if (SERVER) then
+if SERVER then
 	util.AddNetworkString("Expression3.Network.Send");
 end
 
@@ -298,9 +298,9 @@ local function queueMessage(ctx, msg, filter)
 
 	local queue = ctx.data.net_queue or {};
 
-	if (#queue >= NET_MAX) then
+	if #queue >= NET_MAX then
 		this:Throw("Attempt to send net stream, too meany streams queued.")
-	elseif (CLIENT) then
+	elseif CLIENT then
 		queue[#queue + 1] = {msg = msg};
 	else
 		queue[#queue + 1] = {msg = msg, filter = filter};
@@ -312,7 +312,7 @@ end
 hook.Add("Expression3.Entity.Update", "Expression3.Network.SendMessages", function(entity, ctx)
 	local queue = ctx.data.net_queue;
 
-	if (queue and #queue > 0) then
+	if queue and #queue > 0 then
 		for _, data in pairs(queue) do
 			local msg = data.msg;
 
@@ -325,9 +325,9 @@ hook.Add("Expression3.Entity.Update", "Expression3.Network.SendMessages", functi
 					net.WriteInt(msg.buffer[i], 8);
 				end
 
-			if (CLIENT) then
+			if CLIENT then
 				net.SendToServer();
-			elseif (msg.filter) then
+			elseif msg.filter then
 				net.Send(msg.filter);
 			else
 				net.Broadcast();
@@ -351,10 +351,10 @@ net.Receive("Expression3.Network.Send", function(len, ply)
 
 	local msg = {name = name, buffer = buffer, size = #buffer, read = 0};
 
-	if (IsValid(entity) and entity.IsRunning and entity:IsRunning()) then
+	if IsValid(entity) and entity.IsRunning and entity:IsRunning() then
 		local callbacks = entity.context.data.net_callbacks;
 
-		if (callbacks and callbacks[name]) then
+		if callbacks and callbacks[name] then
 			entity:Invoke("net callback " .. name, "", 0, callbacks[name], {"_usmg", msg}, ply and {"p", ply} or nil);
 		end
 	end

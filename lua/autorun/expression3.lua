@@ -21,7 +21,7 @@ end
 
 print("E3 Root directory:", EXPR_ROOT);
 
-if (SERVER) then
+if SERVER then
 	AddCSLuaFile();
 	
 	AddCSLuaFile("expression3/expr_lib.lua");
@@ -101,6 +101,6 @@ if (SERVER) then
 	
 	include("expression3/expr_lib.lua");
 	
-elseif (CLIENT) then
+elseif CLIENT then
 	include("expression3/expr_lib.lua");
 end

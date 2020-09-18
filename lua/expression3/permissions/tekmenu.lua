@@ -99,7 +99,7 @@ function PANEL:Paint(w, h)
 	for _,perm in pairs(self.features) do
 		local permission = EXPR_LIB.PERMS[perm];
 
-		if (permission) then
+		if permission then
 			surface.SetDrawColor(colBackground)
 			surface.DrawRect(0, y, w, 42)
 

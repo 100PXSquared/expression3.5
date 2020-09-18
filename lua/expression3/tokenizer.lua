@@ -136,7 +136,7 @@ function TOKENIZER.New()
 end
 
 function TOKENIZER.Initialize(this, lang, script, ish)
-	if (KEYWORDS[lang] and TOKENS[lang]) then
+	if KEYWORDS[lang] and TOKENS[lang] then
 		this.ish = comments;
 
 		this.__pos = 0;
@@ -176,11 +176,11 @@ function TOKENIZER.Run(this, etokens)
 	this.etokens = etokens;
 	local status, result = pcall(this._Run, this, etokens);
 
-	if (status) then
+	if status then
 		return true, result;
 	end
 
-	if (type(result) == "table") then
+	if type(result) == "table" then
 		return false, result;
 	end
 
@@ -211,7 +211,7 @@ function TOKENIZER.Throw(this, offset, msg, fst, ...)
 
 	local err = {};
 
-	if (fst) then
+	if fst then
 		msg = string.format(msg, fst, ...);
 	end
 
@@ -242,7 +242,7 @@ function TOKENIZER.PrevChar(this)
 
 	this:SkipChar();
 
-	if (this.__char == "\n") then
+	if this.__char == "\n" then
 		this.__readLine = this.__readLine - 2
 	end
 end
@@ -281,9 +281,9 @@ function TOKENIZER.SetState(this, state)
 end
 
 function TOKENIZER.SkipChar(this)
-	if (this.__lengh < this.__pos) then
+	if this.__lengh < this.__pos then
 		this.__char = nil;
-	elseif (this.__char == "\n") then
+	elseif this.__char == "\n" then
 		this:PushLine();
 	else
 		this:PushChar();
@@ -316,17 +316,17 @@ end
 ]]
 
 function TOKENIZER.NextPattern(this, pattern, exact)
-	if (this.__char == nil) then
+	if this.__char == nil then
 		return false;
 	end
 
 	local s, e, r = string.find(this.__buffer, pattern, this.__pos, exact);
 
-	if (s ~= this.__pos) then
+	if s ~= this.__pos then
 		return false;
 	end
 
-	if (not r) then
+	if not r then
 		r = string.sub(this.__buffer, s, e);
 	end
 
@@ -337,7 +337,7 @@ function TOKENIZER.NextPattern(this, pattern, exact)
 
 	this.__match = r;
 
-	if (this.__pos > this.__lengh) then
+	if this.__pos > this.__lengh then
 		this.__char = nil;
 	else
 		this.__char = string.sub(this.__buffer, this.__pos, this.__pos);
@@ -345,7 +345,7 @@ function TOKENIZER.NextPattern(this, pattern, exact)
 
 	local ls = string.Explode("\n", r);
 
-	if (#ls > 1) then
+	if #ls > 1 then
 		this.__readLine = this.__readLine + #ls - 1;
 		this.__readChar = string.len(ls[#ls]) + 1;
 	else
@@ -358,7 +358,7 @@ end
 function TOKENIZER.MatchPattern(this, pattern, exact)
 	local s, e, r = string.find(this.__buffer, pattern, this.__pos, exact);
 
-	if (s ~= this.__pos) then
+	if s ~= this.__pos then
 		return false;
 	end
 
@@ -366,11 +366,11 @@ function TOKENIZER.MatchPattern(this, pattern, exact)
 end
 
 function TOKENIZER.NextPatterns(this, exact, pattern, pattern2, ...)
-	if (this:NextPattern(pattern, exact)) then
+	if this:NextPattern(pattern, exact) then
 		return true;
 	end
 
-	if (pattern2) then
+	if pattern2 then
 		return this:NextPatterns(exact, pattern2, ...);
 	end
 
@@ -382,7 +382,7 @@ end
 
 function TOKENIZER.CreateToken(this, type, name, data, origonal)
 
-	if (not data) then
+	if not data then
 		data = this.__data;
 	end
 
@@ -401,7 +401,7 @@ function TOKENIZER.CreateToken(this, type, name, data, origonal)
 	
 	local prev = this.__tokens[#this.__tokens];
 
-	if (prev and prev.line < tkn.line) then
+	if prev and prev.line < tkn.line then
 		tkn.newLine = true;
 	end
 
@@ -423,8 +423,8 @@ function TOKENIZER.SkipSpaces(this)
 end
 
 function TOKENIZER.SkipComments(this)
-	if (this:NextPattern("^/%*.-%*/") or this:NextPattern("^//.-\n")) then
-		if(this.ish) then
+	if this:NextPattern("^/%*.-%*/") or this:NextPattern("^//.-\n") then
+		if this.ish then
 			this:CreateToken("cmt", "comment");
 		else
 			this.__data = "";
@@ -432,7 +432,7 @@ function TOKENIZER.SkipComments(this)
 		end
 
 		return true;
-	elseif (this:NextPattern("/*", true)) then
+	elseif this:NextPattern("/*", true) then
 		this:Error(0, "Un-terminated multi line comment (/*)", 0);
 	else
 		return false;
@@ -451,7 +451,7 @@ end
 ]]
 
 function TOKENIZER.Loop(this)
-	if (this.__char == nil) then
+	if this.__char == nil then
 		return false;
 	end
 
@@ -462,29 +462,29 @@ function TOKENIZER.Loop(this)
 
 	local skip = false;
 
-	if (this:NextPattern("^/%*.-%*/")) then
+	if this:NextPattern("^/%*.-%*/") then
 		skip = true;
 		local cmnt = "--[[" .. string.sub(this.__data, 3, string.len(this.__data) - 2) .. "]]";
 		this:Replace(cmnt);
-	elseif (this:NextPattern("/*", true)) then
+	elseif this:NextPattern("/*", true) then
 		this:Throw(0, "Un-terminated multi line comment (/*)", 0);
-	elseif (this:NextPattern("^//.-\n")) then
+	elseif this:NextPattern("^//.-\n") then
 		skip = true;
 		local cmnt = "--" .. string.sub(this.__data, 3);
 		this:Replace(cmnt);
 	end
 
-	if (skip) then
+	if skip then
 		this:Clear();
 		return true;
 	end
 
 	-- Numbers
 
-	if (this:NextPattern("^0x[%x]+")) then
+	if this:NextPattern("^0x[%x]+") then
 		local n = tonumber(this.__data);
 
-		if (not n) then
+		if not n then
 			this:Throw(0, "Invalid number format (%s)", 0, this.__data);
 		end
 
@@ -493,10 +493,10 @@ function TOKENIZER.Loop(this)
 		return true;
 	end
 
-	if (this:NextPattern("^0b[01]+")) then
+	if this:NextPattern("^0b[01]+") then
 		local n = tonumber(string.sub(this.__data, 3), 2);
 
-		if (not n) then
+		if not n then
 			this:Throw(0, "Invalid number format (%s)", 0, this.__data);
 		end
 
@@ -505,10 +505,10 @@ function TOKENIZER.Loop(this)
 		return true;
 	end
 
-	if (this:NextPattern("^%d+%.?%d*")) then
+	if this:NextPattern("^%d+%.?%d*") then
 		local n = tonumber(this.__data);
 
-		if (not n) then
+		if not n then
 			this:Throw(0, "Invalid number format (%s)", 0, this.__data);
 		end
 
@@ -522,7 +522,7 @@ function TOKENIZER.Loop(this)
 	local pattern = false;
 	local state = this:GetState();
 
-	if (this.__char == "@") then
+	if this.__char == "@" then
 		this:SkipChar();
 
 		if not (this.__char == '"' or this.__char == "'") then
@@ -532,7 +532,7 @@ function TOKENIZER.Loop(this)
 		end
 	end
 
-	if (this.__char == '"' or this.__char == "'") then
+	if this.__char == '"' or this.__char == "'" then
 		local len = 0;
 
 		local strChar = this.__char;
@@ -544,41 +544,41 @@ function TOKENIZER.Loop(this)
 		while this.__char do
 			local c = this.__char;
 
-			if (c == "\n") then
-				if (strChar == "'") then
+			if c == "\n" then
+				if strChar == "'" then
 					this:NextChar();
 				else
 					break;
 				end
-			elseif (not escp) then
-				if (c == strChar) then
+			elseif not escp then
+				if c == strChar then
 					break;
-				elseif (c == "\\") then
+				elseif c == "\\" then
 					escp = true;
 					this:SkipChar();
 					-- Escape sequence.
 				else
 					this:NextChar();
 				end
-			elseif (c == "\\") then
+			elseif c == "\\" then
 				escp = false;
 				this:NextChar();
-			elseif (c == "n") then
+			elseif c == "n" then
 				escp = false;
 				this.__char = "\\n";
 				this:NextChar();
-			elseif (c == "t") then
+			elseif c == "t" then
 				escp = false;
 				this.__char = "\\t";
 				this:NextChar();
-			elseif (c == "r") then
+			elseif c == "r" then
 				escp = false;
 				this.__char = "\\r";
 				this:NextChar();
-			elseif (this:NextPattern("^([0-9]+)")) then
+			elseif this:NextPattern("^([0-9]+)") then
 				local n = tonumber(this.__match);
 
-				if (not n or n < 0 or n > 255) then
+				if not n or n < 0 or n > 255 then
 					this:Throw(0, "Invalid char (%s)", n);
 				end
 
@@ -592,12 +592,12 @@ function TOKENIZER.Loop(this)
 
 			len = len + 1;
 
-			if (len > 500) then
+			if len > 500 then
 				this:Throw(0, "Maxamum string lenth reached (500)");
 			end
 		end
 
-		if (this.__char and this.__char == strChar) then
+		if this.__char and this.__char == strChar then
 			this:SkipChar();
 
 			local str = string.sub(this.__data, 1, string.len(this.__data))
@@ -605,7 +605,7 @@ function TOKENIZER.Loop(this)
 			str = strChar .. str .. strChar;
 			this:Replace(str);
 
-			if (not pattern) then
+			if not pattern then
 				this:CreateToken("str", "string");
 			else
 				this:CreateToken("ptr", "string pattern");
@@ -616,7 +616,7 @@ function TOKENIZER.Loop(this)
 
 		local str = this.__data;
 
-		if (string.len(str) > 10) then
+		if string.len(str) > 10 then
 			str = string.sub(str, 0, 10) .. "...";
 		end
 
@@ -640,7 +640,7 @@ function TOKENIZER.Loop(this)
 	end
 
 	-- Classes
-	if (this:NextPattern("%(^[a-zA-Z][a-zA-Z0-9_%.]*%)")) then
+	if this:NextPattern("%(^[a-zA-Z][a-zA-Z0-9_%.]*%)") then
 		local cls = this.classes[this.__data];
 
 		if cls then
@@ -651,7 +651,7 @@ function TOKENIZER.Loop(this)
 
 	local state = this:GetState();
 
-	if (this:NextPattern("^[a-zA-Z][a-zA-Z0-9_%.]*")) then
+	if this:NextPattern("^[a-zA-Z][a-zA-Z0-9_%.]*") then
 		local cls = this.classes[this.__data];
 
 		if cls then
@@ -664,10 +664,10 @@ function TOKENIZER.Loop(this)
 
 	-- Keywords.
 
-	if (this:NextPattern("^[a-zA-Z][a-zA-Z0-9_]*")) then
+	if this:NextPattern("^[a-zA-Z][a-zA-Z0-9_]*") then
 		local tkn = this.keywords[this.__data];
 
-		if (tkn) then
+		if tkn then
 			this:CreateToken(tkn[1], tkn[2]);
 		else
 			this:CreateToken("var", "variable");
@@ -676,7 +676,7 @@ function TOKENIZER.Loop(this)
 		return true;
 	end
 
-	if (not this.__char or this.__char == "") then
+	if not this.__char or this.__char == "" then
 		this.__char = nil;
 	else
 		this:Throw(0, "Unknown syntax found (%s)", tostring(this.__char));

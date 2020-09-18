@@ -183,7 +183,7 @@ function PANEL:BuildFileList(Parent)
 		table.Copy(self.Sorted, self.Lines)
 
 		table.sort(self.Sorted, function(a, b)
-			if (Desc) then
+			if Desc then
 				a, b = b, a
 			end
 

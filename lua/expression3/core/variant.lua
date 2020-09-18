@@ -29,7 +29,7 @@ function extension.PostLoadClasses(this, classes)
 	for _, c in pairs(classes) do
 		local id = c.id;
 
-		if (id ~= "_vr" and id ~= "") then
+		if id ~= "_vr" and id ~= "" then
 			print("------>", id);
 
 			extension:RegisterCastingOperator("vr", id, function(ctx, obj)
@@ -38,11 +38,11 @@ function extension.PostLoadClasses(this, classes)
 
 			extension:RegisterCastingOperator(id, "vr", function(ctx, vr)
 				ctx = tokens[ctx];
-				if (not vr or not vr[1] or vr[2] == nil) then
+				if not vr or not vr[1] or vr[2] == nil then
 					ctx:Throw("attempt to cast variant of type nil to " .. c.name);
 				end
 
-				if (vr[1] ~= id) then
+				if vr[1] ~= id then
 					ctx:Throw("attempt to cast variant of type " .. vr[1] .. " to " .. c.name);
 				end
 

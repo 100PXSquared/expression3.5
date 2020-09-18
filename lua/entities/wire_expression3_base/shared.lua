@@ -46,10 +46,10 @@ function ENT:ExecuteInstance(instance, run)
 
 	self:BuildContext(instance);
 
-	if (SERVER) then
+	if SERVER then
 		local name = "generic";
 
-		if (instance.directives and instance.directives.name) then
+		if instance.directives and instance.directives.name then
 			name = instance.directives.name;
 		end
 
@@ -57,9 +57,9 @@ function ENT:ExecuteInstance(instance, run)
 		self:BuildWiredPorts(instance.directives.inport, instance.directives.outport);
 	end
 
-	if (run) then
+	if run then
 		timer.Simple(0.2, function()
-			if (IsValid(self)) then
+			if IsValid(self) then
 				self:InitScript();
 			end
 		end);
@@ -74,7 +74,7 @@ function ENT:SetCode(script, files, run, cb2)
 	self.script = script;
 	self.files = files;
 
-	if (self.validator and not self.validator.finished) then
+	if self.validator and not self.validator.finished then
 		self.validator.stop();
 	end
 
@@ -84,7 +84,7 @@ function ENT:SetCode(script, files, run, cb2)
 			cb2(ok, res);
 		end
 
-		if (not ok) then
+		if not ok then
 			self:HandelThrown(res);
 			return false;
 		end
@@ -213,11 +213,11 @@ function ENT:BuildEnv(context, instance)
 		function env.CheckHash(hash, class)
 			local valid = hashTable[hash];
 
-			if (not class or not class.hash) then
+			if not class or not class.hash then
 				return false;
 			end
 
-			if (valid) then
+			if valid then
 				return valid[class.hash] or false;
 			end
 
@@ -254,7 +254,7 @@ function ENT:InitScript()
 	local main = CompileString(self.nativeScript, "Expression 3", false);
 	setfenv(main, self.context.env);
 
-	if (isstring(main)) then
+	if isstring(main) then
 		self:HandelThrown(main);
 		return;
 	end
@@ -280,7 +280,7 @@ function ENT:Execute(func, ...) -- This is the new one.
 
 			local info = debug.getinfo(i, "Sln");
 
-			if (!info) then
+			if !info then
 				break;
 			end
 
@@ -296,7 +296,7 @@ function ENT:Execute(func, ...) -- This is the new one.
 
 	self.context:PostExecute();
 
-	if (results[1]) then
+	if results[1] then
 		self.context.update = true;
 	else
 		self:HandelThrown(results[2] or es, tb);
@@ -332,7 +332,7 @@ end
 function ENT:WriteToLogger(...)
 	local log, logger = {...}, self.Logger;
 
-	if (not logger) then
+	if not logger then
 		self.Logger = log;
 		return;
 	end
@@ -343,17 +343,17 @@ function ENT:WriteToLogger(...)
 end
 
 function ENT:FlushLogger()
-	if (self.Logger and #self.Logger > 0) then
+	if self.Logger and #self.Logger > 0 then
 		self:SendToOwner(true, unpack(self.Logger));
 		self.Logger = nil;
 	end
 end
 
 function ENT:PrintStackTrace(stackTrace)
-if (stackTrace and #stackTrace > 0) then
+if stackTrace and #stackTrace > 0 then
 		self:WriteToLogger("{\n");
 		for level, info in pairs(stackTrace) do
-			if (info.what == "C") then
+			if info.what == "C" then
 				self:WriteToLogger(string.format("\t%i: C function\t\"%s\"\n", level, info.name));
 			else
 				self:WriteToLogger(string.format("\t%i: Line %d\t\"%s\"\t\t%s\n", level, info.currentline, info.name, info.short_src));
@@ -372,19 +372,19 @@ function ENT:HandelThrown(thrown, stackTrace)
 
 	self:SendToOwner(false, Color(255,0,0), "One of your Expression3 gate's has errored (see golem console).");
 
-	if (not thrown) then
+	if not thrown then
 		self:WriteToLogger(Color(255,0,0), "Suffered an unkown error (no reason given).");
 		self:PrintStackTrace(stackTrace)
 		self:FlushLogger();
 
-	elseif (isstring(thrown)) then
+	elseif isstring(thrown) then
 		self:WriteToLogger(Color(255,0,0), "Suffered a lua error:\n");
 		self:WriteToLogger("    ", Color(0,255, 255), "Error: ", Color(255, 255, 255), thrown);
 		self:PrintStackTrace(stackTrace);
 		self:FlushLogger();
 
-	elseif (istable(thrown)) then
-		if (thrown.ctx and thrown.ctx ~= self.context) then
+	elseif istable(thrown) then
+		if thrown.ctx and thrown.ctx ~= self.context then
 			self:WriteToLogger(Color(255,0,0), "Suffered a ", thrown.state, " error:\n");
 			self:WriteToLogger(Color(0,255, 255), "Message: ", Color(255, 255, 255), "Remotly executed function threw an error", "\n");
 			self:WriteToLogger(Color(0,255, 255), "Thrown error: ", Color(255, 255, 255), thrown.msg, "\n");
@@ -392,7 +392,7 @@ function ENT:HandelThrown(thrown, stackTrace)
 			self:PrintStackTrace(stackTrace);
 			self:FlushLogger();
 
-			if (IsValid(thrown.ctx.entity)) then
+			if IsValid(thrown.ctx.entity) then
 				thrown.ctx.entity:SendToOwner(false, Color(255,0,0), "One of your Expression3 gate's has errored (see golem console).");
 				thrown.ctx.entity:WriteToLogger(Color(255,0,0), "Suffered a ", thrown.state, " error:\n")
 				thrown.ctx.entity:WriteToLogger(Color(0,255, 255), "Message: ", Color(255, 255, 255), "A function executed from a remote source threw an error.", "\n")
@@ -417,32 +417,32 @@ end
 ****************************************************************************************************************************/
 
 function ENT:Invoke(where, result, count, udf, ...)
-	if (self:IsRunning()) then
+	if self:IsRunning() then
 
 		local optional = string.sub(result, -1) == "*";
 
-		if (optional) then
+		if optional then
 			result = string.sub(result, 1, -2);
 		end
 
-		if (udf and udf.op) then
+		if udf and udf.op then
 
 			local r = udf.result;
 			local c = udf.count;
 
-			if (r == nil or r == "" or c == -1) then
+			if r == nil or r == "" or c == -1 then
 				r, c = "_nil", 0;
 			end
 
-			if (r ~= "_nil" and optional) then
+			if r ~= "_nil" and optional then
 				optional = false;
 			end
 
-			if (result == nil or result == "" or count == -1) then
+			if result == nil or result == "" or count == -1 then
 				result, count = "_nil", 0;
 			end
 
-			if ((result ~= r or count > c) and not optional) then
+			if (result ~= r or count > c) and not optional then
 				local msg = string.format("Invoked function with incorrect return type %q:%i expected, got %q:%i (%s).", name(result), count, name(r), c, where);
 
 				if udf.scr and udf.scr.entity ~= self then
@@ -462,7 +462,7 @@ function ENT:Invoke(where, result, count, udf, ...)
 
 			self.context:PostExecute();
 
-			if (status) then
+			if status then
 				self.context.update = true;
 			else
 				self:HandelThrown(results[1]);
@@ -476,19 +476,19 @@ function ENT:Invoke(where, result, count, udf, ...)
 end
 
 function ENT:CallEvent(result, count, event, ...)
-	if (self:IsRunning()) then
+	if self:IsRunning() then
 		local events = self.context.events[event];
 
-		if (events) then
+		if events then
 			for id, udf in pairs(events) do
 				local where = string.format("Event.%s.%s", event, id);
 				local status, results = self:Invoke(where, result .. "*", count, udf, ...);
 
-				if (not status) then
+				if not status then
 					return false;
 				end
 
-				if (results[1] ~= nil) then
+				if results[1] ~= nil then
 					return true, results;
 				end
 			end
@@ -509,7 +509,7 @@ function ENT:SetupDataTables()
 	self:NetworkVar("Bool", 2, "ServerOnline");
 end
 
-if (CLIENT) then
+if CLIENT then
 	AccessorFunc(ENT, "cl_soft_cpu", "ClientSoftCPU", FORCE_NUMBER);
 	AccessorFunc(ENT, "cl_average_cpu", "ClientAverageCPU", FORCE_NUMBER);
 	AccessorFunc(ENT, "cl_cpu_warning", "ClientWarning", FORCE_BOOL);
@@ -519,8 +519,8 @@ end
 function ENT:UpdateQuotaValues()
 	local context = self.context;
 
-	if (SERVER) then
-		if (context) then
+	if SERVER then
+		if context then
 			self:SetServerSoftCPU(context.cpu_softusage);
 			self:SetServerAverageCPU(context.cpu_average);
 			self:SetServerWarning(context.cpu_warning);
@@ -529,8 +529,8 @@ function ENT:UpdateQuotaValues()
 		self:SetServerOnline(context and context.status);
 	end
 
-	if (CLIENT) then
-		if (context) then
+	if CLIENT then
+		if context then
 			self:SetClientSoftCPU(context.cpu_softusage);
 			self:SetClientAverageCPU(context.cpu_average);
 			self:SetClientWarning(context.cpu_warning);
@@ -539,7 +539,7 @@ function ENT:UpdateQuotaValues()
 		self:SetClientOnline(context and context.status);
 	end
 
-	if (context) then
+	if context then
 		context:UpdateQuotaValues();
 	end
 end
@@ -551,7 +551,7 @@ end
 function ENT:Think()
 	self:UpdateQuotaValues();
 
-	if (SERVER) then
+	if SERVER then
 		self:TriggerOutputs();
 	end
 

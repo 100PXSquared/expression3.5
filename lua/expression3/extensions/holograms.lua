@@ -24,7 +24,7 @@ local LowerCount, SetModel, Create = def, def, def;
 	Server side limits
 ]]
 
-if (SERVER) then
+if SERVER then
 	RateCounter = {};
 	PlayerCounter = {};
 
@@ -53,8 +53,8 @@ if (SERVER) then
 		ctx.data.hologramIDs = {};
 
 		local ply = entity.player;
-		if (not RateCounter[ply]) then RateCounter[ply] = 0 end
-		if (not PlayerCounter[ply]) then PlayerCounter[ply] = 0 end
+		if not RateCounter[ply] then RateCounter[ply] = 0 end
+		if not PlayerCounter[ply] then PlayerCounter[ply] = 0 end
 	end);
 
 	hook.Add("Expression3.Entity.Stop", "Expression3.Holograms",function(entity, ctx)
@@ -69,7 +69,7 @@ if (SERVER) then
 
 	hook.Add("PlayerDisconnected", "Expression3.Holograms", function(ply)
 		for _, ctx in pairs(EXPR_LIB.GetAll()) do
-			if (ctx.player == ply) then
+			if ctx.player == ply then
 				for _, holo in pairs(ctx.data.holograms) do
 					if IsValid(holo) then
 						holo:Remove();
@@ -295,7 +295,7 @@ end, false);
 
 -- Entity <- Hologram
 extension:RegisterCastingOperator("h", "e", function(ctx, obj)
-	if (not IsValid(obj) and obj:GetClass() == "wire_expression3_hologram") then
+	if not IsValid(obj) and obj:GetClass() == "wire_expression3_hologram" then
 		return obj;
 	end
 
@@ -340,7 +340,7 @@ end, false);
 
 extension:RegisterMethod("h", "remove", "", "", 0, function(ctx, holo)
 	ctx = tokens[ctx];
-	if (IsValid(holo) and holo.player == ctx.player) then
+	if IsValid(holo) and holo.player == ctx.player then
 		holo:Remove();
 	end
 end, false);
@@ -367,7 +367,7 @@ end, false)
 
 extension:RegisterMethod("h", "getID", "", "n", 1, function(ctx, holo)
 	ctx = tokens[ctx];
-	if (IsValid(holo) and holo.IsHologram) then
+	if IsValid(holo) and holo.IsHologram then
 		return holo.ID or -1;
 	end; return -1;
 end, false)
@@ -384,7 +384,7 @@ end, false);
 
 extension:RegisterMethod("h", "setPos", "v", "", 0, function(ctx, holo, v)
 	ctx = tokens[ctx];
-	if (IsValid(holo) and holo.player == ctx.player) then
+	if IsValid(holo) and holo.player == ctx.player then
 		if not (v.x ~= v.x or v.y ~= v.y or v.z ~= v.z) then
 			holo:SetPos(v);
 		end
@@ -393,7 +393,7 @@ end, false);
 
 extension:RegisterMethod("h", "moveTo", "v,n", "", 0, function(ctx, holo, v, n)
 	ctx = tokens[ctx];
-	if (IsValid(holo) and holo.player == ctx.player) then
+	if IsValid(holo) and holo.player == ctx.player then
 		if not (v.x ~= v.x or v.y ~= v.y or v.z ~= v.z) then
 			holo:MoveTo(v, n);
 		end
@@ -402,7 +402,7 @@ end, false);
 
 extension:RegisterMethod("h", "startMove", "v", "", 0, function(ctx, holo, v)
 	ctx = tokens[ctx];
-	if (IsValid(holo) and holo.player == ctx.player) then
+	if IsValid(holo) and holo.player == ctx.player then
 		if not (v.x ~= v.x or v.y ~= v.y or v.z ~= v.z) then
 			holo:StartMove(v);
 		end
@@ -411,7 +411,7 @@ end, false);
 
 extension:RegisterMethod("h", "stopMove", "", "", 0, function(ctx, holo)
 	ctx = tokens[ctx];
-	if (IsValid(holo) and holo.player == ctx.player) then
+	if IsValid(holo) and holo.player == ctx.player then
 		holo:StopMove()
 	end
 end, false);
@@ -420,7 +420,7 @@ end, false);
 
 extension:RegisterMethod("h", "setAng", "a", "", 0, function(ctx, holo, a)
 	ctx = tokens[ctx];
-	if (IsValid(holo) and holo.player == ctx.player) then
+	if IsValid(holo) and holo.player == ctx.player then
 		if not (a.p ~= a.p or a.y ~= a.y or a.r ~= a.r) then
 			holo:SetAngles(a);
 		end
@@ -429,7 +429,7 @@ end, false);
 
 extension:RegisterMethod("h", "rotateTo", "a,n", "", 0, function(ctx, holo, a, n)
 	ctx = tokens[ctx];
-	if (IsValid(holo) and holo.player == ctx.player) then
+	if IsValid(holo) and holo.player == ctx.player then
 		if not (a.p ~= a.p or a.y ~= a.y or a.r ~= a.r) then
 			holo:RotateTo(a, n);
 		end
@@ -438,14 +438,14 @@ end, false);
 
 extension:RegisterMethod("h", "startRotate", "a", "", 0, function(ctx, holo, a)
 	ctx = tokens[ctx];
-	if (IsValid(holo) and holo.player == ctx.player) then
+	if IsValid(holo) and holo.player == ctx.player then
 		holo:StartRotate(a);
 	end
 end, false);
 
 extension:RegisterMethod("h", "stopRotate", "", "", 0, function(ctx, holo)
 	ctx = tokens[ctx];
-	if (IsValid(holo) and holo.player == ctx.player) then
+	if IsValid(holo) and holo.player == ctx.player then
 		holo:StopRotate();
 	end
 end, false);
@@ -697,7 +697,7 @@ extension:RegisterMethod("h", "getParentEntity", "", "", 0, function(ctx, holo)
 	ctx = tokens[ctx];
 	if IsValid(holo) and holo.player == ctx.player then
 		local parent = holo:GetParent();
-		if (IsValid(parent)) then return parent end
+		if IsValid(parent) then return parent end
 	end; return Entity(0);
 end, false);
 
@@ -705,7 +705,7 @@ extension:RegisterMethod("h", "getParentHologram", "", "", 0, function(ctx, holo
 	ctx = tokens[ctx];
 	if IsValid(holo) and holo.player == ctx.player then
 		local parent = holo:GetParent();
-		if (IsValid(parent) and parent.IsHologram) then return parent end
+		if IsValid(parent) and parent.IsHologram then return parent end
 	end; return Entity(0);
 end, false);
 
@@ -713,7 +713,7 @@ extension:RegisterMethod("h", "getParentPlayer", "", "", 0, function(ctx, holo)
 	ctx = tokens[ctx];
 	if IsValid(holo) and holo.player == ctx.player then
 		local parent = holo:GetParent();
-		if (IsValid(parent) and parent:IsPlayer()) then return parent end
+		if IsValid(parent) and parent:IsPlayer() then return parent end
 	end; return Entity(0);
 end, false);
 

@@ -278,7 +278,7 @@ function CONSOLE:WriteValues(where, values)
 	local hascb = false;
 	local tValues = #values;
 
-	if (tValues > 1 and isfunction(values[1])) then
+	if tValues > 1 and isfunction(values[1]) then
 		hascb = true;
 		self:BeginCB(where, values[1]);
 	end
@@ -288,23 +288,23 @@ function CONSOLE:WriteValues(where, values)
 	for i = start, tValues do
 		local value = values[i];
 
-		if (IsColor(value)) then
+		if IsColor(value) then
 			self:SetColor(where, value);
 			continue;
 		end
 
-		if (istable(value)) then
+		if istable(value) then
 
-			if (value.image) then
+			if value.image then
 				self:WriteImage(where, value.image, value.size);
 				continue;
 			end
 
-			if (value.font) then
+			if value.font then
 				self:setFontFace(where, value.font);
 			end
 
-			if (value.size) then
+			if value.size then
 				self:setSize(where, value.size);
 			end
 
@@ -328,7 +328,7 @@ function CONSOLE:WriteValues(where, values)
 		end
 	end
 
-	if (hascb) then
+	if hascb then
 		self:EndCB(where);
 	end
 end

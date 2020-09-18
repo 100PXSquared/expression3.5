@@ -30,7 +30,7 @@ function PANEL:DrawButton(bool)
 end
 
 function PANEL:SetMaterial(mat)
-	if type(mat) ~= "IMaterial" or mat:IsError() then return end // TODO: Fling some shit here
+	if type(mat) ~= "IMaterial" or mat:IsError() then return end -- TODO: Fling some shit here
 	self.m_mMaterial = mat
 	if self:GetAutoResize() then self:SizeToContents() end
 end

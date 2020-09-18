@@ -18,9 +18,9 @@ include("shared.lua");
 ****************************************************************************************************************************/
 
 function ENT:ReceiveFromClient(ply, script, files)
-	if (self:CanSetCode(ply)) then
+	if self:CanSetCode(ply) then
 		timer.Simple(1, function()
-			if (IsValid(self)) then
+			if IsValid(self) then
 				self:SetCode(script, files, true);
 			end
 		end);
@@ -29,7 +29,7 @@ end
 
 net.Receive("Expression3.InitializedClient", function(len, ply)
 	local ent = net.ReadEntity();
-	if (IsValid(ent) and ent.CallEvent) then
+	if IsValid(ent) and ent.CallEvent then
 		ent:CallEvent("", 0, "InitializedClient", {"p", ply});
 	end
 end)
@@ -88,14 +88,14 @@ end
 function ENT:TriggerInput(name, value, noTrig)
 	local context = self.context;
 
-	if (context) then
+	if context then
 		local port = self.wire_inport_tbl[name];
 		local wireport = self.Inputs[name];
 
-		if (port and wireport) then
-			if (port.wire == wireport.Type) then
+		if port and wireport then
+			if port.wire == wireport.Type then
 				local v = port.func and port.func(value) or value;
-				if (v ~= self.context.wire_in[name]) then
+				if v ~= self.context.wire_in[name] then
 					context.wire_in[name] = v;
 					self:CallEvent("", 0, "Trigger", {"s", name}, {port.class, v});
 				end
@@ -107,12 +107,12 @@ end
 function ENT:TriggerOutputs()
 	local context = self.context;
 
-	if (context and context.status) then
+	if context and context.status then
 		for name, _ in pairs(context.wire_clk) do
 			local port = self.wire_outport_tbl[name];
 			local wireport = self.OutPorts[name];
 
-			if (port and port.wire == wireport.Type) then
+			if port and port.wire == wireport.Type then
 				local value = context.wire_out[name];
 
 				local v = port.func and port.func(value) or value;
@@ -163,7 +163,7 @@ function ENT:BuildWiredPorts(sort_in, sort_out)
 	for name, wireport in pairs(self.OutPorts) do
 		local port = self.wire_outport_tbl[name];
 
-		if (port and port.wire == wireport.Type) then
+		if port and port.wire == wireport.Type then
 			self:TriggerOutput(name, wireport.Value, true);
 		end
 	end

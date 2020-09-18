@@ -80,8 +80,8 @@ local GateModels = {
 function TOOL:GetModel()
 	local script_model = self:GetClientInfo("script_model");
 
-	if (script_model and script_model ~= "") then
-		if (self:CheckValidModel(script_model)) then
+	if script_model and script_model ~= "" then
+		if self:CheckValidModel(script_model) then
 			return script_model;
 		end
 	end
@@ -112,7 +112,7 @@ if CLIENT then
 end
 
 function TOOL:RightClick(Trace)
-	if (SERVER) then
+	if SERVER then
 		local loadScript = self:CheckHitOwnClass(Trace);
 		
 		net.Start("Expression3.OpenGolem");

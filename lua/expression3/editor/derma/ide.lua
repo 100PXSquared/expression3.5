@@ -357,13 +357,13 @@ end
 Console
 ---------------------------------------------------------------------------*/
 function PANEL:HideConsole()
-	if (self.bConsoleVisible) then
+	if self.bConsoleVisible then
 		self.bConsoleVisible = false
 	end
 end
 
 function PANEL:ShowConsole()
-	if (not self.bConsoleVisible) then
+	if not self.bConsoleVisible then
 		self.bConsoleVisible = true;
 	end
 end
@@ -829,7 +829,7 @@ end
 Code Validation
 ---------------------------------------------------------------------------*/
 function PANEL:DoValidate(Goto, Code, Native)
-	if (self.validator and not self.validator.finished) then
+	if self.validator and not self.validator.finished then
 		self.validator.stop();
 	end
 
@@ -842,7 +842,7 @@ function PANEL:DoValidate(Goto, Code, Native)
 
 	local cb = function(status, instance)
 
-		if (status and Native) then
+		if status and Native then
 			self.btnValidate:SetColor(Color(50, 255, 50));
 			self.btnValidate:SetText("Generated debug file.");
 
@@ -850,10 +850,10 @@ function PANEL:DoValidate(Goto, Code, Native)
 			local nLua, traceTbl = instance.build();
 
 			self:NewTab("editor", nLua, false, "DEBUG", "lua", true)
-		elseif (status) then
+		elseif status then
 			self.btnValidate:SetColor(Color(100, 255, 100));
 			self.btnValidate:SetText("Validation Successful!");
-		elseif (instance.state == "internal") then
+		elseif instance.state == "internal" then
 			self:OnValidateError(false, "Internal error (see console).")
 			self:Warning(3, Color(255, 255, 255), "Internal error: ", instance.msg)
 		else
@@ -873,7 +873,7 @@ function PANEL:DoValidate(Goto, Code, Native)
 	self.validator.start();
 
 	timer.Create("Golem_Validator", 0.5, 0, function()
-		if (self.validator and not self.validator.finished) then
+		if self.validator and not self.validator.finished then
 			local v = math.ceil(((self.validator.tokenizer.__pos or 1) / (self.validator.tokenizer.__lengh or 1)) * 100);
 			self.btnValidate:SetColor(Color(100, 255, 100));
 			self.btnValidate:SetText("Validating... (" .. v .. "%)");
@@ -887,14 +887,14 @@ function PANEL:OnValidateError(Goto, Thrown)
 	local File;
 	local func;
 
-	if (istable(Thrown)) then
+	if istable(Thrown) then
 		message = Thrown.msg;
 
-		if (string.sub(message, -1) == ".") then
+		if string.sub(message, -1) == "." then
 			message = string.sub(message, 1, -2);
 		end
 
-		if (Thrown.file) then
+		if Thrown.file then
 			File = Thrown.file;
 		end
 
@@ -904,7 +904,7 @@ function PANEL:OnValidateError(Goto, Thrown)
 
 	local location = "";
 
-	if (Goto) then
+	if Goto then
 		func = function()
 			timer.Simple(0.1, function()
 				local inst = self.pnlTabHolder:GetActiveTab():GetPanel();

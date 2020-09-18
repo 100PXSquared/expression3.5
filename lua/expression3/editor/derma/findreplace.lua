@@ -424,10 +424,10 @@ function SEARCH:Close(noanim)
 	local x = pw - w - 20;
 	local y = -h - 10;
 
-	if (noanim) then self:SetPos(x, y);
+	if noanim then self:SetPos(x, y);
 	else self:MoveTo(x, y, 0.2, 0.2); end
 
-	if (self.btnOptions) then
+	if self.btnOptions then
 		for i = 1, 5 do
 			local btn = self.btnOptions[i];
 			btn:SetEnabled(false);

@@ -44,7 +44,7 @@ if SERVER then
 
 	hook.Add("PlayerDisconnected", "Expression3.Props", function(ply)
 		for _, ctx in pairs(EXPR_LIB.GetAll()) do
-			if (ctx.player == ply) then
+			if ctx.player == ply then
 				for _, prop in pairs(ctx.data.props) do
 					if IsValid(prop) then
 						prop:Remove();
@@ -277,7 +277,7 @@ end, false);
 
 extension:RegisterMethod("e", "setFrozen", "b", "", 0, function(context, e, b)
 	context = tokens[context];
-	if context:CanUseEntity(e) and ((not e.GetUnFreezable) or e:GetUnFreezable() ~= true) then
+	if context:CanUseEntity(e) and (not e.GetUnFreezable or e:GetUnFreezable() ~= true) then
 		local ph = e:GetPhysicsObject();
 
 		if IsValid(ph) then 

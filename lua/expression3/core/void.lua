@@ -23,7 +23,7 @@ end;
 mtvoid.__type = "void";
 
 mtvoid.Throw = function(this, msg, ...)
-	if (this.context) then this.context:Throw("debug-nil:" .. msg, ...); end
+	if this.context then this.context:Throw("debug-nil:" .. msg, ...); end
 	error("Debug: E3 Nil, I forgot to do a thing here?");
 end
 
@@ -170,7 +170,7 @@ local class_nil = extension:RegisterClass("nil", {"void"}, isnil, isnil);
 
 function extension.PostLoadClasses(this, classes)
 	for _, c in pairs(classes) do
-		if (c.id ~= "") then
+		if c.id ~= "" then
 			extension:RegisterOperator("eq", "nil,"..c.id, "b", 1, isnil, true);
 			extension:RegisterOperator("neq", "nil,"..c.id, "b", 1, notnil, true);
 		end

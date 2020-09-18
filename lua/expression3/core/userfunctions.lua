@@ -18,7 +18,7 @@ end
 
 local class_function = extension:RegisterClass("f", {"function"}, istable, notnil);
 
-if (SERVER) then
+if SERVER then
 	WireLib.DT.E3_API = {
 		op = function() end; signature = ""; result = ""; count = 0
 	}

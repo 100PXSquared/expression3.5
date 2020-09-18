@@ -185,32 +185,32 @@ extension:RegisterMethod("e2t", "keys", "", "t", 1, function(tbl)
 	local t = {};
 
 	for key, value in pairs(tbl.n) do
-		if (value and value[2] ~= nil) then
+		if value and value[2] ~= nil then
 			local typ;
 
-			if (isnumber(key)) then
+			if isnumber(key) then
 				typ = "n";
-			elseif (isstring(key)) then
+			elseif isstring(key) then
 				typ = "s";
 			end
 
-			if (type) then
+			if type then
 				t[#t + 1] = {t, key};
 			end
 		end
 	end
 
 	for key, value in pairs(tbl.s) do
-		if (value and value[2] ~= nil) then
+		if value and value[2] ~= nil then
 			local typ;
 
-			if (isnumber(key)) then
+			if isnumber(key) then
 				typ = "n";
-			elseif (isstring(key)) then
+			elseif isstring(key) then
 				typ = "s";
 			end
 
-			if (type) then
+			if type then
 				t[#t + 1] = {t, key};
 			end
 		end
@@ -256,7 +256,7 @@ end, false);
 local VALID_KEYS = {"n", "s"};
 
 for _, k in pairs(VALID_KEYS) do
-	if (k ~= "") then
+	if k ~= "" then
 		extension:RegisterMethod("e2t", "exists", k, "b", 1, function(ctx, tbl, value)
 			if isnumber(value) then
 				return tbl.n[value] ~= nil
@@ -297,7 +297,7 @@ function extension.PostLoadClasses(this, classes)
 			extension:RegisterMethod("e2t", "pop" .. c.name, "", id, 1, function(ctx, tbl)
 				local value = eTable.get(ctx, tbl, #tbl.n, id)
 
-				if (not value or (value[1] ~= id and id ~= "_vr")) then
+				if not value or (value[1] ~= id and id ~= "_vr") then
 					ctx:Throw(string.format("table.pop%s() got result %s, %s expected.", c.name, value[1], c.name));
 				end
 
@@ -309,7 +309,7 @@ function extension.PostLoadClasses(this, classes)
 			extension:RegisterMethod("e2t", "shift" .. c.name, "", id, 1, function(ctx, tbl)
 				local value = eTable.get(ctx, tbl, 1, id)
 
-				if (not value or (value[1] ~= id and id ~= "_vr")) then
+				if not value or (value[1] ~= id and id ~= "_vr") then
 					ctx:Throw(string.format("table.shift%s() got result %s, %s expected.", c.name, value[1], c.name));
 				end
 
@@ -327,7 +327,7 @@ function extension.PostLoadClasses(this, classes)
 			-- to make this function, since you would need to convert every single value before comparing
 
 			for _, k in pairs(VALID_KEYS) do
-				if (k ~= "") then
+				if k ~= "" then
 					extension:RegisterOperator("set", string.format("e2t,%s,cls,%s", k, id), "", 1, eTable.set);
 				end
 			end

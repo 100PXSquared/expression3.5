@@ -291,7 +291,7 @@ extension:RegisterMethod("v", "rotate", "n,n,n", "v", 1, function(v, p, y, r)
 end, true);
 
 extension:RegisterMethod("v", "dehomogenized", "", "v2", 1, function(v)
-	if (v.z == 0) then return {x = v.x, y = v.y}; end
+	if v.z == 0 then return {x = v.x, y = v.y}; end
 	return {x = v.x / v.z, y = v.y / v.z};
 end, true);
 

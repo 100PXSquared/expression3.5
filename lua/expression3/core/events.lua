@@ -18,7 +18,7 @@ local extension = EXPR_LIB.RegisterExtension("events");
 
 local function event_call(result, count, name, ...)
 	for _, context in pairs(EXPR_LIB.GetAll()) do
-		if (IsValid(context.entity)) then
+		if IsValid(context.entity) then
 			context.entity:CallEvent(result, count, name, ...);
 		end
 	end
@@ -60,7 +60,7 @@ extension:RegisterFunction("event", "add", "s,s,f", "", 0, function(context, eve
 	context = tokens[context];
 	local events = context.events[event];
 
-	if (not events) then
+	if not events then
 		events = {};
 		context.events[event] = events;
 	end
@@ -72,7 +72,7 @@ extension:RegisterFunction("event", "remove", "s,s", "", 0, function(context, ev
 	context = tokens[context];
 	local events = context.events[event];
 
-	if (not events) then
+	if not events then
 		return;
 	end
 
@@ -93,7 +93,7 @@ end);
 
 extension:RegisterFunction("event", "call", "e,s,...", "b", 1, function(context, entity, event, ...)
 	context = tokens[context];
-	if (not IsValid(entity) or not entity.Expression3) then return end
+	if not IsValid(entity) or not entity.Expression3 then return end
 	if not context:CanUseEntity(entity) then return end
 	local status = entity:CallEvent("", 0, event, ...);
 	return status;
@@ -101,7 +101,7 @@ end);
 
 extension:RegisterFunction("event", "call", "cls,n,e,s,...", "", 0, function(context, class, count, entity, event, ...)
 	context = tokens[context];
-	if (not IsValid(entity) or not entity.Expression3) then return end
+	if not IsValid(entity) or not entity.Expression3 then return end
 	if not context:CanUseEntity(entity) then return end
 	local status, results = entity:CallEvent(class, count, event, ...);
 	return resultsToTable(status, class, results);

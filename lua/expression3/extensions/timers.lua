@@ -63,7 +63,7 @@ extension:RegisterFunction("timer", "pause", "s", "", 0, function(ctx, name)
 	ctx = tokens[ctx];
 	local timers = ctx.data.timers;
 
-	if (timers[name]) then
+	if timers[name] then
 		timers[name].paused = true;
 	end
 end, false);
@@ -72,7 +72,7 @@ extension:RegisterFunction("timer", "resume", "s", "", 0, function(ctx, name)
 	ctx = tokens[ctx];
 	local timers = ctx.data.timers;
 
-	if (timers[name]) then
+	if timers[name] then
 		timers[name].paused = false;
 	end
 end, false);
@@ -81,29 +81,29 @@ hook.Add("Think", "Expression3.Timers.Run", function()
 	local now = CurTime();
 
 	for _, ctx in pairs(EXPR_LIB.GetAll()) do
-		if (IsValid(ctx.entity)) then
+		if IsValid(ctx.entity) then
 			local timers = ctx.data.timers;
 
-			if (timers) then
+			if timers then
 				local i = 0;
 				for k, timer in pairs(timers) do
 
 					i = i + 1; -- Limit the amount we do in one think.
 
-					if (i > 500) then break; end
+					if i > 500 then break; end
 
-					if (not timer.paused and now >= timer.next) then
+					if not timer.paused and now >= timer.next then
 						timer.next = now + timer.delay;
 
-						if (timer.reps > 0) then
+						if timer.reps > 0 then
 							timer.count = timer.count + 1;
 
-							if (timer.count >= timer.reps) then
+							if timer.count >= timer.reps then
 								timers[k] = nil;
 							end
 						end
 
-						if (timer.simple) then
+						if timer.simple then
 							timers[k] = nil;
 						end
 

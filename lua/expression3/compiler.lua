@@ -24,12 +24,12 @@ end
 
 local function names(ids)
 
-	if (ids == null) then
+	if ids == null then
 		debug.Trace();
 		print("Names got nil!")
 	end
 
-	if (isstring(ids)) then
+	if isstring(ids) then
 		ids = string_Explode(",", ids);
 	end
 
@@ -110,11 +110,11 @@ function COMPILER.Run(this)
 	--TODO: PcallX for stack traces on internal errors?
 	local status, result = pcall(this._Run, this);
 
-	if (status) then
+	if status then
 		return true, result;
 	end
 
-	if (type(result) == "table") then
+	if type(result) == "table" then
 		return false, result;
 	end
 
@@ -156,14 +156,14 @@ local addNativeLua;
 function addNativeLua(instruction, outBuffer, traceTable, char, line)
 	--print("\nadding instruction to buffer: ", instruction.type);
 
-	if (not instruction) then
+	if not instruction then
 		debug.Trace();
 		error( "addNativeLua got invalid instruction " .. type(instruction) , 0);
 	end
 
 	local inBuffer = instruction.buffer;
 
-	if (not inBuffer) then
+	if not inBuffer then
 		debug.Trace();
 		error( "addNativeLua got invalid buffer " .. type(inBuffer) , 0);
 	end
@@ -254,13 +254,13 @@ function COMPILER.Import(this, path)
 	local e = this.__enviroment;
 	local a = string_Explode(".", path);
 
-	if (#a > 1) then
+	if #a > 1 then
 		for i = 1, #a - 1 do
 			local k = a[i];
 			local v = g[k];
 
-			if (istable(v)) then
-				if (not istable(e[k])) then
+			if istable(v) then
+				if not istable(e[k]) then
 					e[k] = {};
 				end
 
@@ -273,7 +273,7 @@ function COMPILER.Import(this, path)
 	local k = a[#a];
 	local v = g[k];
 
-	if(isfunction(v)) then
+	if isfunction(v) then
 		e[k] = v;
 	end
 end
@@ -310,13 +310,13 @@ function COMPILER.PopScope(this)
 end
 
 function COMPILER.SetOption(this, option, value, deep)
-	if (not deep) then
+	if not deep then
 		this.__scope[option] = value;
 	else
 		for i = this.__scopeID, 0, -1 do
 			local v = this.__scopeData[i][option];
 
-			if (v) then
+			if v then
 				this.__scopeData[i][option] = value;
 				break;
 			end
@@ -325,15 +325,15 @@ function COMPILER.SetOption(this, option, value, deep)
 end
 
 function COMPILER.GetOption(this, option, nonDeep)
-	if (this.__scope[option] ~= nil) then
+	if this.__scope[option] ~= nil then
 		return this.__scope[option];
 	end
 
-	if (not nonDeep) then
+	if not nonDeep then
 		for i = this.__scopeID, 0, -1 do
 			local v = this.__scopeData[i][option];
 
-			if (v ~= nil) then
+			if v ~= nil then
 				return v;
 			end
 		end
@@ -341,7 +341,7 @@ function COMPILER.GetOption(this, option, nonDeep)
 end
 
 function COMPILER.SetVariable(this, name, class, scope, prefix, global)
-	if (not scope) then
+	if not scope then
 		scope = this.__scopeID;
 	end
 
@@ -360,21 +360,21 @@ function COMPILER.SetVariable(this, name, class, scope, prefix, global)
 end
 
 function COMPILER.GetVariable(this, name, scope, nonDeep)
-	if (not scope) then
+	if not scope then
 		scope = this.__scopeID;
 	end
 
 	local v = this.__scopeData[scope].memory[name];
 
-	if (v) then
+	if v then
 		return v.class, v.scope, v;
 	end
 
-	if (not nonDeep) then
+	if not nonDeep then
 		for i = scope, 0, -1 do
 			local v = this.__scopeData[i].memory[name];
 
-			if (v) then
+			if v then
 				return v.class, v.scope, v;
 			end
 		end
@@ -429,28 +429,28 @@ function COMPILER.AssignVariable(this, token, declaired, varName, class, scope, 
 		debug.Trace();
 	end
 
-	if (bannedVars[varName]) then
+	if bannedVars[varName] then
 		this:Throw(token, "Unable to declare variable %s, name is reserved internally.", varName);
 	end
 
-	if (not scope) then
+	if not scope then
 		scope = this.__scopeID;
 	end
 
 	local c, s, var = this:GetVariable(varName, scope, declaired);
 
-	if (declaired) then
-		if (c and c == class) then
+	if declaired then
+		if c and c == class then
 			this:Throw(token, "Unable to declare variable %s, Variable already exists.", varName);
-		elseif (c and class ~= "") then
+		elseif c and class ~= "" then
 			this:Throw(token, "Unable to Initialize variable %s, %s expected got %s.", varName, name(c), name(class));
 		else
 			return this:SetVariable(varName, class, scope, prefix, global);
 		end
 	else
-		if (not c) then
+		if not c then
 			this:Throw(token, "Unable to assign variable %s, Variable doesn't exist.", varName);
-		elseif (c ~= class and class ~= "") then
+		elseif c ~= class and class ~= "" then
 			this:Throw(token, "Unable to assign variable %s, %s expected got %s.", varName, name(c), name(class));
 		end
 	end
@@ -462,7 +462,7 @@ end
 ]]
 
 function COMPILER.GetOperator(this, operation, fst, snd, ...)
-	if (not fst) then
+	if not fst then
 		return EXPR_OPERATORS[operation .. "()"];
 	end
 
@@ -470,19 +470,19 @@ function COMPILER.GetOperator(this, operation, fst, snd, ...)
 
 	local Op = EXPR_OPERATORS[signature];
 
-	if (Op) then
+	if Op then
 		return Op;
 	end
 
 	-- First peram base class.
 
-	if (fst) then
+	if fst then
 		local cls = E3Class(fst);
 
-		if (cls and cls.base) then
+		if cls and cls.base then
 			local Op = this:GetOperator(operation, cls.base, snd, ...);
 
-			if (Op) then
+			if Op then
 				return Op;
 			end
 		end
@@ -490,13 +490,13 @@ function COMPILER.GetOperator(this, operation, fst, snd, ...)
 
 	-- Second peram base class.
 
-	if (snd) then
+	if snd then
 		local cls = E3Class(snd);
 
-		if (cls and cls.base) then
+		if cls and cls.base then
 			local Op = this:GetOperator(operation, fst, cls.base, ...);
 
-			if (Op) then
+			if Op then
 				return Op;
 			end
 		end
@@ -508,23 +508,23 @@ end
 ]]
 
 function COMPILER.Compile(this, inst)
-	if (not inst) then
+	if not inst then
 		debug.Trace();
 		error("Compiler was asked to compile a nil instruction.")
 	end
 
-	if (not istable(inst.token)) then
+	if not istable(inst.token) then
 		debug.Trace();
 		print("token is ", type(inst.token), inst.token);
 	end
 
-	if (not inst.compiled) then
+	if not inst.compiled then
 		inst.buffer = {};
 
 		local instruction = string_upper(inst.type);
 		local fun = this["Compile_" .. instruction];
 
-		if (not fun) then
+		if not fun then
 			this:Throw(inst.token, "Failed to compile unknown instruction %s", instruction);
 		end
 
@@ -536,7 +536,7 @@ function COMPILER.Compile(this, inst)
 
 		this.cur_instruction = preInst;
 
-		if (type) then
+		if type then
 			inst.result = type;
 			inst.rCount = count or 1;
 		end
@@ -553,12 +553,12 @@ end
 ]]
 
 function COMPILER.writeToBuffer(this, inst, line, a, ...)
-	if (isstring(inst)) then
+	if isstring(inst) then
 		print("writeToBuffer", inst)
 		debug.Trace();
 	end
 
-	if (a) then
+	if a then
 		line = string.format(line, a, ...);
 	end
 
@@ -574,26 +574,26 @@ function COMPILER.writeOperationCall(this, inst, op, expr1, ...)
 
 	this:writeToBuffer(inst, "_OPS[%q](", op.signature);
 
-	if (op.context) then
+	if op.context then
 	    this:writeToBuffer(inst, "CONTEXT");
 
-	    if (expr1) then
+	    if expr1 then
 	    	this:writeToBuffer(inst, ",");
 	    end
 	end
 
-	if (expr1) then
+	if expr1 then
 		local args = {expr1, ...};
 		local tArgs = #args;
 
 		for i = 1, tArgs do
-			if (type(args[i]) == "table") then
+			if type(args[i]) == "table" then
 				this:addInstructionToBuffer(inst, args[i]);
 			else
 				this:writeToBuffer(inst, tostring(args[i]));
 			end
 
-			if (i < tArgs) then
+			if i < tArgs then
 				this:writeToBuffer(inst, ",");
 			end
 		end
@@ -612,20 +612,20 @@ function COMPILER.writeArgsToBuffer(this, inst, vargs, ...)
 		if istable(arg) then
 			local vr = (vargs and i >= vargs) and arg.result ~= "_vr";
 
-			if (vr) then
+			if vr then
 				this:writeToBuffer(inst, "{%q,", arg.result);
 			end
 
 			this:addInstructionToBuffer(inst, arg);
 
-			if (vr) then
+			if vr then
 				this:writeToBuffer(inst, "}");
 			end
 		else
 			this:writeToBuffer(inst, tostring(arg));
 		end
 
-		if (i < tArgs) then
+		if i < tArgs then
 			this:writeToBuffer(inst, ",");
 		end
 	end
@@ -636,15 +636,15 @@ function COMPILER.writeMethodCall(this, inst, op, expr1, ...)
 
 	this:writeToBuffer(inst, "_METH[%q](", op.signature);
 
-	if (op.context) then
+	if op.context then
 	    this:writeToBuffer(inst, "CONTEXT");
 
-	    if (expr1) then
+	    if expr1 then
 	    	this:writeToBuffer(inst, ",");
 	    end
 	end
 
-	if (expr1) then
+	if expr1 then
 		this:writeArgsToBuffer(inst, nil, expr1, ...);
 	end
 
@@ -657,15 +657,15 @@ function COMPILER.writeOperationCall2(this, tbl, inst, op, vargs, expr1, ...)
 
 	this:writeToBuffer(inst, "%s[%q](", tbl, signature);
 
-	if (t and op.context) then
+	if t and op.context then
 	    this:writeToBuffer(inst, "CONTEXT");
 
-	    if (expr1) then
+	    if expr1 then
 	    	this:writeToBuffer(inst, ",");
 	    end
 	end
 
-	if (expr1) then
+	if expr1 then
 		this:writeArgsToBuffer(inst, vargs, expr1, ...);
 	end
 
@@ -727,13 +727,13 @@ function COMPILER.Compile_IF(this, inst, token, data)
 
 	local r, c = this:Compile(condition);
 
-	if (class ~= "b") then
+	if class ~= "b" then
 		local isBool = this:Expression_IS(condition);
 
-		if (not isBool) then
+		if not isBool then
 			local t = this:CastExpression("b", condition);
 
-			if (not t) then
+			if not t then
 				this:Throw(token, "Type of %s can not be used as a condition.", name(r));
 			end
 		end
@@ -753,7 +753,7 @@ function COMPILER.Compile_IF(this, inst, token, data)
 
 	local eif = data.eif;
 
-	if (eif and #eif > 0) then
+	if eif and #eif > 0 then
 		for i = 1, #eif do
 			local stmt = eif[i];
 			this:Compile(stmt);
@@ -773,13 +773,13 @@ function COMPILER.Compile_ELSEIF(this, inst, token, data)
 
 	local class, count = this:Compile(condition);
 
-	if (class ~= "b") then
+	if class ~= "b" then
 		local isBool = this:Expression_IS(condition);
 
-		if (not isBool) then
+		if not isBool then
 			local t = this:CastExpression("b", condition);
 
-			if (not t) then
+			if not t then
 				this:Throw(token, "Type of %s can not be used as a condition.", name(r));
 			end
 		end
@@ -799,7 +799,7 @@ function COMPILER.Compile_ELSEIF(this, inst, token, data)
 
 	local eif = data.eif;
 
-	if (eif) then
+	if eif then
 		local _, __, inst4 = this:Compile(eif);
 
 		this:addInstructionToBuffer(inst, inst4);
@@ -828,18 +828,18 @@ end
 function COMPILER.CheckState(this, state, token, msg, frst, ...)
 	local s = this:GetOption("state");
 
-	if (state == EXPR_SHARED or s == state) then
+	if state == EXPR_SHARED or s == state then
 		return true;
 	end
 
-	if (token and msg) then
-		if (frst) then
+	if token and msg then
+		if frst then
 			msg = string_format(msg, frst, ...);
 		end
 
-		if (state == EXPR_SERVER) then
+		if state == EXPR_SERVER then
 			this:Throw(token, "%s is server-side only.", msg);
-		elseif (state == EXPR_SERVER) then
+		elseif state == EXPR_SERVER then
 			this:Throw(token, "%s is client-side only.", msg);
 		end
 	end
@@ -850,7 +850,7 @@ end
 function COMPILER.Compile_SERVER(this, inst, token, data)
 	this:writeToBuffer(inst, "if SERVER then\n");
 
-	if (not this:GetOption("server")) then
+	if not this:GetOption("server") then
 		this:Throw(token, "Server block must not appear inside a Client block.")
 	end
 
@@ -872,7 +872,7 @@ end
 function COMPILER.Compile_CLIENT(this, inst, token, data)
 	this:writeToBuffer(inst, "if CLIENT then\n");
 
-	if (not this:GetOption("client")) then
+	if not this:GetOption("client") then
 		this:Throw(token, "Client block must not appear inside a Server block.")
 	end
 
@@ -908,9 +908,9 @@ function COMPILER.Compile_GLOBAL(this, inst, token, data)
 
 		prive = price + p;
 
-		if (not data.variables[i]) then
+		if not data.variables[i] then
 			this:Throw(arg.token, "Invalid assignment, value #%i is not being assigned to a variable.", i);
-		elseif (i < tArgs) then
+		elseif i < tArgs then
 			results[#results + 1] = {r, arg, true};
 		else
 			for j = 1, c do
@@ -924,7 +924,7 @@ function COMPILER.Compile_GLOBAL(this, inst, token, data)
 		local token = data.variables[i];
 		local var = token.data;
 
-		if (not result) then
+		if not result then
 			this:Throw(token, "Invalid assignment, variable %s is not initalized.", var);
 		end
 
@@ -933,21 +933,21 @@ function COMPILER.Compile_GLOBAL(this, inst, token, data)
 		this:writeToBuffer(inst, "GLOBAL.");
 		this:writeToBuffer(inst, var);
 
-		if (i < #data.variables) then
+		if i < #data.variables then
 			this:writeToBuffer(inst, ",");
 		end
 
 		this.__defined[var] = true;
 
-		if (result[1] ~= data.class) then
+		if result[1] ~= data.class then
 			local casted = false;
 			local arg = result[2];
 
-			if (result[3]) then
+			if result[3] then
 				casted = this:CastExpression(data.class, data.expressions[i]);
 			end
 
-			if (not casted) then
+			if not casted then
 				this:AssignVariable(arg.token, true, var, result[1], 0, "GLOBAL", true);
 			end
 		end
@@ -958,7 +958,7 @@ function COMPILER.Compile_GLOBAL(this, inst, token, data)
 	for i = 1, tArgs do
 		this:addInstructionToBuffer(inst, data.expressions[i]);
 
-		if (i < tArgs) then
+		if i < tArgs then
 			this:writeToBuffer(inst, ",");
 		end
 	end
@@ -986,9 +986,9 @@ function COMPILER.Compile_LOCAL(this, inst, token, data)
 
 		price = price + p;
 
-		if (not data.variables[i]) then
+		if not data.variables[i] then
 			this:Throw(arg.token, "Invalid assignment, value #%i is not being assigned to a variable.", i);
-		elseif (i < tArgs) then
+		elseif i < tArgs then
 			results[#results + 1] = {r, arg, true};
 		else
 			for j = 1, c do
@@ -1002,7 +1002,7 @@ function COMPILER.Compile_LOCAL(this, inst, token, data)
 		local token = data.variables[i];
 		local var = token.data;
 
-		if (not result) then
+		if not result then
 			this:Throw(token, "Invalid assignment,  variable %s is not initalized.", var);
 		end
 
@@ -1010,21 +1010,21 @@ function COMPILER.Compile_LOCAL(this, inst, token, data)
 
 		this:writeToBuffer(inst, var);
 
-		if (i < #data.variables) then
+		if i < #data.variables then
 			this:writeToBuffer(inst, ",");
 		end
 
 		this.__defined[var] = true;
 
-		if (result[1] ~= data.class and result[1] ~= "") then
+		if result[1] ~= data.class and result[1] ~= "" then
 			local casted = false;
 			local arg = result[2];
 
-			if (result[3]) then
+			if result[3] then
 				casted = this:CastExpression(data.class, data.expressions[i]);
 			end
 
-			if (not casted) then
+			if not casted then
 				this:AssignVariable(arg.token, false, var, result[1]);
 			end
 		end
@@ -1035,7 +1035,7 @@ function COMPILER.Compile_LOCAL(this, inst, token, data)
 	for i = 1, tArgs do
 		this:addInstructionToBuffer(inst, data.expressions[i]);
 
-		if (i < tArgs) then
+		if i < tArgs then
 			this:writeToBuffer(inst, ",");
 		end
 	end
@@ -1062,11 +1062,11 @@ function COMPILER.Compile_ASS(this, inst, token, data)
 		classes[var] = class;
 
 		if info then
-			if (info.attribute) then
+			if info.attribute then
 				this:writeToBuffer(inst, "this.");
 			end
 
-			if (info.prefix) then
+			if info.prefix then
 				this:writeToBuffer(inst, info.prefix);
 				this:writeToBuffer(inst, ".");
 			end
@@ -1099,10 +1099,10 @@ function COMPILER.Compile_ASS(this, inst, token, data)
 
 		local class = classes[var.data];
 
-		if (class ~= r and class ~= "") then
+		if class ~= r and class ~= "" then
 			local casted = this:CastExpression(class, arg);
 
-			if (not casted) then
+			if not casted then
 				this:AssignVariable(var, false, var.data, r);
 			end
 
@@ -1118,7 +1118,7 @@ function COMPILER.Compile_ASS(this, inst, token, data)
 
 				local var = vars[j];
 
-				if (i + c >= j) then
+				if i + c >= j then
 					this:AssignVariable(var, false, var.data, r);
 				else
 					this:Throw(var, "Invalid assignment, variable %s is not initalized.", var.data);
@@ -1133,18 +1133,18 @@ function COMPILER.Compile_ASS(this, inst, token, data)
 		local var = vars[i].data;
 		local class, scope, info = this:GetVariable(var);
 
-		if (data.class == "f") then
-			if (info.signature) then
+		if data.class == "f" then
+			if info.signature then
 				local msg = string_format("Failed to assign function to delegate %s(%s), permater missmatch.", var, info.signature);
 				this:writeToBuffer(inst, "if %s and %s.signature ~= %q then THROW(%q); %s=nil end\n", var, var, info.signature, msg, var);
 			end
 
-			if (info.resultClass) then
+			if info.resultClass then
 				local msg = string_format("Failed to assign function to delegate %s(%s), result type missmatch.", var, name(info.resultClass));
 				this:writeToBuffer(inst, "if %s and %s.result ~= %q then THROW(%q); %s=nil end\n", var, var, name(info.resultClass), msg, var);
 			end
 
-			if (info.resultCount) then
+			if info.resultCount then
 				local msg = string_format("Failed to assign function to delegate %s(%s), result count missmatch.", var, info.resultCount);
 				this:writeToBuffer(inst, "if %s and %s.count ~= %i then THROW(%q); %s=nil end\n", var, var, info.resultCount, msg, var);
 			end
@@ -1183,7 +1183,7 @@ function COMPILER.Compile_AADD(this, inst, token, data)
 
 			for i = k, vt do
 				this:writeToBuffer(inst, "__" .. data.variables[i].data);
-				if (i < vt) then this:writeToBuffer(inst, ","); end
+				if i < vt then this:writeToBuffer(inst, ","); end
 			end
 
 			this:writeToBuffer(inst, "=");
@@ -1206,11 +1206,11 @@ function COMPILER.Compile_AADD(this, inst, token, data)
 
 		local class, scope, info = this:GetVariable(var, nil, false);
 
-		if (not class) then
+		if not class then
 			this:Throw(token, "Variable %s does not exist.", var);
 		end
 
-		if (info and info.prefix) then
+		if info and info.prefix then
 			var = info.prefix .. "." .. token.data;
 		end
 
@@ -1218,20 +1218,20 @@ function COMPILER.Compile_AADD(this, inst, token, data)
 
 		local op = this:GetOperator("add", class, r);
 
-		if (not op and r ~= class) then
-			if (this:CastExpression(class, expr)) then
+		if not op and r ~= class then
+			if this:CastExpression(class, expr) then
 				op = this:GetOperator("add", class, class);
 			end
 		end
 
-		if (not op) then
+		if not op then
 			this:Throw(expr.token, "Assignment operator (+=) does not support '%s += %s'", name(class), name(r));
 		end
 
 		this:CheckState(op.state, token, "Assignment operator (+=)");
 
-		if (not op.operator) then
-			if (r == "s" or class == "s") then
+		if not op.operator then
+			if r == "s" or class == "s" then
 				char = "..";
 			end
 
@@ -1282,7 +1282,7 @@ function COMPILER.Compile_ASUB(this, inst, token, data)
 
 			for i = k, vt do
 				this:writeToBuffer(inst, "__" .. data.variables[i].data);
-				if (i < vt) then this:writeToBuffer(inst, ","); end
+				if i < vt then this:writeToBuffer(inst, ","); end
 			end
 
 			this:writeToBuffer(inst, "=");
@@ -1307,29 +1307,29 @@ function COMPILER.Compile_ASUB(this, inst, token, data)
 
 		local class, scope, info = this:GetVariable(var, nil, false);
 
-		if (not class) then
+		if not class then
 			this:Throw(token, "Variable %s does not exist.", var);
 		end
 
-		if (info and info.prefix) then
+		if info and info.prefix then
 			var = info.prefix .. "." .. token.data;
 		end
 
 		local op = this:GetOperator("sub", class, r);
 
-		if (not op and r ~= class) then
-			if (this:CastExpression(class, expr)) then
+		if not op and r ~= class then
+			if this:CastExpression(class, expr) then
 				op = this:GetOperator("sub", class, class);
 			end
 		end
 
-		if (not op) then
+		if not op then
 			this:Throw(expr.token, "Assignment operator (-=) does not support '%s -= %s'", name(class), name(r));
 		end
 
 		this:CheckState(op.state, token, "Assignment operator (-=)");
 
-		if (not op.operator) then
+		if not op.operator then
 			this:writeToBuffer(inst, "%s = %s -", var, var);
 
 			this:addInstructionToBuffer(inst, expr);
@@ -1379,7 +1379,7 @@ function COMPILER.Compile_ADIV(this, inst, token, data)
 
 			for i = k, vt do
 				this:writeToBuffer(inst, "__" .. data.variables[i].data);
-				if (i < vt) then this:writeToBuffer(inst, ","); end
+				if i < vt then this:writeToBuffer(inst, ","); end
 			end
 
 			this:writeToBuffer(inst, "=");
@@ -1402,29 +1402,29 @@ function COMPILER.Compile_ADIV(this, inst, token, data)
 
 		local class, scope, info = this:GetVariable(var, nil, false);
 
-		if (not class) then
+		if not class then
 			this:Throw(token, "Variable %s does not exist.", var);
 		end
 
-		if (info and info.prefix) then
+		if info and info.prefix then
 			var = info.prefix .. "." .. token.data;
 		end
 
 		local op = this:GetOperator("div", class, r);
 
-		if (not op and r ~= class) then
-			if (this:CastExpression(class, expr)) then
+		if not op and r ~= class then
+			if this:CastExpression(class, expr) then
 				op = this:GetOperator("div", class, class);
 			end
 		end
 
-		if (not op) then
+		if not op then
 			this:Throw(expr.token, "Assignment operator (/=) does not support '%s /= %s'", name(class), name(r));
 		end
 
 		this:CheckState(op.state, token, "Assignment operator (/=)");
 
-		if (not op.operator) then
+		if not op.operator then
 			this:writeToBuffer(inst, "%s = %s /", var, var);
 
 			this:addInstructionToBuffer(inst, expr);
@@ -1472,7 +1472,7 @@ function COMPILER.Compile_AMUL(this, inst, token, data)
 
 			for i = k, vt do
 				this:writeToBuffer(inst, "__" .. data.variables[i].data);
-				if (i < vt) then this:writeToBuffer(inst, ","); end
+				if i < vt then this:writeToBuffer(inst, ","); end
 			end
 
 			this:writeToBuffer(inst, "=");
@@ -1495,29 +1495,29 @@ function COMPILER.Compile_AMUL(this, inst, token, data)
 
 		local class, scope, info = this:GetVariable(var, nil, false);
 
-		if (not class) then
+		if not class then
 			this:Throw(token, "Variable %s does not exist.", var);
 		end
 
-		if (info and info.prefix) then
+		if info and info.prefix then
 			var = info.prefix .. "." .. token.data;
 		end
 
 		local op = this:GetOperator("mul", class, r);
 
-		if (not op and r ~= class) then
-			if (this:CastExpression(class, expr)) then
+		if not op and r ~= class then
+			if this:CastExpression(class, expr) then
 				op = this:GetOperator("mul", class, class);
 			end
 		end
 
-		if (not op) then
+		if not op then
 			this:Throw(expr.token, "Assignment operator (*=) does not support '%s *= %s'", name(class), name(r));
 		end
 
 		this:CheckState(op.state, token, "Assignment operator (*=)");
 
-		if (not op.operator) then
+		if not op.operator then
 			this:writeToBuffer(inst, "%s = %s *", var, var);
 
 			this:addInstructionToBuffer(inst, expr);
@@ -1570,7 +1570,7 @@ function COMPILER.Compile_TEN(this, inst, token, data)
 
 	if not op and not (r1 == "b" and r2 == r3) then
 		this:Throw(expr.token, "Tenary operator (A ? B : C) does not support '%s ? %s : %s'", name(r1), name(r2), name(r3));
-	elseif (not op or not op.operator) then
+	elseif not op or not op.operator then
 		this:writeToBuffer(inst, "(");
 
 		this:addInstructionToBuffer(inst, expr1);
@@ -1607,20 +1607,20 @@ function COMPILER.Compile_OR(this, inst, token, data)
 
 	local op = this:GetOperator("or", r1, r2);
 
-	if (not op) then
+	if not op then
 		local is1 = this:Expression_IS(expr1);
 		local is2 = this:Expression_IS(expr2);
 
-		if (is1 and is2) then
+		if is1 and is2 then
 			op = this:GetOperator("or", "b", "b");
 		end
 
-		if (not op) then
+		if not op then
 			this:Throw(token, "Logical or operator (||) does not support '%s || %s'", name(r1), name(r2));
 		end
 	end
 
-	if (not op.operator) then
+	if not op.operator then
 		this:writeToBuffer(inst, "(");
 
 		this:addInstructionToBuffer(inst, expr1);
@@ -1650,20 +1650,20 @@ function COMPILER.Compile_AND(this, inst, token, data)
 
 	local op = this:GetOperator("and", r1, r2);
 
-	if (not op) then
+	if not op then
 		local is1 = this:Expression_IS(expr1);
 		local is2 = this:Expression_IS(expr2);
 
-		if (is1 and is2) then
+		if is1 and is2 then
 			op = this:GetOperator("and", "b", "b");
 		end
 
-		if (not op) then
+		if not op then
 			this:Throw(token, "Logical and operator (&&) does not support '%s && %s'", name(r1), name(r2));
 		end
 	end
 
-	if (not op.operator) then
+	if not op.operator then
 		this:writeToBuffer(inst, "(");
 
 		this:addInstructionToBuffer(inst, expr1);
@@ -1693,9 +1693,9 @@ function COMPILER.Compile_BXOR(this, inst, token, data)
 
 	local op = this:GetOperator("bxor", r1, r2);
 
-	if (not op) then
+	if not op then
 		this:Throw(token, "Binary xor operator (^^) does not support '%s ^^ %s'", name(r1), name(r2));
-	elseif (not op.operator) then
+	elseif not op.operator then
 		this:writeToBuffer(inst, "bit.bxor(");
 
 		this:addInstructionToBuffer(inst, expr1);
@@ -1725,9 +1725,9 @@ function COMPILER.Compile_BOR(this, inst, token, data)
 
 	local op = this:GetOperator("bor", r1, r2);
 
-	if (not op) then
+	if not op then
 		this:Throw(token, "Binary or operator (|) does not support '%s | %s'", name(r1), name(r2));
-	elseif (not op.operator) then
+	elseif not op.operator then
 		this:writeToBuffer(inst, "bit.bor(");
 
 		this:addInstructionToBuffer(inst, expr1);
@@ -1757,9 +1757,9 @@ function COMPILER.Compile_BAND(this, inst, token, data)
 
 	local op = this:GetOperator("band", r1, r2);
 
-	if (not op) then
+	if not op then
 		this:Throw(token, "Binary or operator (&) does not support '%s & %s'", name(r1), name(r2));
-	elseif (not op.operator) then
+	elseif not op.operator then
 		this:writeToBuffer(inst, "bit.band(");
 
 		this:addInstructionToBuffer(inst, expr1);
@@ -1797,9 +1797,9 @@ function COMPILER.Compile_EQ_MUL(this, inst, token, data)
 
 		local op = this:GetOperator("eq", r1, r2);
 
-		if (not op) then
+		if not op then
 			this:Throw(token, "Comparison operator (==) does not support '%s == %s'", name(r1), name(r2));
-		elseif (not op.operator) then
+		elseif not op.operator then
 			this:writeToBuffer(inst, "(");
 
 			this:writeToBuffer(inst, "eq_val");
@@ -1817,7 +1817,7 @@ function COMPILER.Compile_EQ_MUL(this, inst, token, data)
 
 		this:CheckState(op.state, token, "Comparison operator (==) '%s == %s'", name(r1), name(r2));
 
-		if (i < total) then
+		if i < total then
 			this:writeToBuffer(inst, " or ");
 		end
 	end
@@ -1840,9 +1840,9 @@ function COMPILER.Compile_EQ(this, inst, token, data)
 
 	local op = this:GetOperator("eq", r1, r2);
 
-	if (not op) then
+	if not op then
 		this:Throw(token, "Comparison operator (==) does not support '%s == %s'", name(r1), name(r2));
-	elseif (not op.operator) then
+	elseif not op.operator then
 		this:writeToBuffer(inst, "(");
 
 		this:addInstructionToBuffer(inst, expr1);
@@ -1880,9 +1880,9 @@ function COMPILER.Compile_NEQ_MUL(this, inst, token, data)
 
 		local op = this:GetOperator("neq", r1, r2);
 
-		if (not op) then
+		if not op then
 			this:Throw(token, "Comparison operator (!=) does not support '%s != %s'", name(r1), name(r2));
-		elseif (not op.operator) then
+		elseif not op.operator then
 			this:writeToBuffer(inst, "(");
 
 			this:writeToBuffer(inst, "eq_val");
@@ -1900,7 +1900,7 @@ function COMPILER.Compile_NEQ_MUL(this, inst, token, data)
 
 		this:CheckState(op.state, token, "Comparison operator (!=) '%s != %s'", name(r1), name(r2));
 
-		if (i < total) then
+		if i < total then
 			this:writeToBuffer(inst, " and ");
 		end
 	end
@@ -1923,9 +1923,9 @@ function COMPILER.Compile_NEQ(this, inst, token, data)
 
 	local op = this:GetOperator("neq", r1, r2);
 
-	if (not op) then
+	if not op then
 		this:Throw(token, "Comparison operator (!=) does not support '%s != %s'", name(r1), name(r2));
-	elseif (not op.operator) then
+	elseif not op.operator then
 		this:writeToBuffer(inst, "(");
 
 		this:addInstructionToBuffer(inst, expr1);
@@ -1955,9 +1955,9 @@ function COMPILER.Compile_LTH(this, inst, token, data)
 
 	local op = this:GetOperator("lth", r1, r2);
 
-	if (not op) then
+	if not op then
 		this:Throw(token, "Comparison operator (<) does not support '%s < %s'", name(r1), name(r2));
-	elseif (not op.operator) then
+	elseif not op.operator then
 		this:writeToBuffer(inst, "(");
 
 		this:addInstructionToBuffer(inst, expr1);
@@ -1987,9 +1987,9 @@ function COMPILER.Compile_LEQ(this, inst, token, data)
 
 	local op = this:GetOperator("leg", r1, r2);
 
-	if (not op) then
+	if not op then
 		this:Throw(token, "Comparison operator (<=) does not support '%s <= %s'", name(r1), name(r2));
-	elseif (not op.operator) then
+	elseif not op.operator then
 		this:writeToBuffer(inst, "(");
 
 		this:addInstructionToBuffer(inst, expr1);
@@ -2019,9 +2019,9 @@ function COMPILER.Compile_GTH(this, inst, token, data)
 
 	local op = this:GetOperator("gth", r1, r2);
 
-	if (not op) then
+	if not op then
 		this:Throw(token, "Comparison operator (>) does not support '%s > %s'", name(r1), name(r2));
-	elseif (not op.operator) then
+	elseif not op.operator then
 		this:writeToBuffer(inst, "(");
 
 		this:addInstructionToBuffer(inst, expr1);
@@ -2051,9 +2051,9 @@ function COMPILER.Compile_GEQ(this, inst, token, data)
 
 	local op = this:GetOperator("geq", r1, r2);
 
-	if (not op) then
+	if not op then
 		this:Throw(token, "Comparison operator (>=) does not support '%s >= %s'", name(r1), name(r2));
-	elseif (not op.operator) then
+	elseif not op.operator then
 		this:writeToBuffer(inst, "(");
 
 		this:addInstructionToBuffer(inst, expr1);
@@ -2083,9 +2083,9 @@ function COMPILER.Compile_BSHL(this, inst, token, data)
 
 	local op = this:GetOperator("bshl", r1, r2);
 
-	if (not op) then
+	if not op then
 		this:Throw(token, "Binary shift operator (<<) does not support '%s << %s'", name(r1), name(r2));
-	elseif (not op.operator) then
+	elseif not op.operator then
 		this:writeToBuffer(inst, "bit.lshift(");
 
 		this:addInstructionToBuffer(inst, expr1);
@@ -2115,9 +2115,9 @@ function COMPILER.Compile_BSHR(this, inst, token, data)
 
 	local op = this:GetOperator("bshr", r1, r2);
 
-	if (not op) then
+	if not op then
 		this:Throw(token, "Binary shift operator (>>) does not support '%s >> %s'", name(r1), name(r2));
-	elseif (not op.operator) then
+	elseif not op.operator then
 		this:writeToBuffer(inst, "bit.rshift(");
 
 		this:addInstructionToBuffer(inst, expr1);
@@ -2150,14 +2150,14 @@ function COMPILER.Compile_ADD(this, inst, token, data)
 
 	local op = this:GetOperator("add", r1, r2);
 
-	if (not op) then
+	if not op then
 		this:Throw(token, "Addition operator (+) does not support '%s + %s'", name(r1), name(r2));
-	elseif (not op.operator) then
+	elseif not op.operator then
 		this:writeToBuffer(inst, "(");
 
 		this:addInstructionToBuffer(inst, expr1);
 
-		if (r1 == "s" or r2 == "s") then
+		if r1 == "s" or r2 == "s" then
 			this:writeToBuffer(inst, "..");
 		else
 			this:writeToBuffer(inst, "+");
@@ -2186,9 +2186,9 @@ function COMPILER.Compile_SUB(this, inst, token, data)
 
 	local op = this:GetOperator("sub", r1, r2);
 
-	if (not op) then
+	if not op then
 		this:Throw(token, "Subtraction operator (-) does not support '%s - %s'", name(r1), name(r2));
-	elseif (not op.operator) then
+	elseif not op.operator then
 		this:writeToBuffer(inst, "(");
 
 		this:addInstructionToBuffer(inst, expr1);
@@ -2218,9 +2218,9 @@ function COMPILER.Compile_DIV(this, inst, token, data)
 
 	local op = this:GetOperator("div", r1, r2);
 
-	if (not op) then
+	if not op then
 		this:Throw(expr.token, "Division operator (/) does not support '%s / %s'", name(r1), name(r2));
-	elseif (not op.operator) then
+	elseif not op.operator then
 		this:writeToBuffer(inst, "(");
 
 		this:addInstructionToBuffer(inst, expr1);
@@ -2250,9 +2250,9 @@ function COMPILER.Compile_MUL(this, inst, token, data)
 
 	local op = this:GetOperator("mul", r1, r2);
 
-	if (not op) then
+	if not op then
 		this:Throw(token, "Multiplication operator (*) does not support '%s * %s'", name(r1), name(r2));
-	elseif (not op.operator) then
+	elseif not op.operator then
 		this:writeToBuffer(inst, "(");
 
 		this:addInstructionToBuffer(inst, expr1);
@@ -2282,9 +2282,9 @@ function COMPILER.Compile_EXP(this, inst, token, data)
 
 	local op = this:GetOperator("exp", r1, r2);
 
-	if (not op) then
+	if not op then
 		this:Throw(token, "Exponent operator (^) does not support '%s ^ %s'", name(r1), name(r2));
-	elseif (not op.operator) then
+	elseif not op.operator then
 		this:writeToBuffer(inst, "(");
 
 		this:addInstructionToBuffer(inst, expr1);
@@ -2314,9 +2314,9 @@ function COMPILER.Compile_MOD(this, inst, token, data)
 
 	local op = this:GetOperator("mod", r1, r2);
 
-	if (not op) then
+	if not op then
 		this:Throw(token, "Modulus operator (%) does not support '%s % %s'", name(r1), name(r2));
-	elseif (not op.operator) then
+	elseif not op.operator then
 		this:writeToBuffer(inst, "(");
 
 		this:addInstructionToBuffer(inst, expr1);
@@ -2343,9 +2343,9 @@ function COMPILER.Compile_NEG(this, inst, token, data)
 
 	local op = this:GetOperator("neg", r1);
 
-	if (not op) then
+	if not op then
 		this:Throw(token, "Negation operator (-A) does not support '-%s'", name(r1));
-	elseif (not op.operator) then
+	elseif not op.operator then
 		this:writeToBuffer(inst, "-");
 
 		this:addInstructionToBuffer(inst, expr1);
@@ -2364,9 +2364,9 @@ function COMPILER.Compile_NOT(this, inst, token, data)
 
 	local op = this:GetOperator("not", r1);
 
-	if (not op) then
+	if not op then
 		this:Throw(token, "Not operator (!A) does not support '!%s'", name(r1));
-	elseif (not op.operator) then
+	elseif not op.operator then
 		this:writeToBuffer(inst, "not");
 
 		this:addInstructionToBuffer(inst, expr1);
@@ -2385,9 +2385,9 @@ function COMPILER.Compile_LEN(this, inst, token, data)
 
 	local op = this:GetOperator("len", r1);
 
-	if (not op) then
+	if not op then
 		this:Throw(token, "Length operator (#A) does not support '#%s'", name(r1), name(r2));
-	elseif (not op.operator) then
+	elseif not op.operator then
 		this:writeToBuffer(inst, "#");
 
 		this:addInstructionToBuffer(inst, expr1);
@@ -2403,27 +2403,27 @@ end
 function COMPILER.Compile_DELTA(this, inst, token, data)
 	local var = data.var;
 
-	if (this.__defined[var]) then
+	if this.__defined[var] then
 		this:Throw(token, "Variable %s is defined here and can not be used as part of an expression.", var);
 	end
 
 	local c, s, info = this:GetVariable(var);
 
-	if (not c) then
+	if not c then
 		this:Throw(token, "Variable %s does not exist.", var);
 	end
 
-	if (not info.global) then
+	if not info.global then
 		this:Throw(token, "Delta operator ($) can not be used on none global variable %s.", var);
 	end
 
 	local op = this:GetOperator("dlt", c);
 
-	if (not op) then
+	if not op then
 		this:Throw(token, "Delta operator ($) does not support '$%s'", name(c));
 	end
 
-	if (info and info.prefix) then
+	if info and info.prefix then
 		this:writeOperationCall(inst, op, "DELTA." .. var, info.prefix .. "." .. var);
 	else
 		this:writeOperationCall(inst, op, "DELTA." .. var, var);
@@ -2438,34 +2438,34 @@ end
 function COMPILER.Compile_CHANGED(this, inst, token, data)
 	local var = data.var;
 
-	if (this.__defined[var]) then
+	if this.__defined[var] then
 		this:Throw(token, "Variable %s is defined here and can not be used as part of an expression.", var);
 	end
 
 	local c, s, info = this:GetVariable(var);
 
-	if (not c) then
+	if not c then
 		this:Throw(token, "Variable %s does not exist.", var);
 	end
 
-	if (not info.global) then
+	if not info.global then
 		this:Throw(token, "Changed operator (~) can not be used on none global variable %s.", var);
 	end
 
 	local op = this:GetOperator("neq", c, c);
 
-	if (not op) then
+	if not op then
 		this:Throw(token, "Changed operator (~) does not support '~%s'", name(c));
-	elseif (not op.operator) then
+	elseif not op.operator then
 		
-		if (info and info.prefix) then
+		if info and info.prefix then
 			this:writeToBuffer(inst, "(DELTA.%s ~= %s.%s)", var, info.prefix, var);
 		else
 			this:writeToBuffer(inst, "(DELTA.%s ~= %s)", var, var);
 		end
 
 	else
-		if (info and info.prefix) then
+		if info and info.prefix then
 			this:writeOperationCall(inst, op, string_format("DELTA.%s", var), string_format("%s.%s", info.prefix, var));
 		else
 			this:writeOperationCall(inst, op, string_format("DELTA.%s", var), var);
@@ -2480,10 +2480,10 @@ end
 function COMPILER.Expression_IS(this, expr)
 	local op = this:GetOperator("is", expr.result);
 
-	if (op) then
-		if (not this:CheckState(op.state)) then
+	if op then
+		if not this:CheckState(op.state) then
 			return false, expr;
-		elseif (not op.operator) then
+		elseif not op.operator then
 			expr.result = op.type;
 			expr.rCount = op.count;
 			expr.price = expr.price + op.price;
@@ -2502,7 +2502,7 @@ function COMPILER.Expression_IS(this, expr)
 
 			return true, expr;
 		end
-	elseif (expr.result == "b") then
+	elseif expr.result == "b" then
 		return true, expr;
 	end
 
@@ -2514,7 +2514,7 @@ function COMPILER.Compile_IOF(this, inst, token, data)
 
 	local userclass = this:GetClassOrInterface(data.class);
 
-	if (not userclass or not this:GetClassOrInterface(r)) then
+	if not userclass or not this:GetClassOrInterface(r) then
 		this:Throw(token, "Instanceof currently only supports user classes, sorry about that :D");
 	end
 
@@ -2531,17 +2531,17 @@ function COMPILER.CastUserType(this, left, right)
 	local to = this:GetClassOrInterface(left);
 	local from = this:GetClassOrInterface(right);
 
-	if (not to) or (not from) then return end;
+	if not to or not from then return end;
 
-	if (not this.__hashtable[to.hash][from.hash]) then
-		if (this.__hashtable[from.hash][to.hash]) then
+	if not this.__hashtable[to.hash][from.hash] then
+		if this.__hashtable[from.hash][to.hash] then
 			return {
 				signature = string_format("(%s)%s", to.hash, from.hash),
 				context = true,
 				result = left,
 				rCount = 1,
 				operator = function(ctx, obj)
-					if (not ctx.env.CheckHash(to.hash, obj)) then
+					if not ctx.env.CheckHash(to.hash, obj) then
 						ctx:Throw("Failed to cast %s to %s, #class missmatched.", name(right), name(left));
 					end; return obj;
 				end,
@@ -2574,15 +2574,15 @@ function COMPILER.CastExpression(this, type, expr)
 
 		op = EXPR_CAST_OPERATORS[signature];
 
-		if (not op) then
+		if not op then
 			return false, expr;
 		end
 
-		if (not this:CheckState(op.state)) then
+		if not this:CheckState(op.state) then
 			return false, expr;
 		end
 
-		if (op.operator) then
+		if op.operator then
 			local temp = table.Copy(expr);
 
 			expr.buffer = {};
@@ -2605,7 +2605,7 @@ function COMPILER.Compile_CAST(this, inst, token, data)
 
 	local t = this:CastExpression(data.class, expr);
 
-	if (not t) then
+	if not t then
 		this:Throw(token, "Type of %s can not be cast to type of %s.", name(expr.result), name(data.class))
 	end
 
@@ -2615,18 +2615,18 @@ function COMPILER.Compile_CAST(this, inst, token, data)
 end
 
 function COMPILER.Compile_VAR(this, inst, token, data)
-	if (this.__defined[inst.variable]) then
+	if this.__defined[inst.variable] then
 		this:Throw(token, "Variable %s is defined here and can not be used as part of an expression.", data.variable);
 	end
 
 	local c, s, var = this:GetVariable(data.variable);
 
-	if (var) then
-		if (var.attribute) then
+	if var then
+		if var.attribute then
 			this:writeToBuffer(inst, "this.");
 		end
 
-		if (var.prefix) then
+		if var.prefix then
 			this:writeToBuffer(inst, var.prefix);
 			this:writeToBuffer(inst, ".");
 		end
@@ -2634,7 +2634,7 @@ function COMPILER.Compile_VAR(this, inst, token, data)
 
 	this:writeToBuffer(inst, data.variable);
 
-	if (not c) then
+	if not c then
 		this:Throw(token, "Variable %s does not exist.", data.variable);
 	end
 
@@ -2680,21 +2680,21 @@ function COMPILER.Compile_COND(this, inst, token, data)
 	local expr = data.expr;
 	local r, c, p = this:Compile(expr);
 
-	if (r == "b") then
+	if r == "b" then
 		this:addInstructionToBuffer(inst, expr);
 		return r, c;
 	end
 
 	local op = this:GetOperator("is", r);
 
-	if (not op and this:CastExpression("b", expr)) then
+	if not op and this:CastExpression("b", expr) then
 		this:addInstructionToBuffer(inst, expr);
 		return r, "b", expr.price;
 	end
 
-	if (not op) then
+	if not op then
 		this:Throw(token, "No such condition (%s).", name(r));
-	elseif (not op.operator) then
+	elseif not op.operator then
 		this:addInstructionToBuffer(inst, expr);
 	else
 		this:writeOperationCall(inst, op, expr);
@@ -2715,12 +2715,12 @@ function COMPILER.Compile_NEW(this, inst, token, data)
 	local cls = E3Class(classname);
 	local userclass = this:GetUserClass(classname);
 
-	if (not cls and userclass) then
+	if not cls and userclass then
 		cls = userclass;
 		classname = "constructor";
 	end
 
-	if (total == 0) then
+	if total == 0 then
 		op = cls.constructors[classname .. "()"];
 	else
 		local constructors = cls.constructors;
@@ -2731,8 +2731,8 @@ function COMPILER.Compile_NEW(this, inst, token, data)
 			ids[#ids + 1] = r;
 			price = price + p;
 
-			if (k == total) then
-				if (c > 1) then
+			if k == total then
+				if c > 1 then
 					for i = 2, c do
 						ids[#ids + 1] = r;
 					end
@@ -2743,38 +2743,38 @@ function COMPILER.Compile_NEW(this, inst, token, data)
 		for i = #ids, 1, -1 do
 			local args = table_concat(ids,",", 1, i);
 
-			if (i >= total) then
+			if i >= total then
 				local signature = string_format("%s(%s)", classname, args);
 
 				op = constructors[signature];
 			end
 
-			if (not op) then
+			if not op then
 				local signature = string_format("%s(%s,...)", classname, args);
 				op = constructors[signature];
-				if (op) then vargs = i + 1; end
+				if op then vargs = i + 1; end
 			end
 
-			if (op) then
+			if op then
 				break;
 			end
 		end
 
-		if (not op) then
+		if not op then
 			op = constructors[classname .. "(...)"];
-			if (op) then vargs = 1; end
+			if op then vargs = 1; end
 		end
 	end
 
 	local signature = string_format("%s(%s)", name(data.class), names(ids));
 
-	if (op and userclass) then
+	if op and userclass then
 		this:writeToBuffer(inst, "%s[%q](", cls.name, op);
 
 		for k, expr in pairs(data.expressions) do
 			this:addInstructionToBuffer(inst, expr);
 
-			if (k < #data.expressions) then
+			if k < #data.expressions then
 				this:writeToBuffer(inst, ",");
 			end
 		end
@@ -2784,16 +2784,16 @@ function COMPILER.Compile_NEW(this, inst, token, data)
 		return userclass.name, 1, price;
 	end
 
-	if (not op) then
+	if not op then
 		this:Throw(token, "No such constructor, new %s", signature);
 	end
 
 	this:CheckState(op.state, token, "Constructor 'new %s", signature);
 
-	if (type(op.operator) == "function") then
+	if type(op.operator) == "function" then
 		this.__constructors[op.signature] = op.operator;
 		this:writeOperationCall2("_CONST", inst, op, vargs, unpack(data.expressions));
-	elseif (type(op.operator) == "string") then
+	elseif type(op.operator) == "string" then
 		this:writeToBuffer(inst, op.operator);
 	else
 		local signature = string_format("%s.", inst.library, op.signature);
@@ -2806,7 +2806,7 @@ end
 local function getMethod(mClass, userclass, method, ...)
 	local prams = table_concat({...}, ",");
 
-	if (userclass) then
+	if userclass then
 		local sig = string_format("@%s(%s)", method, prams);
 		return userclass.methods[sig];
 	end
@@ -2819,9 +2819,9 @@ local function getMethod(mClass, userclass, method, ...)
 
 	local class = E3Class(mClass);
 
-	if (class and class.base) then
+	if class and class.base then
 		local op = getMethod(class.base, userclass, method, ...)
-		if (op) then return op; end
+		if op then return op; end
 	end
 end
 
@@ -2840,19 +2840,19 @@ function COMPILER.Compile_METH(this, inst, token, data)
 
 	local price = 0;
 
-	if (total == 1) then
+	if total == 1 then
 		op = getMethod(mClass, userclass, method);
 	else
 		for k, expr in pairs(expressions) do
-			if (k > 1) then
+			if k > 1 then
 				local r, c, p = this:Compile(expr);
 
 				ids[#ids + 1] = r;
 
 				price = price + p;
 
-				if (k == total) then
-					if (c > 1) then
+				if k == total then
+					if c > 1 then
 						for i = 2, c do
 							ids[#ids + 1] = r;
 						end
@@ -2864,46 +2864,46 @@ function COMPILER.Compile_METH(this, inst, token, data)
 		for i = #ids, 1, -1 do
 			local args = table_concat(ids,",", 1, i);
 
-			if (i == total -  1) then
+			if i == total -  1 then
 				op = getMethod(mClass, userclass, method, args);
 			end
 
-			if (not op) then
+			if not op then
 				op = getMethod(mClass, userclass, method, args, "...");
 
-				if (op) then
+				if op then
 					vargs = i;
 				end
 			end
 
-			if (op) then
+			if op then
 				break;
 			end
 		end
 
-		if (not op) then
+		if not op then
 			op = getMethod(mClass, userclass, method, "...");
 
-			if (op) then
+			if op then
 				vargs = 1;
 			end
 		end
 	end
 
-	if (not op) then
+	if not op then
 		this:Throw(token, "No such method %s.%s(%s).", name(mClass), method, names(ids));
 	end
 
-	if (userclass) then
+	if userclass then
 		this:writeOperationCall2(userclass.name, inst, op, vargs, unpack(expressions));
 		return op.result, op.count, (op.price + price);
 	end
 
 	this:CheckState(op.state, token, "Method %s.%s(%s)", name(mClass), method, names(ids));
 
-	if (type(op.operator) == "function") then
+	if type(op.operator) == "function" then
 		this:writeMethodCall(inst, op, expr, unpack(expressions, 2));
-	elseif (type(op.operator) == "string") then
+	elseif type(op.operator) == "string" then
 		this:addInstructionToBuffer(inst, expr);
 
 		this:addInstructionToBuffer(inst, ":");
@@ -2925,13 +2925,13 @@ function COMPILER.Compile_CONST(this, inst, token, data)
 	local library = data.library.data;
 	local lib = EXPR_LIBRARIES[library];
 
-	if (not lib) then
+	if not lib then
 		this:Throw(token, "Library %s does not exist.", library);
 	end
 
 	local op = lib._constants[data.name];
 
-	if (not lib) then
+	if not lib then
 		this:Throw(token, "No such constant %.%s", library, data.name);
 	end
 
@@ -2947,7 +2947,7 @@ end
 function COMPILER.Compile_FUNC(this, inst, token, data)
 	local lib = EXPR_LIBRARIES[data.library.data];
 
-	if (not lib) then
+	if not lib then
 		-- Please note this should be impossible.
 		this:Throw(token, "Library %s does not exist.", inst.library.data);
 	end
@@ -2959,7 +2959,7 @@ function COMPILER.Compile_FUNC(this, inst, token, data)
 
 	local price = 0;
 
-	if (total == 0) then
+	if total == 0 then
 		op = lib._functions[data.name .. "()"];
 	else
 		for k, expr in pairs(data.expressions) do
@@ -2969,8 +2969,8 @@ function COMPILER.Compile_FUNC(this, inst, token, data)
 
 			price = price + p;
 
-			if (k == total) then
-				if (c > 1) then
+			if k == total then
+				if c > 1 then
 					for i = 2, c do
 						ids[#ids + 1] = r;
 					end
@@ -2981,40 +2981,40 @@ function COMPILER.Compile_FUNC(this, inst, token, data)
 		for i = #ids, 1, -1 do
 			local args = table_concat(ids,",", 1, i);
 
-			if (i >= total) then
+			if i >= total then
 				local signature = string_format("%s(%s)", data.name, args);
 
 				op = lib._functions[signature];
 			end
 
-			if (not op) then
+			if not op then
 				local signature = string_format("%s(%s,...)", data.name, args);
 
 				op = lib._functions[signature];
 
-				if (op) then vargs = i + 1 end
+				if op then vargs = i + 1 end
 			end
 
-			if (op) then
+			if op then
 				break;
 			end
 		end
 
-		if (not op) then
+		if not op then
 			op = lib._functions[data.name .. "(...)"];
 
-			if (op) then vargs = 1 end
+			if op then vargs = 1 end
 		end
 	end
 
-	if (not op) then
+	if not op then
 		this:Throw(token, "No such function %s.%s(%s).", data.library.data, data.name, names(ids, ","));
 	end
 
 	this:CheckState(op.state, token, "Function %s.%s(%s).", data.library.data, data.name, names(ids, ","));
 
 	local compile = function()
-		if (type(op.operator) == "function") then
+		if type(op.operator) == "function" then
 			local signature = string_format("%s.%s", data.library.data, op.signature);
 
 			if op.context then
@@ -3025,7 +3025,7 @@ function COMPILER.Compile_FUNC(this, inst, token, data)
 			end
 
 			this.__functions[signature] = op.operator;
-		elseif (type(op.operator) == "string") then
+		elseif type(op.operator) == "string" then
 			this:writeToBuffer(inst, op.operator .. "(");
 			this:writeArgsToBuffer(inst, false, unpack(data.expressions));
 			this:writeToBuffer(inst, ")");
@@ -3038,12 +3038,12 @@ function COMPILER.Compile_FUNC(this, inst, token, data)
 		return op.result, op.rCount, (op.price + price);
 	end;
 
-	if (data.library.data == "system") then
+	if data.library.data == "system" then
 		local res, count, prc = hook.Run("Expression3.PostCompile.System." .. data.name, this, inst, token, data, compile);
 
 		price = price + (prc or 0);
 
-		if (res and count) then
+		if res and count then
 			return res, count, price;
 		end
 	end
@@ -3070,7 +3070,7 @@ function COMPILER.Compile_LAMBDA(this, inst, token, data)
 		this:writeToBuffer(inst, var);
 		this:AssignVariable(token, true, var, class);
 
-		if (k < tArgs) then
+		if k < tArgs then
 			this:writeToBuffer(inst, ",");
 		end
 	end
@@ -3082,7 +3082,7 @@ function COMPILER.Compile_LAMBDA(this, inst, token, data)
 		local var = param[2];
 		local class = param[1];
 
-		if (class ~= "_vr") then
+		if class ~= "_vr" then
 			this:writeToBuffer(inst, "if %s == nil or %s[1] == nil then THROW(\"%s expected for %s, got void\") end\n", var, var, name(class), var);
 			this:writeToBuffer(inst, "if %s[1] ~= %q then THROW(\"%s expected for %s, got \" .. %s[1]) end\n", var, class, name(class), var, var);
 			this:writeToBuffer(inst, "%s = %s[2]\n", var, var);
@@ -3106,7 +3106,7 @@ function COMPILER.Compile_LAMBDA(this, inst, token, data)
 
 	this:PopScope();
 
-	if (result == "?" or count == -1) then
+	if result == "?" or count == -1 then
 		result = "";
 		count = 0;
 	end
@@ -3120,7 +3120,7 @@ end
 ]]
 
 function COMPILER.Compile_RETURN(this, inst, token, data)
-	if (not this:GetOption("canReturn", false)) then
+	if not this:GetOption("canReturn", false) then
 		this:Throw(token, "A return statment can not appear here.");
 	end
 
@@ -3141,13 +3141,13 @@ function COMPILER.Compile_RETURN(this, inst, token, data)
 
 	local outClass;
 
-	if (result == "?") then
+	if result == "?" then
 		for i = 1, #results do
 			local t = results[i][1];
 
-			if (not outClass) then
+			if not outClass then
 				outClass = t;
-			elseif (outClass ~= t) then
+			elseif outClass ~= t then
 				outClass = "_vr";
 				break;
 			end
@@ -3167,15 +3167,15 @@ function COMPILER.Compile_RETURN(this, inst, token, data)
 		local res = results[i][1];
 		local cnt = results[i][2];
 
-		if (res ~= outClass) then
+		if res ~= outClass then
 			local ok = this:CastExpression(outClass, expr);
 
-			if (not ok) then
+			if not ok then
 				this:Throw(expr.token, "Can not return %s here, %s expected.", name(res), name(outClass));
 			end
 		end
 
-		if (i < #results) then
+		if i < #results then
 			outCount = outCount + 1;
 		else
 			outCount = outCount + cnt;
@@ -3183,19 +3183,19 @@ function COMPILER.Compile_RETURN(this, inst, token, data)
 
 		this:addInstructionToBuffer(inst, expr);
 
-		if (i < #results) then
+		if i < #results then
 			this:writeToBuffer(inst, ",");
 		end
 	end
 
 	this:writeToBuffer(inst, "\n");
 
-	if (count == -1) then
+	if count == -1 then
 		count = outCount;
 		this:SetOption("retunCount", outCount, true);
 	end
 
-	if (count ~= outCount) then
+	if count ~= outCount then
 		this:Throw(expr.token, "Can not return %i %s('s) here, %i %s('s) expected.", outCount, name(outClass), count, name(outClass));
 	end
 
@@ -3203,7 +3203,7 @@ function COMPILER.Compile_RETURN(this, inst, token, data)
 end
 
 function COMPILER.Compile_BREAK(this, inst, token)
-	if (not this:GetOption("loop", false)) then
+	if not this:GetOption("loop", false) then
 		this:Throw(token, "Break must not appear outside of a loop");
 	end
 
@@ -3213,7 +3213,7 @@ function COMPILER.Compile_BREAK(this, inst, token)
 end
 
 function COMPILER.Compile_CONTINUE(this, inst, token)
-	if (not this:GetOption("loop", false)) then
+	if not this:GetOption("loop", false) then
 		this:Throw(token, "Continue must not appear outside of a loop");
 	end
 
@@ -3228,7 +3228,7 @@ end
 function COMPILER.Compile_DELEGATE(this, inst, token, data)
 	local class, scope, info = this:AssignVariable(token, true, data.variable, "f");
 
-	if (info) then
+	if info then
 		info.signature = table_concat(data.parameters, ",");
 		info.parameters = data.parameters;
 		info.resultClass = data.result_class;
@@ -3245,7 +3245,7 @@ function COMPILER.Compile_FUNCT(this, inst, token, data)
 
 	local class, scope, info = this:AssignVariable(token, true, variable, "f");
 
-	if (info and info.prefix) then
+	if info and info.prefix then
 		this:writeToBuffer(inst, "local %s.%s = {op=function(", info.prefix, variable);
 	else
 		this:writeToBuffer(inst, "local %s = {op=function(", variable);
@@ -3264,7 +3264,7 @@ function COMPILER.Compile_FUNCT(this, inst, token, data)
 		this:writeToBuffer(inst, var);
 		this:AssignVariable(token, true, var, class);
 
-		if (k < tArgs) then
+		if k < tArgs then
 			this:writeToBuffer(inst, ",");
 		end
 	end
@@ -3276,9 +3276,9 @@ function COMPILER.Compile_FUNCT(this, inst, token, data)
 		local var = param[2];
 		local class = param[1];
 
-		if (class ~= "_vr") then
-			this:writeToBuffer(inst, "if (%s == nil or %s[1] == nil) then CONTEXT:Throw(\"%s expected for %s, got void\"); end\n", var, var, name(class), var);
-			this:writeToBuffer(inst, "if (%s[1] ~= %q) then CONTEXT:Throw(\"%s expected for %s, got \" .. %s[1]); end\n", var, class, name(class), var, var);
+		if class ~= "_vr" then
+			this:writeToBuffer(inst, "if %s == nil or %s[1] == nil then CONTEXT:Throw(\"%s expected for %s, got void\"); end\n", var, var, name(class), var);
+			this:writeToBuffer(inst, "if %s[1] ~= %q then CONTEXT:Throw(\"%s expected for %s, got \" .. %s[1]); end\n", var, class, name(class), var, var);
 			this:writeToBuffer(inst, "%s = %s[2]\n", var, var);
 		end
 	end
@@ -3299,7 +3299,7 @@ function COMPILER.Compile_FUNCT(this, inst, token, data)
 
 	this:PopScope();
 
-	if (info) then
+	if info then
 		info.signature = data.signature;
 		info.parameters = data.params;
 		info.resultClass = data.resultClass;
@@ -3319,19 +3319,19 @@ function COMPILER.getAssigmentPrediction(this, inst, data)
 	local parent = inst.parent;
 	local resultClass, resultCount;
 
-	if (parent and parent.data) then
-		if (parent.data.variables) then 
+	if parent and parent.data then
+		if parent.data.variables then 
 			
-			if (parent.data.class) then
+			if parent.data.class then
 				resultClass = parent.data.class;
 				resultCount = data.call_pred or #parent.data.variables;
 			else
 				local var = parent.data.variables[1];
 
-				if (var) then
+				if var then
 					local c, s, info = this:GetVariable(var.data);
 					
-					if (c) then 
+					if c then 
 						resultClass = c;
 						resultCount = data.call_pred or #parent.data.variables;
 					end
@@ -3352,8 +3352,8 @@ function COMPILER.Compile_CALL(this, inst, token, data)
 	local res, count, price = this:Compile(expr);
 	--variables, class
 
-	if (res == "_cls") then
-		if (token.type == "typ") then
+	if res == "_cls" then
+		if token.type == "typ" then
 			this:Throw(token, "Invalid use of constructor, must be part of statment.");
 		else
 			this:Throw(token, "Invalid use of constructor, class name must be defined.");
@@ -3362,7 +3362,7 @@ function COMPILER.Compile_CALL(this, inst, token, data)
 
 	local prms = {};
 
-	if (tArgs > 1) then
+	if tArgs > 1 then
 		for i = 2, tArgs do
 			local arg = args[i];
 			local r, c, p = this:Compile(arg);
@@ -3371,7 +3371,7 @@ function COMPILER.Compile_CALL(this, inst, token, data)
 
 			prms[#prms + 1] = r;
 
-			if (i == targs and c > 1) then
+			if i == targs and c > 1 then
 				for j = 2, c do
 					prms[#prms + 1] = r;
 				end
@@ -3382,33 +3382,33 @@ function COMPILER.Compile_CALL(this, inst, token, data)
 	local signature = table_concat(prms, ",");
 	local resultClass, resultCount = this:getAssigmentPrediction(inst, data);
 
-	if (res == "f") then
+	if res == "f" then
 
 		local c, s, info;
 
-		if (expr.type == "var") then
+		if expr.type == "var" then
 			c, s, info = this:GetVariable(expr.data.variable);
 			-- The var instruction will have already validated this variable.
 
-			if (info and info.signature) then
+			if info and info.signature then
 				resultClass = info.resultClass;
 				resultCount = info.resultCount;
 			end
 		end
 
-		if (resultClass and resultCount) then
+		if resultClass and resultCount then
 
 			this:writeToBuffer(inst, "invoke(CONTEXT, %q, %i,", resultClass, resultCount);
 
-			if (info) then
-				if (info.signature and info.signature ~= signature) then
+			if info then
+				if info.signature and info.signature ~= signature then
 					this:Throw(token, "Invalid arguments to user function got %s(%s), %s(%s) expected.", expr.data.variable, names(signature), expr.data.variable, names(info.signature));
 				end
 			end
 
 			this:addInstructionToBuffer(inst, expr);
 
-			if (tArgs > 1) then
+			if tArgs > 1 then
 
 				this:writeToBuffer(inst, ",");
 
@@ -3416,17 +3416,17 @@ function COMPILER.Compile_CALL(this, inst, token, data)
 					local arg = args[i];
 					local vr = arg.result ~= "_vr";
 
-					if (vr) then
+					if vr then
 						this:writeToBuffer(inst, "{%q,", arg.result);
 					end
 
 					this:addInstructionToBuffer(inst, arg);
 
-					if (vr) then
+					if vr then
 						this:writeToBuffer(inst, "}");
 					end
 
-					if (i < tArgs) then
+					if i < tArgs then
 						this:writeToBuffer(inst, ",");
 					end
 				end
@@ -3440,31 +3440,31 @@ function COMPILER.Compile_CALL(this, inst, token, data)
 
 	local op;
 
-	if (#prms == 0) then
+	if #prms == 0 then
 		op = this:GetOperator("call", res, "");
 
-		if (not op) then
+		if not op then
 			op = this:GetOperator("call", res, "...");
 		end
 	else
 		for i = #prms, 1, -1 do
 			local args = table_concat(prms,",", 1, i);
 
-			if (i >= #prms) then
+			if i >= #prms then
 				op = this:GetOperator("call", res, args);
 			end
 
-			if (not op) then
+			if not op then
 				op = this:GetOperator("call", args, res, "...");
 			end
 
-			if (op) then
+			if op then
 				break;
 			end
 		end
 	end
 
-	if (not op) then
+	if not op then
 		this:Throw(token, "No such call operation %s(%s)", name(res), names(prms));
 	end
 
@@ -3501,7 +3501,7 @@ function COMPILER.Compile_GET(this, inst, token, data)
 	if class then
 		op = this:GetOperator("get", vType, iType, class);
 
-		if (op) then
+		if op then
 			op_result = op.result;
 			op_count = op.rCount;
 		else
@@ -3509,11 +3509,11 @@ function COMPILER.Compile_GET(this, inst, token, data)
 
 			op = this:GetOperator("get", vType, iType, "_cls");
 
-			if (op) then
+			if op then
 				op_result = op.result;
 				op_count = op.rCount;
 
-				if (op_result == "" or op_result == "_nil") then
+				if op_result == "" or op_result == "_nil" then
 					op_result = cls;
 					op_count = 1;
 				end
@@ -3522,10 +3522,10 @@ function COMPILER.Compile_GET(this, inst, token, data)
 		end
 	end
 
-	if (not op) and not data.class then
+	if not op) and not data.class then
 		op = this:GetOperator("get", vType, iType);
 
-		if (not op) then
+		if not op then
 			this:Throw(token, "No such get operation %s[%s]", name(vType), name(iType));
 		end
 
@@ -3533,7 +3533,7 @@ function COMPILER.Compile_GET(this, inst, token, data)
 		op_count = op.rCount;
 	end
 
-	if (not op) then
+	if not op then
 		if cls then
 			this:Throw(token, "No such get operation %s[%s,%s]", name(vType), name(iType), name(class));
 		else
@@ -3543,7 +3543,7 @@ function COMPILER.Compile_GET(this, inst, token, data)
 
 	this:CheckState(op.state);
 
-	if (not op.operator) then
+	if not op.operator then
 		this:addInstructionToBuffer(inst, value);
 
 		this:writeToBuffer(inst, "[");
@@ -3555,13 +3555,13 @@ function COMPILER.Compile_GET(this, inst, token, data)
 		return op_result, op_count, (op.price + vPrice + iPrice);
 	end
 
-	if (keepid) then
+	if keepid then
 		this:writeOperationCall(inst, op, value, index, string_format("%q", class));
 	else
 		this:writeOperationCall(inst, op, value, index);
 	end
 
-	if (class) then
+	if class then
 		return class, 1, (op.price + vPrice + iPrice);
 	end
 
@@ -3583,23 +3583,23 @@ function COMPILER.Compile_SET(this, inst, token, data)
 	local keepclass = false;
 	local cls = data.class;
 
-	if (cls and vExpr ~= cls) then
+	if cls and vExpr ~= cls then
 		this:Throw(token, "Can not assign %s onto %s, %s expected.", name(vExpr), name(vType), name(cls.data));
 	end
 
-	if (not cls) then
+	if not cls then
 		cls = vExpr;
 	end
 
 	local op = this:GetOperator("set", vType, iType, cls);
 
-	if (not op) then
+	if not op then
 		keepclass = true;
 		op = this:GetOperator("set", vType, iType, "_cls", vExpr)
 	end
 
-	if (not op) then
-		if (not cls) then
+	if not op then
+		if not cls then
 			this:Throw(token, "No such set operation %s[%s] = %s", name(vType), name(iType), name(vExpr));
 		else
 			this:Throw(token, "No such set operation %s[%s, %s] = %s", name(vType), name(iType), name(cls), name(vExpr));
@@ -3608,7 +3608,7 @@ function COMPILER.Compile_SET(this, inst, token, data)
 
 	this:CheckState(op.state);
 
-	if (not op.operator) then
+	if not op.operator then
 		this:addInstructionToBuffer(inst, value);
 
 		this:writeToBuffer(inst, "[");
@@ -3624,7 +3624,7 @@ function COMPILER.Compile_SET(this, inst, token, data)
 		return op.result, op.rCount, (op.price + p1 + p2 + p3);
 	end
 
-	if (keepclass) then
+	if keepclass then
 		this:writeOperationCall(inst, op, value, index, string_format("%q", cls), expr);
 	else
 		this:writeOperationCall(inst, op, value, index, expr);
@@ -3656,10 +3656,10 @@ function COMPILER.Compile_FOR(this, inst, token, data)
 	local price = p1 + p2;
 	local step = expressions[3];
 
-	if (step) then
+	if step then
 		local tStep, cStep, p3 = this:Compile(step);
 
-		if (class ~= "n" or tStart  ~= "n" or tEnd ~= "n" or tEnd ~= "n" or tStep ~= "n") then
+		if class ~= "n" or tStart  ~= "n" or tEnd ~= "n" or tEnd ~= "n" or tStep ~= "n" then
 			this:Throw(token, "No such loop 'for(%s i = %s; %s; %s)'.", name(class), name(tStart), name(tEnd), name(tStep));
 		end
 
@@ -3668,7 +3668,7 @@ function COMPILER.Compile_FOR(this, inst, token, data)
 		this:writeToBuffer(inst, ",");
 
 		this:addInstructionToBuffer(inst, step);
-	elseif (class ~= "n" or tStart  ~= "n" or tEnd ~= "n") then
+	elseif class ~= "n" or tStart  ~= "n" or tEnd ~= "n" then
 		this:Throw(token, "No such loop 'for(%s i = %s; %s)'.", name(class), name(tStart), name(tEnd));
 	end
 
@@ -3733,7 +3733,7 @@ function COMPILER.Compile_EACH(this, inst, token, data)
 	if data.kType then
 		this:AssignVariable(token, true, data.kValue, data.kType,  nil);
 
-		if (data.kType ~= "_vr") then
+		if data.kType ~= "_vr" then
 			this:writeToBuffer(inst, "if _kt ~= %q then continue end\n", data.kType);
 			this:writeToBuffer(inst, "local %s = _kv\n", data.kValue);
 		else
@@ -3741,8 +3741,8 @@ function COMPILER.Compile_EACH(this, inst, token, data)
 		end
 	end
 
-	if (data.vType) then
-		if (data.vType ~= "_vr") then
+	if data.vType then
+		if data.vType ~= "_vr" then
 			this:writeToBuffer(inst, "if _vt ~= %q then continue end\n", data.vType);
 			this:writeToBuffer(inst, "local %s = _vv\n", data.vValue);
 		else
@@ -3777,7 +3777,7 @@ function COMPILER.Compile_TRY(this, inst, token, data)
 
 	this:PopScope();
 
-	this:writeToBuffer(inst, "\nend\n); if (not ok and %s.state == 'runtime') then\n", data.var.data);
+	this:writeToBuffer(inst, "\nend\n); if not ok and %s.state == 'runtime' then\n", data.var.data);
 
 	this:PushScope();
 		this:SetOption("loop", false);
@@ -3789,21 +3789,21 @@ function COMPILER.Compile_TRY(this, inst, token, data)
 
 	this:PopScope();
 
-	this:writeToBuffer(inst, "\nelseif (not ok) then\nerror(%q, 0)\nend\n", data.var.data);
+	this:writeToBuffer(inst, "\nelseif not ok then\nerror(%q, 0)\nend\n", data.var.data);
 end
 
 --[[
 ]]
 
 function COMPILER.Compile_INPORT(this, inst, token, data)
-	if (this:GetOption("state") ~= EXPR_SERVER) then
+	if this:GetOption("state") ~= EXPR_SERVER then
 		this:Throw(token, "Wired input('s) must be defined server side.");
 	end
 
 	for _, token in pairs(data.variables) do
 		local var = token.data;
 
-		if (var[1] ~= string_upper(var[1])) then
+		if var[1] ~= string_upper(var[1]) then
 			this:Throw(token, "Invalid name for wired input %s, name must be cammel cased");
 		end
 
@@ -3814,14 +3814,14 @@ function COMPILER.Compile_INPORT(this, inst, token, data)
 end
 
 function COMPILER.Compile_OUTPORT(this, inst, token, data)
-	if (this:GetOption("state") ~= EXPR_SERVER) then
+	if this:GetOption("state") ~= EXPR_SERVER then
 		this:Throw(token, "Wired output('s) must be defined server side.");
 	end
 
 	for _, token in pairs(data.variables) do
 		local var = token.data;
 
-		if (var[1] ~= string_upper(var[1])) then
+		if var[1] ~= string_upper(var[1]) then
 			this:Throw(token, "Invalid name for wired output %s, name must be cammel cased");
 		end
 
@@ -3857,9 +3857,9 @@ end
 function COMPILER.Compile_INCLUDE(this, inst, token, file_path)
 	local script;
 
-	if (CLIENT) then
+	if CLIENT then
 		script = file.Read("golem/" .. file_path .. ".txt", "DATA");
-	elseif (SERVER) then
+	elseif SERVER then
 		script = this.__files[file_path];
 	end
 
@@ -3897,14 +3897,14 @@ function COMPILER.Compile_INCLUDE(this, inst, token, file_path)
 
 			ok, res = Compiler:Run();
 
-			if (ok) then
+			if ok then
 				this:QueueInjectionAfter(inst, token, res.compiled);
 			end
 		end
 	end
 
-	if (not ok) then
-		if (istable(res)) then
+	if not ok then
+		if istable(res) then
 			res.file = file_path;
 		end
 
@@ -3927,21 +3927,21 @@ function COMPILER.StartClass(this, name)
 end
 
 function COMPILER.GetUserClass(this, name, scope, nonDeep)
-	if (not scope) then
+	if not scope then
 		scope = this.__scopeID;
 	end
 
 	local v = this.__scopeData[scope].classes[name];
 
-	if (v) then
+	if v then
 		return v, v.scope;
 	end
 
-	if (not nonDeep) then
+	if not nonDeep then
 		for i = scope, 0, -1 do
 			local v = this.__scopeData[i].classes[name];
 
-			if (v) then
+			if v then
 				return v, v.scope;
 			end
 		end
@@ -3950,7 +3950,7 @@ end
 
 function COMPILER.AssToClass(this, token, declaired, varName, class, scope)
 	local class, scope, info = this:AssignVariable(token, declaired, varName, class, scope);
-	if (declaired) then
+	if declaired then
 		local userclass = this:GetOption("userclass");
 		userclass.memory[varName] = info;
 		info.attribute = true;
@@ -3978,10 +3978,10 @@ function COMPILER.Compile_CLASS(this, inst, token, data)
 
 		this:SetOption("userclass", class);
 
-		if (data.extends) then
+		if data.extends then
 			extends = this:GetUserClass(data.extends.data);
 
-			if (not extends) then
+			if not extends then
 				this:Throw(token, "Can not extend user class from none user class %s.", data.extends.data);
 			end
 
@@ -4010,26 +4010,26 @@ function COMPILER.Compile_CLASS(this, inst, token, data)
 			this:writeToBuffer(inst, "\n");
 		end
 
-		if (data.implements) then
+		if data.implements then
 			for _, imp in pairs(data.implements) do
 				local interface = this:GetInterface(imp.data);
 
-				if (not interface) then
+				if not interface then
 					this:Throw(imp, "No sutch interface %s", imp.data);
 				end
 
 				for mName, info in pairs(interface.methods) do
 					local overrride = class.methods[mName];
 
-					if (not overrride) then
+					if not overrride then
 						this:Throw(token, "Missing method %s(%s) on class %s, for interface %s", info.name, inst.params or "", data.classname, imp.data);
 					end
 
-					if (overrride and info.result ~= overrride.result) then
+					if overrride and info.result ~= overrride.result then
 						this:Throw(overrride.token, "Interface method %s(%s) on %s must return %s", info.name, inst.params or "", imp.data, name(info.result));
 					end
 
-					if (overrride and info.count ~= overrride.count) then
+					if overrride and info.count ~= overrride.count then
 						this:Throw(overrride.token, "Interface method %s(%s) on %s must return %i values", info.name, inst.params or "", imp.data, info.count);
 					end
 				end
@@ -4038,13 +4038,13 @@ function COMPILER.Compile_CLASS(this, inst, token, data)
 			end
 		end
 
-		if (not extends and not class.valid) then
+		if not extends and not class.valid then
 			this:Throw(token, "Class %s requires at least one constructor.", class.name);
 		end
 
 	this:PopScope();
 
-	if (extends) then
+	if extends then
 		--this:writeToBuffer(inst, "\nsetmetatable(%s, %s)\n", class.name, extends.name);
 		--this:writeToBuffer(inst, "\nsetmetatable(%s.vars, %s.vars)\n", class.name, extends.name);
 
@@ -4082,13 +4082,13 @@ function COMPILER.Compile_FIELD(this, inst, token, data)
 
 	this:writeToBuffer(inst, ".");
 
-	if (not userclass) then
+	if not userclass then
 		-- this:Throw(token, "Unable to reference field %s.%s here", name(type), inst.__field.data);
 
 		local cls = E3Class(type);
 		local info = cls.attributes[var];
 
-		if (not info) then
+		if not info then
 			this:Throw(token, "No sutch attribute %s.%s", name(type), var);
 		end
 
@@ -4099,11 +4099,11 @@ function COMPILER.Compile_FIELD(this, inst, token, data)
 
 	local info = userclass.memory[var];
 
-	if (not info) then
+	if not info then
 		this:Throw(token, "No sutch attribute %s.%s", type, var);
 	end
 
-	if (info) then
+	if info then
 		this:writeToBuffer(inst, info.prefix);
 		this:writeToBuffer(inst, ".");
 	end
@@ -4127,9 +4127,9 @@ function COMPILER.Compile_DEF_FIELD(this, inst, token, data)
 
 		price = price + p;
 
-		if (not data.variables[i]) then
+		if not data.variables[i] then
 			this:Throw(arg.token, "Unable to assign here, value #%i has no matching variable.", i);
-		elseif (i < tArgs) then
+		elseif i < tArgs then
 			results[#results + 1] = {r, arg, true};
 		else
 			for j = 1, c do
@@ -4145,10 +4145,10 @@ function COMPILER.Compile_DEF_FIELD(this, inst, token, data)
 
 		local class, scope, info = this:AssToClass(token, true, var, data.class);
 
-		if (not result) then
+		if not result then
 			this:Throw(token, "Variable %s is not initalized.", var);
 		else
-			if (info) then
+			if info then
 				this:writeToBuffer(inst,string_format("\n%s.vars.%s", userclass.name, var));
 			end
 
@@ -4180,18 +4180,18 @@ function COMPILER.Compile_SET_FIELD(this, inst, token, data)
 	local r2, c2, p2 = this:Compile(expressions[2]);
 	local cls = E3Class(r1);
 
-	if (not cls) then
+	if not cls then
 		local userclass = this:GetClassOrInterface(r1);
 		info = userclass.memory[attribute];
 	else
 		info = cls.attributes[attribute];
 	end
 
-	if (not info) then
+	if not info then
 		this:Throw(token, "No sutch attribute %s.%s", name(r1), attribute);
 	end
 
-	if (info.class ~= r2) then
+	if info.class ~= r2 then
 		this:Throw( token, "Can not assign attribute %s.%s of type %s with %s", name(r1), attribute, name(info.class), name(r2));
 	end
 
@@ -4199,9 +4199,9 @@ function COMPILER.Compile_SET_FIELD(this, inst, token, data)
 
 	this:addInstructionToBuffer(inst, expressions[1]);
 
-	if (not cls) then
+	if not cls then
 		this:writeToBuffer(inst, ".vars.%s = ", attribute);
-	elseif (info.field) then
+	elseif info.field then
 		this:writeToBuffer(inst, ".%s = ", info.field);
 	end
 
@@ -4259,7 +4259,7 @@ end
 function COMPILER.Compile_SUPCONST(this, inst, token, data)
 	local class = this:GetOption("userclass");
 	
-	if (not class.extends) then
+	if not class.extends then
 		this:Throw(inst, "class %s does not extend a class", class.name)
 	end
 
@@ -4303,7 +4303,7 @@ function COMPILER.Compile_DEF_METHOD(this, inst, token, data)
 	local overrride = userclass.methods[signature];
 
 	local error = string_format("Attempt to call user method '%s.%s(%s)' using alien class of the same name.", userclass.name, data.var.data, data.signature);
-	this:writeToBuffer(inst, "if(not CheckHash(%q, this)) then CONTEXT:Throw(%q); end", userclass.hash, error);
+	this:writeToBuffer(inst, "if not CheckHash(%q, this) then CONTEXT:Throw(%q); end", userclass.hash, error);
 
 
 	local meth = {};
@@ -4330,17 +4330,17 @@ function COMPILER.Compile_DEF_METHOD(this, inst, token, data)
 
 	this:PopScope();
 
-	if (count == -1) then
+	if count == -1 then
 		count = 0;
 	end
 
 	meth.count = count;
 
-	if (overrride and meth.result ~= overrride.result) then
+	if overrride and meth.result ~= overrride.result then
 		this:Throw(token, "Overriding method %s(%s) must return %s", inst.__name.data, inst.signature, name(overrride.result));
 	end
 
-	if (overrride and meth.count ~= overrride.count) then
+	if overrride and meth.count ~= overrride.count then
 		this:Throw(token, "Overriding method %s(%s) must return %i values", inst.__name.data, inst.signature, overrride.count);
 	end
 
@@ -4390,21 +4390,21 @@ function COMPILER.StartInterface(this, name)
 end
 
 function COMPILER.GetInterface(this, name, scope, nonDeep)
-	if (not scope) then
+	if not scope then
 		scope = this.__scopeID;
 	end
 
 	local v = this.__scopeData[scope].interfaces[name];
 
-	if (v) then
+	if v then
 		return v, v.scope;
 	end
 
-	if (not nonDeep) then
+	if not nonDeep then
 		for i = scope, 0, -1 do
 			local v = this.__scopeData[i].interfaces[name];
 
-			if (v) then
+			if v then
 				return v, v.scope;
 			end
 		end
@@ -4445,7 +4445,7 @@ function COMPILER.Compile_INTERFACE_METHOD(this, inst, token, data)
 
 	local count = tonumber(data.count.data);
 
-	if (count == -1) then
+	if count == -1 then
 		count = 0;
 	end
 
@@ -4457,21 +4457,21 @@ function COMPILER.Compile_INTERFACE_METHOD(this, inst, token, data)
 end
 
 function COMPILER.GetClassOrInterface(this, name, scope, nonDeep)
-	if (not scope) then
+	if not scope then
 		scope = this.__scopeID;
 	end
 
 	local v = this.__scopeData[scope].classes[name] or this.__scopeData[scope].interfaces[name];
 
-	if (v) then
+	if v then
 		return v, v.scope;
 	end
 
-	if (not nonDeep) then
+	if not nonDeep then
 		for i = scope, 0, -1 do
 			local v = this.__scopeData[i].classes[name] or this.__scopeData[i].interfaces[name];
 
-			if (v) then
+			if v then
 				return v, v.scope;
 			end
 		end

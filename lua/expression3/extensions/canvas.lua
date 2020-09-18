@@ -29,7 +29,7 @@ local tokens = EXPR_TOKENS;
 	*****************************************************************************************************************************************************
 ]]--
 
-if (CLIENT) then
+if CLIENT then
 
 	hook.Add("Expression3.Entity.BuildSandbox", "Expression3.Render.RT", function(entity, ctx, env)
 		ctx.data.RTS = {};
@@ -180,7 +180,7 @@ extension:RegisterMethod("cv", "height", "", "n", 1, function(rt) return rt and 
 ]]--
 
 local function preDraw(ctx)
-	if (not EXPR3_DRAWSCREEN) then
+	if not EXPR3_DRAWSCREEN then
 		ctx:Throw("Attempted to render outside of a rendering event.");
 	end
 end

@@ -33,7 +33,7 @@ EXPR_SOUNDS = EXPR_SOUNDS or {};
 local function stopSound(context, index, fade)
 	context = tokens[context];
 
-	if isnumber(index) then
+	if isnumber(index then
 		index = math.floor(index);
 	end
 
@@ -173,7 +173,7 @@ if SERVER then
 
 	hook.Add("PlayerDisconnected", "Expression3.Sounds", function(ply)
 		for _, ctx in pairs(EXPR_LIB.GetAll()) do
-			if (ctx.player == ply) then
+			if ctx.player == ply then
 
 				for _, sound in pairs(ctx.data.sounds) do
 					sound:Stop();

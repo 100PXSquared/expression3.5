@@ -19,21 +19,21 @@ local throwif = EXPR_LIB.ThrowIF;
 function eTable.get(ctx, tbl, key, type)
 	type = type or "_vr";
 
-	if(not tbl or not tbl.tbl) then
+	if not tbl or not tbl.tbl then
 		ctx:Throw("Attempted to index a nil value.")
 	end
 
 	local vr = tbl.tbl[key];
 
-	if(not vr) then
+	if not vr then
 		ctx:Throw("Attempted to index field %s a nil value.", tostring(key));
 	end
 
-	if (type == "_vr") then
+	if type == "_vr" then
 		return vr
 	end
 
-	if(vr[1] ~= type) then
+	if vr[1] ~= type then
 		ctx:Throw("Attempted to index field %s, %s expected got %s.", tostring(key), type, vr[1]);
 	end
 
@@ -43,13 +43,13 @@ end
 function eTable.set(ctx, tbl, key, type, value)
 	type = type or "_vr";
 
-	if(not tbl or not tbl.tbl) then
+	if not tbl or not tbl.tbl then
 		ctx:Throw("Attempted to index a nil value.")
 	end
 
 	local old = tbl.tbl[key];
 	local oldweight = (old == nil and 0 or 1);
-	if (old and old[1] == "t" and old[2] ~= nil) then
+	if old and old[1] == "t" and old[2] ~= nil then
 		oldweight = old.size;
 		tbl.children[old[2]] = nil;
 		old[2].parents[tbl] = nil;
@@ -58,27 +58,27 @@ function eTable.set(ctx, tbl, key, type, value)
 	local newweight = tbl.size - oldweight;
 	newweight = newweight + (value == nil and 0 or 1);
 
-	if (value ~= nil) then
-		if (type == "_vr") then
+	if value ~= nil then
+		if type == "_vr" then
 			type = value[1];
 			value = value[2];
 		end
 
-		if (type == "t") then
+		if type == "t" then
 			newweight = newweight + value.size;
 			tbl.children[value] = value;
 
-			if (value ~= nil) then
+			if value ~= nil then
 				value.parents[tbl] = tbl;
 			end
 		end
 	end
 
-	if (newweight > 512) then
+	if newweight > 512 then
 		ctx:Throw("Table size limit reached.");
 	end
 
-	if (type == "" or value == nil) then
+	if type == "" or value == nil then
 		tbl.tbl[key] = nil;
 	else
 		tbl.tbl[key] = {type, value};
@@ -92,7 +92,7 @@ function eTable.updateChildren(tbl, oldweight, newweight, updated)
 	updated = updated or {};
 	newweight = newweight or 0;
 	for _, child in pairs(tbl.children) do
-		if (not updated[child]) then
+		if not updated[child] then
 			local weight = child.size;
 			child.size = (child.size - oldweight) + newweight;
 			eTable.updateChildren(tbl, weight, child.size);
@@ -132,7 +132,7 @@ local class_table = extension:RegisterClass("t", {"table", "array"}, istable, EX
 --[[
 ]]
 
-if (SERVER) then
+if SERVER then
 	WireLib.DT.SMART_TABLE = {
 		Zero = {tbl = {}, children = {}, parents = {}, size = 0};
 	}
@@ -175,10 +175,10 @@ extension:RegisterMethod("t", "keys", "", "t", 1, function(tbl)
 	local t = {};
 
 	for key, value in pairs(tbl.tbl) do
-		if (value and value[2] ~= nil) then
+		if value and value[2] ~= nil then
 			local typ = l(t(key))
 
-			if (type) then
+			if type then
 				t[#t + 1] = {t, key};
 			end
 		end
@@ -193,7 +193,7 @@ extension:RegisterMethod("t", "values", "", "t", 1, function(ctx, tbl)
 	local values = {};
 
 	for key, value in pairs(tbl.tbl) do
-		if (value and value[1] ~= "" and value[2] ~= nil) then
+		if value and value[1] ~= "" and value[2] ~= nil then
 			values[value[2]] = value;
 		end
 	end
@@ -216,19 +216,19 @@ end, false);
 local VALID_KEYS = {"n", "s", "e", "p", "h"};
 
 for _, k in pairs(VALID_KEYS) do
-	if (k ~= "") then
+	if k ~= "" then
 		extension:RegisterOperator("get", "t," .. k, "vr", 1, eTable.get);
 
 		extension:RegisterOperator("get", string.format("t,%s,cls", k), "", 1, eTable.get);
 
 		extension:RegisterMethod("t", "exists", k, "b", 1, function(ctx, tbl, value)
-			if (k == "_vr") then
-				if (tbl.tbl[value[2]]) then
+			if k == "_vr" then
+				if tbl.tbl[value[2]] then
 					return true;
 				end
 			end
 
-			if (tbl.tbl[value]) then
+			if tbl.tbl[value] then
 				return true;
 			end
 
@@ -246,7 +246,7 @@ function extension.PostLoadClasses(this, classes)
 	for _, c in pairs(classes) do
 		local id = c.id;
 
-		if (id ~= "") then
+		if id ~= "" then
 			extension:RegisterMethod("t", "push", id, "", 0, function(ctx, tbl, value)
 				ctx = tokens[ctx];
 				eTable.set(ctx, tbl, #tbl.tbl + 1, id, value);
@@ -263,7 +263,7 @@ function extension.PostLoadClasses(this, classes)
 
 				local value = tbl.tbl[#tbl.tbl];
 
-				if (not value or (value[1] ~= id and id ~= "_vr")) then
+				if not value or (value[1] ~= id and id ~= "_vr") then
 					ctx:Throw(string.format("table.pop%s() got result %s, %s expected.", c.name, value[1], c.name));
 				end
 
@@ -277,7 +277,7 @@ function extension.PostLoadClasses(this, classes)
 
 				local value = tbl.tbl[1];
 
-				if (not value or (value[1] ~= id and id ~= "_vr")) then
+				if not value or (value[1] ~= id and id ~= "_vr") then
 					ctx:Throw(string.format("table.shift%s() got result %s, %s expected.", c.name, value[1], c.name));
 				end
 
@@ -301,16 +301,16 @@ function extension.PostLoadClasses(this, classes)
 			extension:RegisterMethod("t", "contains", id, "b", 1, function(ctx, tbl, value)
 				ctx = tokens[ctx];
 
-				if (id == "_vr") then
+				if id == "_vr" then
 					for k, v in pairs(tbl.tbl) do
-						if (v and k == value[2]) then
+						if v and k == value[2] then
 							return true;
 						end
 					end
 				end
 
 				for k, v in pairs(tbl.tbl) do
-					if (v and v[1] == id and v[2] == value) then
+					if v and v[1] == id and v[2] == value then
 						return true;
 					end
 				end
@@ -319,7 +319,7 @@ function extension.PostLoadClasses(this, classes)
 			end, false);
 
 			for _, k in pairs(VALID_KEYS) do
-				if (k ~= "") then
+				if k ~= "" then
 					extension:RegisterOperator("set", string.format("t,%s,cls,%s", k, id), "", 1, eTable.set);
 				end
 			end

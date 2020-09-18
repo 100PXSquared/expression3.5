@@ -106,14 +106,14 @@ function CONTEXT.Trace(this, level, max)
 	for i = level + 1, level + max do
 		local info = debug.getinfo(i, "Sln");
 
-		if (not info) then
+		if not info then
 			continue;
 		end
 
-		if (info.short_src == "Expression 3") then
+		if info.short_src == "Expression 3" then
 			local trace = this:GetScriptPos(info.currentline, 0);
 
-			if (trace) then
+			if trace then
 				trace.level = #stack + 1;
 				stack[trace.level] = trace;
 			end
@@ -125,7 +125,7 @@ end
 
 function CONTEXT.GetScriptPos(this, line, char)
 	for _, a in pairs(this.traceTable) do
-		if (a.native_line >= line) then
+		if a.native_line >= line then
 			return{a.e3_line, a.e3_char, a.instruction};
 		end
 	end
@@ -134,7 +134,7 @@ function CONTEXT.GetScriptPos(this, line, char)
 end
 
 function CONTEXT.Throw(this, msg, fst, ...)
-	if (fst) then
+	if fst then
 		msg = string.format(msg, fst, ...);
 	end
 
@@ -147,10 +147,10 @@ function CONTEXT.Throw(this, msg, fst, ...)
 	err.instruction = "";
 	err.stack = this:Trace(1, 15);
 
-	if (err.stack) then
+	if err.stack then
 		local trace = err.stack[1];
 
-		if (trace) then
+		if trace then
 			err.line = trace[1];
 			err.char = trace[2];
 			err.instruction = trace[3] or "";
@@ -173,7 +173,7 @@ end
 ]]
 
 function CONTEXT:UpdateQuotaValues()
-	if (self.status) then
+	if self.status then
 
 		self.cpu_softusage = self:movingCPUAverage() / self:softTimeLimit();
 		--self.cpu_hardusage = self.cpu_total / self:hardTimeLimit();
@@ -182,7 +182,7 @@ function CONTEXT:UpdateQuotaValues()
 		self.net_total = 0;
 		self.cpu_total = 0;
 
-		if (self.update) then
+		if self.update then
 			self.update = false;
 			hook.Run("Expression3.Entity.Update", self.entity, self);
 		end
@@ -242,7 +242,7 @@ function CONTEXT:PostExecute()
 	
 	self.cpu_total = SysTime() - self.cpu_timestamp;
 
-	if (bJit) then
+	if bJit then
 		jit.on();
 	end
 

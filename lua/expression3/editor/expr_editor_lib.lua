@@ -13,17 +13,17 @@
 
 local Extension = EXPR_LIB.GetExtensionMetatable();
 
-if (not Extension) then
+if not Extension then
 	error("Unable to get extension meta table for editor upgrades.");
 end
 
 function Extension.RegisterEditorMenu(this, name, icon, open, close)
 	hook.Add("Expression3.AddGolemTabTypes", "Expression3." .. this.name .. "." .. name, function(editor)
-		if (this.enabled) then
+		if this.enabled then
 			editor:AddTabType(name, function(self, ...)
 				local menu = self.tMenuTabs[name];
 
-				if (menu) then
+				if menu then
 					self.pnlSideTabHolder:SetActiveTab(menu.Tab);
 
 					menu.Panel:RequestFocus();
@@ -45,7 +45,7 @@ function Extension.RegisterEditorMenu(this, name, icon, open, close)
 			end,
 
 			function(self, pTab, bSave)
-				if (close) then
+				if close then
 					close(self, pTab, bSave);
 				end
 

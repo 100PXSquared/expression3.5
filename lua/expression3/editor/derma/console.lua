@@ -35,7 +35,7 @@ function PANEL:ClickText(cursor)
 	for k = 1, #format do
 		local len = #format[k][1]
 
-		if (cursor.y >= pos) and (cursor.y <= (pos + len)) then
+		if cursor.y >= pos and cursor.y <= pos + len then
 			fun = funcs[k]
 			break
 		else

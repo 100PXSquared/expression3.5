@@ -18,14 +18,14 @@ AddCSLuaFile();
 --[[
 ]]
 
-if (not CPPI) then
+if not CPPI then
 	function ENT:CPPIGetOwner()
 		return self:GetPlayer();
 	end
 
-	if (SERVER) then
+	if SERVER then
 		function ENT:CPPISetOwner(ply)
-			if (IsValid(ply) and ply:IsPlayer()) then
+			if IsValid(ply) and ply:IsPlayer() then
 				self:SetPlayer(ply);
 			end
 

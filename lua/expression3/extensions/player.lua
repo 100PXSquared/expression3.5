@@ -49,7 +49,7 @@ extension:RegisterOperator("neq", "e,p", "b", 1);
 ]]
 
 extension:RegisterCastingOperator("e", "p", function(context, e)
-	if (IsValid(e) and e:IsPlayer()) then
+	if IsValid(e) and e:IsPlayer() then
 		return e;
 	end
 

@@ -128,11 +128,11 @@ function PARSER.Run(this)
 	--TODO: PcallX for stack traces on internal errors?
 	local status, result = pcall(this._Run, this);
 
-	if (status) then
+	if status then
 		return true, result;
 	end
 
-	if (type(result) == "table") then
+	if type(result) == "table" then
 		return false, result;
 	end
 
@@ -157,7 +157,7 @@ end
 function PARSER.Throw(this, token, msg, fst, ...)
 	local err = {};
 
-	if (fst) then
+	if fst then
 		msg = string.format(msg, fst, ...);
 	end
 
@@ -187,13 +187,13 @@ function PARSER.PopScope(this)
 end
 
 function PARSER.SetOption(this, option, value, deep)
-	if (not deep) then
+	if not deep then
 		this.__scope[option] = value;
 	else
 		for i = this.__scopeID, 0, -1 do
 			local v = this.__scopeData[i][option];
 
-			if (v) then
+			if v then
 				this.__scopeData[i][option] = value;
 				break;
 			end
@@ -205,15 +205,15 @@ end
 ]]
 
 function PARSER.GetOption(this, option, nonDeep)
-	if (this.__scope[option]) then
+	if this.__scope[option] then
 		return this.__scope[option];
 	end
 
-	if (not nonDeep) then
+	if not nonDeep then
 		for i = this.__scopeID, 0, -1 do
 			local v = this.__scopeData[i][option];
 
-			if (v) then
+			if v then
 				return v;
 			end
 		end
@@ -221,11 +221,11 @@ function PARSER.GetOption(this, option, nonDeep)
 end
 
 function PARSER.SetUserObject(this, name, scope)
-	if (not scope) then
+	if not scope then
 		scope = this.__scopeID;
 	end
 
-	if (not name) then debug.Trace() end
+	if not name then debug.Trace() end
 
 	local class = {};
 	class.name = name;
@@ -236,21 +236,21 @@ function PARSER.SetUserObject(this, name, scope)
 end
 
 function PARSER.GetUserObject(this, name, scope, nonDeep)
-	if (not scope) then
+	if not scope then
 		scope = this.__scopeID;
 	end
 
 	local v = this.__scopeData[scope].classes[name];
 
-	if (v) then
+	if v then
 		return v.scope, v;
 	end
 
-	if (not nonDeep) then
+	if not nonDeep then
 		for i = scope, 0, -1 do
 			local v = this.__scopeData[i].classes[name];
 
-			if (v) then
+			if v then
 				return v.scope, v;
 			end
 		end
@@ -266,7 +266,7 @@ function PARSER.Next(this)
 	this.__token = this.__tokens[this.__pos];
 	this.__next = this.__tokens[this.__pos + 1];
 
-	if (this.__pos > this.__total) then
+	if this.__pos > this.__total then
 		return false;
 	end
 
@@ -280,15 +280,15 @@ end
 function PARSER.CheckCurrentToken(this, type, ...)
 	local tkn = this.__next;
 	
-	if (tkn) then
+	if tkn then
 		for _, t in pairs({type, ...}) do
 			local tokenType = tkn.type;
 
-			if (tokenType == "var" and this:GetUserObject(tkn.data)) then
+			if tokenType == "var" and this:GetUserObject(tkn.data) then
 				tokenType = "typ";
 			end
 
-			if (tokenType == t) then
+			if tokenType == t then
 				return true;
 			end
 		end
@@ -299,17 +299,17 @@ end
 
 
 function PARSER.CheckToken(this, type, ...)
-	if (this.__pos < this.__total) then
+	if this.__pos < this.__total then
 		local tkn = this.__next;
 
 		for _, t in pairs({type, ...}) do
 			local tokenType = tkn.type;
 
-			if (tokenType == "var" and this:GetUserObject(tkn.data)) then
+			if tokenType == "var" and this:GetUserObject(tkn.data) then
 				tokenType = "typ";
 			end
 
-			if (tokenType == t) then
+			if tokenType == t then
 				return true;
 			end
 		end
@@ -320,7 +320,7 @@ end
 
 
 function PARSER.Accept(this, type, ...)
-	if (this:CheckToken(type, ...)) then
+	if this:CheckToken(type, ...) then
 		--print("Accept(" .. type .. ", " .. this.__next.data .. ") -> ", this.cur_instruction and this.cur_instruction.type or "?")
 		this:Next();
 		return true;
@@ -330,7 +330,7 @@ function PARSER.Accept(this, type, ...)
 end
 
 function PARSER.AcceptWithData(this, type, data)
-	if (this:CheckToken(type) and this.__next.data == data) then
+	if this:CheckToken(type) and this.__next.data == data then
 		--print("AcceptWithData(" .. type .. ", " .. data .. ") -> ", this.cur_instruction and this.cur_instruction.type or "?")
 		this:Next();
 		return true;
@@ -344,7 +344,7 @@ function PARSER.GetTokenData(this)
 end
 
 function PARSER.GetToken(this, pos)
-	if (pos >= this.__total) then
+	if pos >= this.__total then
 		return this.__tokens[pos];
 	end
 end
@@ -359,13 +359,13 @@ end
 
 function PARSER.StepBackward(this, steps)
 
-	if (not steps) then
+	if not steps then
 		steps = 1;
 	end
 
 	local pos = this.__pos - (steps + 1);
 
-	if (pos > this.__total) then
+	if pos > this.__total then
 		pos = this.__total;
 	end
 
@@ -376,20 +376,20 @@ end
 
 function PARSER.GotoToken(this, token, offset)
 
-	if (not offset) then
+	if not offset then
 		offset = 0;
 	end
 
 	local pos = token.index - (offset + 1);
 
-	if (pos == 0) then
+	if pos == 0 then
 		this.__pos = 0;
 		this.__token = this.__tokens[0];
 		this.__next = this.__tokens[1];
 		return;
 	end
 
-	if (pos > this.__total) then
+	if pos > this.__total then
 		pos = this.__total;
 	end
 
@@ -401,11 +401,11 @@ end
 function PARSER.CheckForSequence(this, type, ...)
 	local tkn = this.__token;
 
-	if (not tkn) then
+	if not tkn then
 		return false;
 	end
 
-	if (not this:Accept(type)) then
+	if not this:Accept(type) then
 		return false;
 	end
 
@@ -415,7 +415,7 @@ function PARSER.CheckForSequence(this, type, ...)
 	for i = 1, #types do
 		res = this:Accept(types[i]);
 
-		if (not res) then
+		if not res then
 			break;
 		end
 	end
@@ -429,7 +429,7 @@ function PARSER.GetFirstTokenOnLine(this)
 	for i = this.__pos, 1, -1 do
 		local tkn = this.__tokens[i];
 
-		if (tkn.newLine) then
+		if tkn.newLine then
 			return tkn;
 		end
 	end
@@ -443,15 +443,15 @@ function PARSER.StatmentContains(this, token, type)
 	while (i < this.__total) do
 		local tkn = this.__tokens[i];
 
-		if (not tkn) then
+		if not tkn then
 			return;
 		end
 
-		if (tkn.type == "sep" or tkn.line ~= token.line) then
+		if tkn.type == "sep" or tkn.line ~= token.line then
 			return;
 		end
 
-		if (tkn.type == type) then
+		if tkn.type == type then
 			return tkn;
 		end
 
@@ -466,17 +466,17 @@ function PARSER.LastInStatment(this, token, type, endType)
 	while (i <= this.__total) do
 		local tkn = this.__tokens[i];
 
-		if (not tkn) then
+		if not tkn then
 			break;
 		end
 
-		if (tkn.type == "sep" or tkn.line ~= token.line) then
+		if tkn.type == "sep" or tkn.line ~= token.line then
 			break;
 		end
 
-		if (tkn.type == type) then
+		if tkn.type == type then
 			last = tkn;
-		elseif (endType and tkn.type == endType) then
+		elseif endType and tkn.type == endType then
 			break;
 		end
 
@@ -490,19 +490,19 @@ end
 ]]
 
 function PARSER.Require(this, type, msg, ...)
-	if (not this:Accept(type)) then
+	if not this:Accept(type) then
 		this:Throw(this.__token, msg, ...)
 	end; return this.__token;
 end
 
 function PARSER.Exclude(this, tpye, msg, ...)
-	if (this:Accept(type)) then
+	if this:Accept(type) then
 		this:Throw(this.__token, msg, ...)
 	end
 end
 
 function PARSER.ExcludeWhiteSpace(this, msg, ...)
-	if (not this:HasTokens()) then
+	if not this:HasTokens() then
 		this:Throw(this.__token, msg, ...)
 	end
 end
@@ -512,13 +512,13 @@ end
 
 function PARSER.StartInstruction(this, _type, token, perfhandler)
 
-	if (not istable(token)) then
+	if not istable(token) then
 		debug.Trace();
 		error("PARSER:StartInstruction got bad token type " .. tostring(token));
-	elseif (not type(_type) == "string") then
+	elseif not type(_type) == "string" then
 		debug.Trace();
 		error("PARSER:StartInstruction got bad instruction type " .. tostring(_type));
-	elseif (not type(token) == "table") then
+	elseif not type(token) == "table" then
 		debug.Trace();
 		error("PARSER:StartInstruction got bad instruction token " .. tostring(token));
 	end
@@ -580,11 +580,11 @@ end
 function PARSER.Block_1(this, _end, lcb, returnable)
 	this:ExcludeWhiteSpace("Further input required at end of code, incomplete statement")
 
-	if (this:Accept("lcb")) then
+	if this:Accept("lcb") then
 		local stmts;
 		local seq = this:StartInstruction("seq", this.__token, true);
 
-		if (not this:CheckToken("rcb")) then
+		if not this:CheckToken("rcb") then
 			this:PushScope();
 
 			stmts = this:Statements(true);
@@ -592,7 +592,7 @@ function PARSER.Block_1(this, _end, lcb, returnable)
 			this:PopScope();
 		end
 
-		if (not this:Accept("rcb")) then
+		if not this:Accept("rcb") then
 			this:Throw(this.__token, "Right curly bracket (}) missing, to close block got " .. this.__token.type);
 		end
 
@@ -620,7 +620,7 @@ function PARSER.Block_2(this)
 	local stmts;
 	local seq = this:StartInstruction("seq", this.__token, true);
 
-	if (not this:CheckToken("rcb")) then
+	if not this:CheckToken("rcb") then
 		this:PushScope();
 
 		stmts = this:Statements(true, this.ConstructorStatment);
@@ -628,7 +628,7 @@ function PARSER.Block_2(this)
 		this:PopScope();
 	end
 
-	if (not this:Accept("rcb")) then
+	if not this:Accept("rcb") then
 		this:Throw(this.__token, "Right curly bracket (}) missing, to close constructor got " .. this.__token.type);
 	end
 
@@ -637,9 +637,9 @@ end
 
 function PARSER.ConstructorStatment(this, stmtc)
 	
-	if (this:Accept("sup")) then
+	if this:Accept("sup") then
 		
-		if (stmtc > 0) then
+		if stmtc > 0 then
 			this:Throw(this.__token, "Super constructor can not appear here.");
 		end
 
@@ -649,7 +649,7 @@ function PARSER.ConstructorStatment(this, stmtc)
 
 		local expressions = {};
 
-		if (not this:CheckToken("rpa")) then
+		if not this:CheckToken("rpa") then
 			expressions[1] = this:Expression_1();
 
 			while(this:Accept("com")) do
@@ -675,9 +675,9 @@ end
 function PARSER.Directive_NAME(this, token, directive)
 	this:Require("str", "String expected to follow directive @name");
 
-	if (this.FirstStatment) then
+	if this.FirstStatment then
 		this:Throw(token, "Directive @name must appear towards the top of your code");
-	elseif (this.__directives.name) then
+	elseif this.__directives.name then
 		this:Throw(token, "Directive @name must not appear twice.");
 	end
 
@@ -687,9 +687,9 @@ end
 function PARSER.Directive_MODEL(this, token, directive)
 	this:Require("str", "String expected to follow directive @model");
 
-	if (this.FirstStatment) then
+	if this.FirstStatment then
 		this:Throw(token, "Directive @model must appear towards the top of your code");
-	elseif (this.__directives.model) then
+	elseif this.__directives.model then
 		this:Throw(token, "Directive @model must not appear twice.");
 	end
 
@@ -701,7 +701,7 @@ function PARSER.Directive_INCLUDE(this, token, directive)
 
 	local inst = this:StartInstruction("include", token);
 
-	if (this.FirstStatment) then
+	if this.FirstStatment then
 		this:Throw(token, "Directive @include must appear towards the top of your code");
 	end
 
@@ -712,17 +712,17 @@ function PARSER.Directive_INCLUDE(this, token, directive)
 
 	local exists;
 
-	if (CLIENT) then
+	if CLIENT then
 		exists = file.Exists("golem/" .. file_path .. ".txt", "DATA");
-	elseif (SERVER) then
+	elseif SERVER then
 		exists = this.__files[file_path] ~= nil;
 	end
 
-	if (not exists) then
+	if not exists then
 		this:Throw(token, "No sutch file %s", file_path);
 	end
 
-	if (includes[file_path]) then
+	if includes[file_path] then
 		this:Throw(token, "File %s, allready included.", file_path);
 	end
 
@@ -740,7 +740,7 @@ function PARSER.Directive_INPUT(this, token, directive)
 
 	local class_obj = EXPR_LIB.GetClass(port_type);
 
-if (not class_obj.wire_in_class) then
+if not class_obj.wire_in_class then
 		this:Throw(token, "Invalid wire port, class %s can not be used for wired input.", class_obj.name);
 	end
 
@@ -768,7 +768,7 @@ function PARSER.Directive_OUTPUT(this, token, directive)
 
 	local class_obj = EXPR_LIB.GetClass(port_class);
 
-	if (not class_obj.wire_out_class) then
+	if not class_obj.wire_out_class then
 		this:Throw(token, "Invalid wire port, class %s can not be used for wired output.", class_obj.name);
 	end
 
@@ -805,15 +805,15 @@ function PARSER.Statements(this, block, call)
 
 		local separated = this:Accept("sep");
 
-		if (not stmt) then
+		if not stmt then
 			break;
 		end
 
-		if (block and this:CheckToken("rcb")) then
+		if block and this:CheckToken("rcb") then
 			break;
 		end
 
-		if (not this:HasTokens()) then
+		if not this:HasTokens() then
 			break;
 		end
 
@@ -825,11 +825,11 @@ function PARSER.Statements(this, block, call)
 			end
 		end
 
-		if (stmt.type == "return") then
+		if stmt.type == "return" then
 			this:Throw(stmt.final, "Statement can not appear after return.")
-		elseif (stmt.type == "continue") then
+		elseif stmt.type == "continue" then
 			this:Throw(stmt.final, "Statement can not appear after continue.")
-		elseif (stmt.type == "break") then
+		elseif stmt.type == "break" then
 			this:Throw(stmt.final, "Statement can not appear after break.")
 		end
 
@@ -850,7 +850,7 @@ function PARSER.Statment_0(this)
 		local token = this.__token;
 		dirLine = this.__token.line;
 
-		if (not this:Accept("var")) then
+		if not this:Accept("var") then
 			this:Throw(token, "Directive name exspected after @");
 		end
 
@@ -858,7 +858,7 @@ function PARSER.Statment_0(this)
 
 		local func = this["Directive_" .. string.upper(directive)]
 
-		if (not func) then
+		if not func then
 			this:Throw(token, "No such directive @%s", directive);
 		end
 
@@ -872,26 +872,26 @@ function PARSER.Statment_0(this)
 
 		this:Require("sep", "Statements must be separated by a semicolon (;) 874")
 
-		if (instr) then
+		if instr then
 			return instr
 		end
 
-		if (!this:HasTokens()) then
+		if !this:HasTokens() then
 			return;
 		end
 	end
 
-	if (this:CheckToken("cls")) then
+	if this:CheckToken("cls") then
 		return this:ClassStatment_0();
 	end
 
-	if (this:CheckToken("itf")) then
+	if this:CheckToken("itf") then
 		return this:InterfaceStatment_0();
 	end
 
 	local stmt = this:Statment_1();
 
-	--[[if (dirLine and (not sep or direLine == stmt.line)) then
+	--[[if dirLine and (not sep or direLine == stmt.line) then
 		this:Throw(stmt.token, "Statements must be separated by semicolon (;) or newline")
 	end]]
 
@@ -900,7 +900,7 @@ end;
 
 
 function PARSER.Statment_1(this)
-	if (this:Accept("try")) then
+	if this:Accept("try") then
 		local inst = this:StartInstruction("try", this.__token);
 
 		local block1 = this:Block_1(true, "function()");
@@ -922,7 +922,7 @@ function PARSER.Statment_1(this)
 end
 
 function PARSER.Statment_2(this)
-	if (this:Accept("if")) then
+	if this:Accept("if") then
 		local inst = this:StartInstruction("if", this.__token);
 
 		local condition = this:GetCondition();
@@ -931,7 +931,7 @@ function PARSER.Statment_2(this)
 
 		local eif = {this:Statment_3()};
 
-		if (#eif > 0) then
+		if #eif > 0 then
 			while true do
 				local stmt = this:Statment_3();
 
@@ -952,7 +952,7 @@ function PARSER.Statment_2(this)
 end
 
 function PARSER.Statment_3(this)
-	if (this:Accept("eif")) then
+	if this:Accept("eif") then
 		local inst = this:StartInstruction("elseif", this.__token);
 
 		local condition = this:GetCondition();
@@ -966,7 +966,7 @@ function PARSER.Statment_3(this)
 end
 
 function PARSER.Statment_4(this)
-	if (this:Accept("els")) then
+	if this:Accept("els") then
 		local inst = this:StartInstruction("else", this.__token);
 
 		local block = this:Block_1(false, "");
@@ -982,7 +982,7 @@ end
 
 
 function PARSER.Statment_5(this)
-	if (this:Accept("for")) then
+	if this:Accept("for") then
 		local inst = this:StartInstruction("for", this.__token);
 
 		this:Require("lpa", "Left parenthesis (() expected after for.");
@@ -1001,7 +1001,7 @@ function PARSER.Statment_5(this)
 
 		expressions[2] = this:Expression_1();
 
-		if (this:Accept("sep")) then
+		if this:Accept("sep") then
 			expressions[3] = this:Expression_1();
 		end
 
@@ -1012,7 +1012,7 @@ function PARSER.Statment_5(this)
 		return this:EndInstruction(inst, {iClass = iClass; iVar = iVar; expressions = expressions, block = block});
 	end
 
-	if (this:Accept("whl")) then
+	if this:Accept("whl") then
 		local inst = this:StartInstruction("while", this.__token);
 
 		local condition = this:GetCondition();
@@ -1022,7 +1022,7 @@ function PARSER.Statment_5(this)
 		return this:EndInstruction(inst, {condition = condition; block = block});
 	end
 
-	if (this:Accept("each")) then
+	if this:Accept("each") then
 		local inst = this:StartInstruction("each", this.__token);
 
 		this:Require("lpa", "Left parenthesis (()) expected to close cloop defintion.");
@@ -1037,7 +1037,7 @@ function PARSER.Statment_5(this)
 
 		local kType, kValue;
 
-		if (this:Accept("as")) then
+		if this:Accept("as") then
 			kType, kValue = a, b;
 
 			this:Require("typ", "Class expected after as, for foreach loop")
@@ -1064,7 +1064,7 @@ function PARSER.Statment_5(this)
 end
 
 function PARSER.Statment_6(this)
-	if (this:Accept("sv")) then
+	if this:Accept("sv") then
 		local inst = this:StartInstruction("server", this.__token);
 
 		local block = this:Block_1(true, "then");
@@ -1072,7 +1072,7 @@ function PARSER.Statment_6(this)
 		return this:EndInstruction(inst, {block = block});
 	end
 
-	if (this:Accept("cl")) then
+	if this:Accept("cl") then
 		local inst = this:StartInstruction("client", this.__token);
 
 		local block = this:Block_1(true, "then");
@@ -1087,7 +1087,7 @@ end
 ]]
 
 function PARSER.Statment_7(this)
-	if (this:Accept("glo")) then
+	if this:Accept("glo") then
 		local inst = this:StartInstruction("global", this.__token);
 
 		this:Require("typ", "Class expected after global.");
@@ -1106,7 +1106,7 @@ function PARSER.Statment_7(this)
 
 		local expressions = {};
 
-		if (this:Accept("ass")) then
+		if this:Accept("ass") then
 			this:ExcludeWhiteSpace("Assignment operator (=), must not be preceded by whitespace.");
 
 			expressions[1] = this:Expression_1();
@@ -1122,12 +1122,12 @@ function PARSER.Statment_7(this)
 		return this:EndInstruction(inst, {class = var_type; variables = variables; expressions = expressions});
 	end
 
-	if (this:Accept("typ")) then
+	if this:Accept("typ") then
 		local inst = this:StartInstruction("local", this.__token);
 
 		local var_type = this.__token.data;
 
-		if ((var_type == "f" and this:CheckToken("typ")) or this:CheckToken("lpa")) then
+		if (var_type == "f" and this:CheckToken("typ")) or this:CheckToken("lpa") then
 			this:StepBackward(1);
 			return this:Statment_8()
 		end
@@ -1142,7 +1142,7 @@ function PARSER.Statment_7(this)
 
 		local expressions = {};
 
-		if (this:Accept("ass")) then
+		if this:Accept("ass") then
 			this:ExcludeWhiteSpace("Assignment operator (=), must not be preceded by whitespace.");
 
 			expressions[1] = this:Expression_1();
@@ -1162,8 +1162,8 @@ function PARSER.Statment_7(this)
 end
 
 function PARSER.Statment_8(this)
-	if (this:Accept("var")) then
-		if (not this:CheckToken("com", "ass", "aadd", "asub", "adiv", "amul")) then
+	if this:Accept("var") then
+		if not this:CheckToken("com", "ass", "aadd", "asub", "adiv", "amul") then
 			this:StepBackward(1);
 		else
 			local inst = this:StartInstruction("ass", this.__token);
@@ -1179,7 +1179,7 @@ function PARSER.Statment_8(this)
 
 			local expressions = {};
 
-			if (this:Accept("ass")) then
+			if this:Accept("ass") then
 				this:ExcludeWhiteSpace("Assignment operator (=), must not be preceded by whitespace.");
 
 				expressions[1] = this:Expression_1();
@@ -1194,7 +1194,7 @@ function PARSER.Statment_8(this)
 				return this:EndInstruction(inst, {expressions = expressions; variables = variables});
 			end
 
-			if (this:Accept("aadd", "asub", "amul", "adiv")) then
+			if this:Accept("aadd", "asub", "amul", "adiv") then
 				inst.__operator = this.__token;
 
 				inst.type = this.__token.type;
@@ -1208,7 +1208,7 @@ function PARSER.Statment_8(this)
 					expressions[#expressions + 1] = this:Expression_1();
 				end
 
-				if (#expressions ~= #variables) then
+				if #expressions ~= #variables then
 					-- TODO: Better error message.
 					this:ExcludeWhiteSpace("Invalid arithmetic assignment, not all variables are given values.");
 				end
@@ -1227,7 +1227,7 @@ end
 
 function PARSER.GetTypeInputs(this)
 	
-	if (this:Accept("cst")) then
+	if this:Accept("cst") then
 		return {this.__token.data};
 	end
 
@@ -1235,14 +1235,14 @@ function PARSER.GetTypeInputs(this)
 
 	local parameters = {};
 
-	if (not this:CheckToken("rpa")) then
+	if not this:CheckToken("rpa") then
 
 		while (true) do
 			this:Require("typ", "Parameter type expected for parameter.");
 
 			parameters[#parameters + 1] = this.__token.data;
 
-			if (not this:Accept("com")) then
+			if not this:Accept("com") then
 				break;
 			end
 		end
@@ -1254,7 +1254,7 @@ function PARSER.GetTypeInputs(this)
 end
 
 function PARSER.Statment_9(this)
-	if (this:Accept("del")) then
+	if this:Accept("del") then
 		local inst = this:StartInstruction("delegate", this.__token);
 
 		this:Require("typ", "Return class expected after delegate.");
@@ -1277,7 +1277,7 @@ function PARSER.Statment_9(this)
 
 		this:Require("sep", "Statements must be separated by a semicolon (;) 1271")
 
-		if (lcb) then
+		if lcb then
 			this:Require("rcb", "Right curly bracket (}) expected to close delegate.");
 		end
 
@@ -1288,7 +1288,7 @@ function PARSER.Statment_9(this)
 end
 
 function PARSER.Statment_10(this)
-	if (this:AcceptWithData("typ", "f")) then
+	if this:AcceptWithData("typ", "f") then
 
 		local inst = this:StartInstruction("funct", this.__token);
 
@@ -1311,19 +1311,19 @@ function PARSER.Statment_10(this)
 end
 
 function PARSER.Statment_11(this)
-	if (this:Accept("ret")) then
+	if this:Accept("ret") then
 		local expressions = {};
 		local inst = this:StartInstruction("return", this.__token);
 
-		if (not this:CheckToken("sep", "rcb")) then
+		if not this:CheckToken("sep", "rcb") then
 			while (true) do
 				expressions[#expressions + 1] = this:Expression_1();
 
-				if (not this:HasTokens()) then
+				if not this:HasTokens() then
 					break;
 				end
 
-				if (not this:Accept("com")) then --"sep", "rcb")) then
+				if not this:Accept("com") then --"sep", "rcb")) then
 					break;
 				end
 
@@ -1336,13 +1336,13 @@ function PARSER.Statment_11(this)
 		return this:EndInstruction(inst, {expressions = expressions});
 	end
 
-	if (this:Accept("cnt")) then
+	if this:Accept("cnt") then
 		local inst = this:StartInstruction("continue", this.__token);
 		this:Require("sep", "Statements must be separated by a semicolon (;) 1334");
 		return this:EndInstruction(inst, expressions);
 	end
 
-	if (this:Accept("brk")) then
+	if this:Accept("brk") then
 		local inst = this:StartInstruction("break", this.__token);
 		this:Require("sep", "Statements must be separated by a semicolon (;) 1340");
 		return this:EndInstruction(inst, expressions);
@@ -1350,9 +1350,9 @@ function PARSER.Statment_11(this)
 
 	local expr = this:Expression_1();
 
-	if (expr and this:CheckToken("lsb")) then
+	if expr and this:CheckToken("lsb") then
 		expr = this:Statment_12(expr);
-	elseif (expr and this:CheckToken("prd")) then
+	elseif expr and this:CheckToken("prd") then
 		expr = this:Statment_13(expr);
 	end
 
@@ -1362,7 +1362,7 @@ function PARSER.Statment_11(this)
 end
 
 function PARSER.Statment_12(this, expr)
-	if (this:Accept("lsb")) then
+	if this:Accept("lsb") then
 		local inst = this:StartInstruction("set", expr.token);
 
 		local class;
@@ -1372,12 +1372,12 @@ function PARSER.Statment_12(this, expr)
 
 		expressions[2] = this:Expression_1();
 
-		if (this:Accept("com")) then
+		if this:Accept("com") then
 			this:Require("typ", "Class expected for index operator, after coma (,).");
 
 			class = E3Class(this.__token.data);
 
-			if (class) then class = class.id; end
+			if class then class = class.id; end
 		end
 
 		this:Require("rsb", "Right square bracket (]) expected to close index operator.");
@@ -1391,7 +1391,7 @@ function PARSER.Statment_12(this, expr)
 end
 
 function PARSER.Statment_13(this, expr)
-	if (this:Accept("prd")) then
+	if this:Accept("prd") then
 		local inst = this:StartInstruction("set_field", expr.token);
 		local var = this:Require("var", "Attribute expected after (.)");
 		this:Require("ass", "Assigment operator (=) expected after index operator.");
@@ -1494,9 +1494,9 @@ function PARSER.Expression_7(this)
 	local expr = this:Expression_8();
 
 	while this:CheckToken("eq", "neq") do
-		if (this:Accept("eq")) then
+		if this:Accept("eq") then
 
-			if (this:Accept("lsb")) then
+			if this:Accept("lsb") then
 				local inst = this:StartInstruction("eq_mul", expr.token);
 
 				local expressions = {};
@@ -1521,9 +1521,9 @@ function PARSER.Expression_7(this)
 
 				expr = this:EndInstruction(inst, {expr = expr; expr2 = expr2});
 			end
-		elseif (this:Accept("neq")) then
+		elseif this:Accept("neq") then
 
-			if (this:Accept("lsb")) then
+			if this:Accept("lsb") then
 				local inst = this:StartInstruction("neq_mul", expr.token);
 
 				local expressions = {};
@@ -1556,25 +1556,25 @@ function PARSER.Expression_8(this)
 	local expr = this:Expression_9();
 
 	while this:CheckToken("lth", "leq", "gth", "geq") do
-		if (this:Accept("lth")) then
+		if this:Accept("lth") then
 			local inst = this:StartInstruction("lth", expr.token);
 
 			local expr2 = this:Expression_1();
 
 			expr = this:EndInstruction(inst, {expr = expr; expr2 = expr2});
-		elseif (this:Accept("leq")) then
+		elseif this:Accept("leq") then
 			local inst = this:StartInstruction("leq", expr.token);
 
 			local expr2 = this:Expression_1();
 
 			expr = this:EndInstruction(inst, {expr = expr; expr2 = expr2});
-		elseif (this:Accept("gth")) then
+		elseif this:Accept("gth") then
 			local inst = this:StartInstruction("gth", expr.token);
 
 			local expr2 = this:Expression_1();
 
 			expr = this:EndInstruction(inst, {expr = expr; expr2 = expr2});
-		elseif (this:Accept("geq")) then
+		elseif this:Accept("geq") then
 			local inst = this:StartInstruction("geq", expr.token);
 
 			local expr2 = this:Expression_1();
@@ -1714,7 +1714,7 @@ function PARSER.Expression_17(this)
 end
 
 function PARSER.Expression_18(this)
-	if (this:Accept("add")) then
+	if this:Accept("add") then
 		this:ExcludeWhiteSpace("Identity operator (+) must not be succeeded by whitespace");
 
 		return this:Expression_19();
@@ -1724,7 +1724,7 @@ function PARSER.Expression_18(this)
 end
 
 function PARSER.Expression_19(this)
-	if (this:Accept("sub")) then
+	if this:Accept("sub") then
 		local inst = this:StartInstruction("neg", this.__token);
 
 		this:ExcludeWhiteSpace("Negation operator (-) must not be succeeded by whitespace");
@@ -1738,7 +1738,7 @@ function PARSER.Expression_19(this)
 end
 
 function PARSER.Expression_20(this)
-	if (this:Accept("not")) then
+	if this:Accept("not") then
 		local inst = this:StartInstruction("not", this.__token);
 
 		this:ExcludeWhiteSpace("Not operator (!) must not be succeeded by whitespace");
@@ -1752,7 +1752,7 @@ function PARSER.Expression_20(this)
 end
 
 function PARSER.Expression_21(this)
-	if (this:Accept("len")) then
+	if this:Accept("len") then
 		local inst = this:StartInstruction("len", this.__token);
 
 		this:ExcludeWhiteSpace("Length operator (#) must not be succeeded by whitespace");
@@ -1766,7 +1766,7 @@ function PARSER.Expression_21(this)
 end
 
 function PARSER.Expression_22(this)
-	if (this:Accept("dlt")) then
+	if this:Accept("dlt") then
 		local inst = this:StartInstruction("delta", this.__token);
 
 		this:ExcludeWhiteSpace("Delta operator (#) must not be succeeded by whitespace");
@@ -1776,7 +1776,7 @@ function PARSER.Expression_22(this)
 		return this:EndInstruction(inst, {var = this.__token.data});
 	end
 
-	if (this:Accept("cng")) then
+	if this:Accept("cng") then
 		local inst = this:StartInstruction("changed", this.__token);
 
 		this:ExcludeWhiteSpace("Changed operator (~) must not be succeeded by whitespace");
@@ -1790,7 +1790,7 @@ function PARSER.Expression_22(this)
 end
 
 function PARSER.Expression_23(this)
-	if (this:Accept("cst")) then
+	if this:Accept("cst") then
 		local inst = this:StartInstruction("cast", this.__token);
 
 		local class = this.__token.data;
@@ -1804,15 +1804,15 @@ function PARSER.Expression_23(this)
 
 	local previous = this.__token;
 
-	if (this:Accept("lpa")) then
+	if this:Accept("lpa") then
 		local lpa = this.__token;
 
-		if (this:Accept("typ")) then
+		if this:Accept("typ") then
 			local token = this.__token;
 
 			local class = token.data;
 
-			if (this:Accept("rpa")) then
+			if this:Accept("rpa") then
 				local inst = this:StartInstruction("cast", token);
 
 				this:ExcludeWhiteSpace("Cast operator ((%s)) must not be succeeded by whitespace", name(class));
@@ -1831,7 +1831,7 @@ function PARSER.Expression_23(this)
 end
 
 function PARSER.Expression_24(this)
-	if (this:Accept("lpa")) then
+	if this:Accept("lpa") then
 		local inst = this:StartInstruction("group", this.__token);
 
 		local expr = this:Expression_1();
@@ -1845,17 +1845,17 @@ function PARSER.Expression_24(this)
 end
 
 function PARSER.Expression_25(this)
-	if (this:CheckToken("var")) then
+	if this:CheckToken("var") then
 		local token = this.__next;
 		local library = this.__next.data;
 		local lib = EXPR_LIBRARIES[library];
 
-		if (lib) then
+		if lib then
 			this:Next();
 
 			local library = this.__token;
 
-			if (not this:Accept("prd")) then
+			if not this:Accept("prd") then
 				this:StepBackward(1);
 				return this:Expression_26();
 			end
@@ -1871,7 +1871,7 @@ function PARSER.Expression_25(this)
 
 			local expressions = {};
 
-			if (not this:CheckToken("rpa")) then
+			if not this:CheckToken("rpa") then
 				expressions[1] = this:Expression_1();
 
 				while(this:Accept("com")) do
@@ -1892,7 +1892,7 @@ function PARSER.Expression_25(this)
 end
 
 function PARSER.Expression_26(this)
-	if (this:Accept("var")) then
+	if this:Accept("var") then
 		local inst = this:StartInstruction("var", this.__token);
 
 		this:EndInstruction(inst, {variable = this.__token.data});
@@ -1907,11 +1907,11 @@ function PARSER.Expression_27(this)
 
 	local new = this:Accept("new");
 
-	if (not new && (this:CheckForSequence("typ", "lpa") && this.__next.data ~= "f")) then
+	if not new && (this:CheckForSequence("typ", "lpa") && this.__next.data ~= "f") then
 		new = true;
 	end
 
-	if (new) then
+	if new then
 
 		local inst = this:StartInstruction("new", this.__token);
 
@@ -1921,7 +1921,7 @@ function PARSER.Expression_27(this)
 
 		local expressions = {};
 
-		if (not this:CheckToken("rpa")) then
+		if not this:CheckToken("rpa") then
 			expressions[1] = this:Expression_1();
 
 			while(this:Accept("com")) do
@@ -1941,7 +1941,7 @@ function PARSER.Expression_27(this)
 end
 
 function PARSER.Expression_28(this)
-	if (this:AcceptWithData("typ", "f")) then
+	if this:AcceptWithData("typ", "f") then
 		local inst = this:StartInstruction("lambda", this.__token);
 
 		local params, signature = this:InputParameters(inst);
@@ -1964,7 +1964,7 @@ function PARSER.InputParameters(this, inst)
 	local params = {};
 
 
-	if (this:Accept("typ")) then
+	if this:Accept("typ") then
 
 		local class = this.__token.data;
 
@@ -1996,7 +1996,7 @@ end
 function PARSER.Expression_29(this)
 	expr = this:Expression_30();
 
-	if (expr) then
+	if expr then
 		return expr;
 	end
 
@@ -2004,19 +2004,19 @@ function PARSER.Expression_29(this)
 end
 
 function PARSER.Expression_30(this)
-	if (this:Accept("tre")) then
+	if this:Accept("tre") then
 		local inst = this:StartInstruction("bool", this.__token);
 		return this:EndInstruction(inst, {value = true});
-	elseif (this:Accept("fls")) then
+	elseif this:Accept("fls") then
 		local inst = this:StartInstruction("bool", this.__token);
 		return this:EndInstruction(inst, {value = false});
-	elseif (this:Accept("num")) then
+	elseif this:Accept("num") then
 		local inst = this:StartInstruction("num", this.__token);
 		return this:EndInstruction(inst, {value = this.__token.data});
-	elseif (this:Accept("str")) then
+	elseif this:Accept("str") then
 		local inst = this:StartInstruction("str", this.__token);
 		return this:EndInstruction(inst, {value = this.__token.data});
-	elseif (this:Accept("ptr")) then
+	elseif this:Accept("ptr") then
 		local inst = this:StartInstruction("ptrn", this.__token);
 		return this:EndInstruction(inst, {value = this.__token.data});
 	elseif this:Accept("typ") then
@@ -2033,7 +2033,7 @@ function PARSER.Expression_Trailing(this, expr)
 	while this:CheckToken("prd", "lsb", "lpa") do
 
 		-- Methods
-		if (this:Accept("prd")) then
+		if this:Accept("prd") then
 			this.__prd = this.__token;
 
 			local inst = this:StartInstruction("meth", expr.token);
@@ -2042,14 +2042,14 @@ function PARSER.Expression_Trailing(this, expr)
 
 			local varToken = this.__token;
 
-			if (this:Accept("lpa")) then
+			if this:Accept("lpa") then
 				inst.__lpa = this.__token;
 
 				local expressions = {};
 
 				expressions[1] = expr;
 
-				if (not this:CheckToken("rpa")) then
+				if not this:CheckToken("rpa") then
 					expressions[2] = this:Expression_1();
 
 					while(this:Accept("com")) do
@@ -2067,10 +2067,10 @@ function PARSER.Expression_Trailing(this, expr)
 				-- Check for an ass instruction and locate it,
 				-- If we are at our set attribute then we break.
 
-				if (this:StatmentContains(varToken, "ass")) then
+				if this:StatmentContains(varToken, "ass") then
 					local excluded = this:LastInStatment(this:OffsetToken(this.__prd, -1), "prd", "ass");
 
-					if (excluded and excluded.index == this.__prd.index) then
+					if excluded and excluded.index == this.__prd.index then
 						this:StepBackward(2);
 						break;
 					end
@@ -2080,7 +2080,7 @@ function PARSER.Expression_Trailing(this, expr)
 
 				expr = this:EndInstruction(inst, {expr = expr; var = varToken});
 			end
-		elseif (this:Accept("lsb")) then
+		elseif this:Accept("lsb") then
 			local class;
 			local lsb = this.__token;
 
@@ -2092,24 +2092,24 @@ function PARSER.Expression_Trailing(this, expr)
 
 			expressions[2] = this:Expression_1();
 
-			if (this:Accept("com")) then
+			if this:Accept("com") then
 
 				this:Require("typ", "Class expected for index operator, after coma (,).");
 
 				class = E3Class(this.__token.data);
 
-				if (class) then class = class.id; end
+				if class then class = class.id; end
 			end
 
 			this:Require("rsb", "Right square bracket (]) expected to close index operator.");
 
-			if (this:CheckToken("ass")) then
+			if this:CheckToken("ass") then
 				this:GotoToken(expr.final);
 				break;
 			end
 
 			expr = this:EndInstruction(inst, {expressions = expressions, class = class});
-		elseif (this:Accept("lpa")) then
+		elseif this:Accept("lpa") then
 
 			local inst = this:StartInstruction("call", expr.token);
 
@@ -2117,7 +2117,7 @@ function PARSER.Expression_Trailing(this, expr)
 
 			expressions[1] = expr;
 
-			if (not this:CheckToken("rpa")) then
+			if not this:CheckToken("rpa") then
 				expressions[2] = this:Expression_1();
 
 				while (this:Accept("com")) do
@@ -2150,7 +2150,7 @@ function PARSER.GetCondition(this)
 end
 
 function PARSER.ExpressionErr(this)
-	if (not this.__token) then
+	if not this.__token then
 		this:Throw(this.__tokens[#this.__tokens], "Further input required at end of code, incomplete expression");
 	end
 
@@ -2200,7 +2200,7 @@ end
 ]]
 
 function PARSER.ClassStatment_0(this)
-	if (this:Accept("cls")) then
+	if this:Accept("cls") then
 		local inst = this:StartInstruction("class", this.__token);
 
 		this:Require("var", "Class name expected after class");
@@ -2210,13 +2210,13 @@ function PARSER.ClassStatment_0(this)
 
 		this:SetUserObject(classname);
 
-		if (this:Accept("ext")) then
+		if this:Accept("ext") then
 			inst.__ext = this.__token;
 			extends = this:Require("typ", "Class name expected after extends");
 			inst.__exttype = this.__token;
 		end
 
-		if (this:Accept("imp")) then
+		if this:Accept("imp") then
 			this:Require("typ", "Class name expected after implements");
 
 			implements = {this.__token};
@@ -2232,7 +2232,7 @@ function PARSER.ClassStatment_0(this)
 
 		local stmts = {};
 
-		if (not this:CheckToken("rcb")) then
+		if not this:CheckToken("rcb") then
 			this:PushScope()
 
 			this:SetOption("curclass", classname);
@@ -2251,8 +2251,8 @@ function PARSER.ClassStatment_0(this)
 end
 
 function PARSER.ClassStatment_1(this)
-	if (this:Accept("typ")) then
-		if (this.__token.data == this:GetOption("curclass") and this:CheckToken("lpa")) then
+	if this:Accept("typ") then
+		if this.__token.data == this:GetOption("curclass") and this:CheckToken("lpa") then
 			this:StepBackward(1);
 			return this:ClassStatment_2();
 		end
@@ -2261,7 +2261,7 @@ function PARSER.ClassStatment_1(this)
 
 		local type = this.__token.data;
 
-		if (type == "f" and this:CheckToken("typ")) then
+		if type == "f" and this:CheckToken("typ") then
 			this:StepBackward(1);
 			return this:Statment_8();
 		end
@@ -2276,7 +2276,7 @@ function PARSER.ClassStatment_1(this)
 
 		local expressions = {};
 
-		if (this:Accept("ass")) then
+		if this:Accept("ass") then
 			this:ExcludeWhiteSpace("Assignment operator (=), must not be preceded by whitespace.");
 
 			expressions[1] = this:Expression_1();
@@ -2298,7 +2298,7 @@ end
 function PARSER.ClassStatment_2(this)
 	local class = this:GetOption("curclass");
 
-	if (this:AcceptWithData("typ", class)) then
+	if this:AcceptWithData("typ", class) then
 
 		local inst = this:StartInstruction("constclass", this.__token);
 
@@ -2313,7 +2313,7 @@ function PARSER.ClassStatment_2(this)
 end
 
 function PARSER.ClassStatment_3(this)
-	if (this:Accept("meth")) then
+	if this:Accept("meth") then
 		local inst = this:StartInstruction("def_method", this.__token);
 
 		local typ = this:Require("typ", "Return type expected for method, after method.");
@@ -2331,13 +2331,13 @@ function PARSER.ClassStatment_3(this)
 end
 
 function PARSER.ClassStatment_4(this)
-	if (this:AcceptWithData("var", "tostring")) then
+	if this:AcceptWithData("var", "tostring") then
 		local inst = this:StartInstruction("tostr", this.__token);
 		inst.__var = this.__token;
 
 		local params, signature = this:InputParameters(inst);
 
-		if (#params > 0) then
+		if #params > 0 then
 			this:Throw(inst.__var, "The tostring operation does not take any parameters.");
 		end
 
@@ -2353,7 +2353,7 @@ end
 ]]
 
 function PARSER.InterfaceStatment_0(this)
-	if (this:Accept("itf")) then
+	if this:Accept("itf") then
 		local inst = this:StartInstruction("interface", this.__token);
 
 		local interface = this:Require("var", "Interface name expected after class");
@@ -2364,7 +2364,7 @@ function PARSER.InterfaceStatment_0(this)
 
 		local stmts = {};
 
-		if (not this:CheckToken("rcb")) then
+		if not this:CheckToken("rcb") then
 			this:PushScope()
 
 			this:SetOption("interface", interface.data);
@@ -2385,7 +2385,7 @@ end
 ]]
 
 function PARSER.InterfaceStatment_1(this)
-	if (this:Accept("meth")) then
+	if this:Accept("meth") then
 		local inst = this:StartInstruction("interface_method", this.__token);
 
 		local result = this:Require("typ", "Return type expected for method, after method.");
@@ -2396,14 +2396,14 @@ function PARSER.InterfaceStatment_1(this)
 
 		local params = {};
 
-		if (not this:CheckToken("rpa")) then
+		if not this:CheckToken("rpa") then
 
 			while (true) do
 				this:Require("typ", "Parameter type expected for parameter.");
 
 				params[#params + 1] = this.__token.data;
 
-				if (not this:Accept("com")) then
+				if not this:Accept("com") then
 					break;
 				end
 
@@ -2421,7 +2421,7 @@ function PARSER.InterfaceStatment_1(this)
 
 		this:Require("sep", "Statements must be separated by a semicolon (;) 2422");
 
-		if (lcb) then
+		if lcb then
 			this:Require("rcb", "Right curly bracket (}) expected to close method.");
 		end
 

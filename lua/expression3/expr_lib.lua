@@ -219,7 +219,7 @@ EXPR_LIB = {};
 
 print("E3 Lib Loading.");
 
-if (not CLIENT) then
+if not CLIENT then
 	util.AddNetworkString("Expression3.InitializedClient");
 
 	util.AddNetworkString("Expression3.OpenGolem");
@@ -229,7 +229,7 @@ end
 ]]
 
 function EXPR_LIB.ThrowInternal(level, msg, fst, ...)
-	if (fst) then
+	if fst then
 		msg = string.format(msg, fst, ...);
 	end
 
@@ -299,13 +299,13 @@ local events = {};
 local loadEvents = false;
 
 function EXPR_LIB.RegisterEvent(name, parameter, type, count)
-	if (not loadEvents) then
+	if not loadEvents then
 		EXPR_LIB.ThrowInternal(0, "Attempt to register Event %s(%s) outside of Hook::Expression3.LoadEvents", name, parameter);
 	end
 
 	local state, signature = EXPR_LIB.SortArgs(parameter);
 
-	if (not state) then
+	if not state then
 		EXPR_LIB.ThrowInternal(0, "%s for Event %s(%s)", signature, name, parameter);
 	end
 
@@ -313,7 +313,7 @@ function EXPR_LIB.RegisterEvent(name, parameter, type, count)
 
 	local res = EXPR_LIB.GetClass(type);
 
-	if (not res) then
+	if not res then
 		EXPR_LIB.ThrowInternal(0, "Attempt to register Event %s(%s) with none existing return class %s", name, parameter, type);
 	end
 
@@ -335,21 +335,21 @@ end
 
 function EXPR_LIB.RegisterClass(id, name, isType, isValid)
 
-	if (not loadClasses) then
+	if not loadClasses then
 		EXPR_LIB.ThrowInternal(0, "Attempt to register class %s outside of Hook::Expression3.LoadClasses}}", name);
 	end
 
-	if (string.len(id) > 1) then
+	if string.len(id) > 1 then
 		id = "_" .. id;
 	end
 
-	if (classIDs[id]) then
+	if classIDs[id] then
 		EXPR_LIB.ThrowInternal(0, "Attempt to register class %s with conflicting id %s", name, id);
 	end
 
 	local class = {};
 
-	if (type(name) == "table") then
+	if type(name) == "table" then
 		-- Register aliases for classes.
 		for _, v in pairs(name) do
 			classes[string.lower(v)] = class;
@@ -383,13 +383,13 @@ end
 
 function EXPR_LIB.RegisterExtendedClass(id, name, base, isType, isValid)
 
-	if (not loadClasses) then
+	if not loadClasses then
 		EXPR_LIB.ThrowInternal(0, "Attempt to register class %s outside of Hook::Expression3.LoadClasses", name);
 	end
 
 	local cls = EXPR_LIB.GetClass(base);
 
-	if (not cls) then
+	if not cls then
 		EXPR_LIB.ThrowInternal(0, "Attempt to register extended class %s from none existing class %s", class, base);
 	end
 
@@ -403,12 +403,12 @@ end
 function EXPR_LIB.RegisterWiredInport(class, wiretype, func)
 	local cls = EXPR_LIB.GetClass(class);
 
-	if (not cls) then
+	if not cls then
 		EXPR_LIB.ThrowInternal(0, "Attempt to register wired inport for none existing class %s", class);
 	end
 
-	if (SERVER) then
-		if (not WireLib.DT[wiretype]) then
+	if SERVER then
+		if not WireLib.DT[wiretype] then
 			EXPR_LIB.ThrowInternal(0, "Attempt to register wired inport for class %s, with invalid wire type %s", class, wiretype);
 		end
 	end
@@ -420,12 +420,12 @@ end
 function EXPR_LIB.RegisterWiredOutport(class, wiretype, func)
 	local cls = EXPR_LIB.GetClass(class);
 
-	if (not cls) then
+	if not cls then
 		EXPR_LIB.ThrowInternal(0, "Attempt to register wired outport for none existing class %s", class);
 	end
 
-	if (SERVER) then
-		if (not WireLib.DT[wiretype]) then
+	if SERVER then
+		if not WireLib.DT[wiretype] then
 			EXPR_LIB.ThrowInternal(0, "Attempt to register wired outport for class %s, with invalid wire type %s", class, wiretype);
 		end
 	end
@@ -437,7 +437,7 @@ end
 function EXPR_LIB.RegisterNativeDefault(class, native)
 	local cls = EXPR_LIB.GetClass(class);
 
-	if (not cls) then
+	if not cls then
 		EXPR_LIB.ThrowInternal(0, "Attempt to register native default for none existing class %s", class);
 	end
 
@@ -447,19 +447,19 @@ end
 local loadConstructors = false;
 
 function EXPR_LIB.RegisterConstructor(class, parameter, constructor, excludeContext)
-	if (not loadConstructors) then
+	if not loadConstructors then
 		EXPR_LIB.ThrowInternal(0, "Attempt to register Constructor new %s(%s) outside of Hook::Expression3.LoadConstructors", class, parameter);
 	end
 
 	local cls = EXPR_LIB.GetClass(class);
 
-	if (not cls) then
+	if not cls then
 		EXPR_LIB.ThrowInternal(0, "Attempt to register Constructor new %s(%s) for none existing class", class, parameter);
 	end
 
 	local state, signature = EXPR_LIB.SortArgs(parameter);
 
-	if (not state) then
+	if not state then
 		EXPR_LIB.ThrowInternal(0, "%s for Constructor new %s(%s)", signature, class, parameter);
 	end
 
@@ -486,25 +486,25 @@ local loadMethods = false;
 function EXPR_LIB.RegisterMethod(class, name, parameter, type, count, method, excludeContext)
 	-- if method is nil lua, interpreter will use native Object:(...);
 
-	if (not loadMethods) then
+	if not loadMethods then
 		EXPR_LIB.ThrowInternal(0, "Attempt to register method %s.%s(%s) outside of Hook::Expression3.LoadMethods", class, name, parameter);
 	end
 
 	local cls = EXPR_LIB.GetClass(class);
 
-	if (not cls) then
+	if not cls then
 		EXPR_LIB.ThrowInternal(0, "Attempt to register method %s.%s(%s) for none existing class %s", class, name, parameter, class);
 	end
 
 	local state, signature = EXPR_LIB.SortArgs(parameter);
 
-	if (not state) then
+	if not state then
 		EXPR_LIB.ThrowInternal(0, "%s for method %s.%s(%s)", signature, class, name, parameter);
 	end
 
 	local res = EXPR_LIB.GetClass(type);
 
-	if (not res) then
+	if not res then
 		EXPR_LIB.ThrowInternal(0, "Attempt to register method %s.%s(%s) with none existing return class %s", class, name, parameter, type);
 	end
 
@@ -531,19 +531,19 @@ local loadAttributes;
 function EXPR_LIB.RegisterAttribute(class, attribute, type, native)
 	native = native or attribute;
 
-	if (not loadAttributes) then
+	if not loadAttributes then
 		EXPR_LIB.ThrowInternal(0, "Attempt to register attribute %s.%s outside of Hook::Expression3.LoadAttributes", class, attribute);
 	end
 
 	local cls = EXPR_LIB.GetClass(class);
 
-	if (not cls) then
+	if not cls then
 		EXPR_LIB.ThrowInternal(0, "Attempt to register attribute %s.%s for none existing class %s", class, attribute, class);
 	end
 
 	local typ = EXPR_LIB.GetClass(type);
 
-	if (not typ) then
+	if not typ then
 		EXPR_LIB.ThrowInternal(0, "Attempt to register attribute %s.%s of none existing class %s", class, attribute, type);
 	end
 
@@ -565,19 +565,19 @@ local loadOperators = false;
 function EXPR_LIB.RegisterOperator(operation, parameter, type, count, operator, excludeContext)
 	-- if operator is nil lua, interpreter will use native if possible (+, -, /, *, ^, etc)
 
-	if (not loadOperators) then
+	if not loadOperators then
 		EXPR_LIB.ThrowInternal(0, "Attempt to register operator %s(%s) outside of Hook::Expression3.LoadOperators", operation, parameter);
 	end
 
 	local state, signature = EXPR_LIB.SortArgs(parameter);
 
-	if (not state) then
+	if not state then
 		EXPR_LIB.ThrowInternal(0, "%s for operator %s(%s)", signature, operation, parameter);
 	end
 
 	local res = EXPR_LIB.GetClass(type);
 
-	if (not res) then
+	if not res then
 		EXPR_LIB.ThrowInternal(0, "Attempt to register operator %s(%s) with none existing return class %s", operation, parameter, type);
 	end
 
@@ -601,23 +601,23 @@ end
 local castOperators;
 
 function EXPR_LIB.RegisterCastingOperator(type, parameter, operator, excludeContext)
-	if (not loadOperators) then
+	if not loadOperators then
 		EXPR_LIB.ThrowInternal(0, "Attempt to register casting operator [(%s) %s] outside of Hook::Expression3.LoadOperators", type, parameter);
 	end
 
-	if (not operator) then
+	if not operator then
 		EXPR_LIB.ThrowInternal(0, "Attempt to register native casting operator [(%s) %s] an operation function is required.", type, parameter);
 	end
 
 	local state, signature = EXPR_LIB.SortArgs(parameter);
 
-	if (not state) then
+	if not state then
 		EXPR_LIB.ThrowInternal(0, "%s for casting operator [(%s) %s]", signature, type, parameter);
 	end
 
 	local res = EXPR_LIB.GetClass(type);
 
-	if (not res) then
+	if not res then
 		EXPR_LIB.ThrowInternal(0, "Attempt to register casting operator [(%s) %s] for none existing class %s", type, parameter, type);
 	end
 
@@ -640,7 +640,7 @@ local libraries;
 local loadLibraries = false;
 
 function EXPR_LIB.RegisterLibrary(name)
-	if (not loadLibraries) then
+	if not loadLibraries then
 		EXPR_LIB.ThrowInternal(0, "Attempt to register library %s) outside of Hook::Expression3.LoadLibariess", name);
 	end
 
@@ -659,25 +659,25 @@ local loadFunctions = false;
 local blank = function() end
 
 function EXPR_LIB.RegisterFunction(library, name, parameter, type, count, _function, excludeContext)
-	if (not loadFunctions) then
+	if not loadFunctions then
 		EXPR_LIB.ThrowInternal(0, "Attempt to register function %s.%s(%s) outside of Hook::Expression3.LoadFunctions", library, name, parameter);
 	end
 
 	local lib = libraries[string.lower(library)];
 
-	if (not lib) then
+	if not lib then
 		EXPR_LIB.ThrowInternal(0, "Attempt to register function %s.%s(%s) to none existing library %s", library, name, parameter, library);
 	end
 
 	local state, signature = EXPR_LIB.SortArgs(parameter);
 
-	if (not state) then
+	if not state then
 		EXPR_LIB.ThrowInternal(0, "%s for function %s.%s(%s)", signature, library, name, parameter);
 	end
 
 	local res = EXPR_LIB.GetClass(type);
 
-	if (not res) then
+	if not res then
 		EXPR_LIB.ThrowInternal(0, "Attempt to register function %s.%s(%s) with none existing return class %s", library, name, parameter, type);
 	end
 
@@ -711,19 +711,19 @@ local constants;
 local loadConstants = false;
 
 function EXPR_LIB.RegisterConstant(library, name, type, value, native)
-	if (not loadConstants) then
+	if not loadConstants then
 		EXPR_LIB.ThrowInternal(0, "Attempt to register constant %s.%s outside of Hook::Expression3.LoadConstantss", library, name);
 	end
 
 	local lib = libraries[string.lower(library)];
 
-	if (not lib) then
+	if not lib then
 		EXPR_LIB.ThrowInternal(0, "Attempt to register constant %s.%s to none existing library %s", library, name, library);
 	end
 
 	local res = EXPR_LIB.GetClass(type);
 
-	if (not res) then
+	if not res then
 		EXPR_LIB.ThrowInternal(0, "Attempt to register constant %s.%s of none existing class %s", library, name, type);
 	end
 
@@ -761,7 +761,7 @@ end
 function EXPR_LIB.GetAllClasses()
 	local res = {};
 
-	if (EXPR_CLASSES) then
+	if EXPR_CLASSES then
 		for _, v in pairs(EXPR_CLASSES) do
 			res[v] = v;
 		end
@@ -776,15 +776,15 @@ function EXPR_LIB.GetClass(class)
 		EXPR_LIB.ThrowInternal(0, "EXPR_LIB.GetClass(s) was given %s.", type(class));
 	end
 
-	if (not class or class == "") then
+	if not class or class == "" then
 		class = "void";
 	end
 
-	if (classes[class]) then
+	if classes[class] then
 		return classes[class];
 	end
 
-	if (string.len(class) > 1 and string.sub(class, 1, 1) ~= "_") then
+	if string.len(class) > 1 and string.sub(class, 1, 1) ~= "_" then
 		class = "_" .. class;
 	end
 
@@ -796,7 +796,7 @@ function EXPR_LIB.IsValidClass(class)
 end
 
 function EXPR_LIB.SortArgs(parameter)
-	if (parameter == "") then
+	if parameter == "" then
 		return true, "";
 	end
 
@@ -804,7 +804,7 @@ function EXPR_LIB.SortArgs(parameter)
 	local signature = {};
 	local split = string.Explode(",", parameter);
 
-	if (split[#split] == "...") then
+	if split[#split] == "..." then
 		split[#split] = nil;
 		varg = true;
 	end
@@ -812,16 +812,16 @@ function EXPR_LIB.SortArgs(parameter)
 	for k, v in pairs(split) do
 		local cls = EXPR_LIB.GetClass(v);
 
-		if (v == "...") then
+		if v == "..." then
 			return false, string.format("Vararg (...) must be last parameter", v, k);
-		elseif (not cls) then
+		elseif not cls then
 			return false, string.format("Invalid class (%s) for parameter #%i", v, k);
 		end
 
 		signature[k] = cls.id;
 	end
 
-	if (varg) then
+	if varg then
 		signature[#signature + 1] = "...";
 	end
 
@@ -906,7 +906,7 @@ end
 
 function Extension.RegisterWiredOutport(this, class, wiretype, func)
 	hook.Add("Expression3.LoadConstructors", "Expression3.WireOutput." .. class, function()
-		if (this.enabled) then
+		if this.enabled then
 			EXPR_LIB.RegisterWiredOutport(class, wiretype, func);
 		end
 	end);
@@ -914,7 +914,7 @@ end
 
 function Extension.RegisterNativeDefault(this, class, native)
 	hook.Add("Expression3.LoadConstructors", "Expression3.Native." .. class, function()
-		if (this.enabled) then
+		if this.enabled then
 			EXPR_LIB.RegisterNativeDefault(class, native);
 		end
 	end);
@@ -963,7 +963,7 @@ end
 function Extension.CheckRegistration(this, _function, ...)
 	local state, err = pcall(_function, ...);
 
-	if (not state) then
+	if not state then
 		print("->", ...)
 		EXPR_LIB.ThrowInternal(0, "%s in component %s", err, this.name);
 	end
@@ -989,7 +989,7 @@ function Extension.EnableExtension(this)
 
 	hook.Add("Expression3.LoadEvents", "Expression3.Extension." .. this.name, function()
 		for _, v in pairs(this.events) do
-			if (not v[0]) then
+			if not v[0] then
 				STATE = v[5];
 
 				local op = this:CheckRegistration(EXPR_LIB.RegisterEvent, v[1], v[2], v[3], v[4]);
@@ -1003,7 +1003,7 @@ function Extension.EnableExtension(this)
 
 	hook.Add("Expression3.LoadClasses", "Expression3.Extension." .. this.name, function()
 		for _, v in pairs(this.classes) do
-			if (not v[0]) then
+			if not v[0] then
 				STATE = v[5];
 				PRICE = v[6];
 
@@ -1016,7 +1016,7 @@ function Extension.EnableExtension(this)
 
 	hook.Add("Expression3.LoadExtendedClasses", "Expression3.Extension." .. this.name, function()
 		for _, v in pairs(this.classes) do
-			if (v[0]) then
+			if v[0] then
 				STATE = v[5];
 				PRICE = v[6];
 
@@ -1149,31 +1149,31 @@ function extendClass(class, base)
 	local c = EXPR_LIB.GetClass(class);
 	local b = EXPR_LIB.GetClass(base);
 
-	if (not c or not b) then
+	if not c or not b then
 		return;
 	end
 
-	if (not c.extends) then
+	if not c.extends then
 		c.extends = {};
 	end
 
-	if (c.extends[b.id]) then
+	if c.extends[b.id] then
 		return;
 	end
 
-	if (c.id == b.id) then
+	if c.id == b.id then
 		return;
 	end
 
-	if (b.base) then
+	if b.base then
 		extendClass(base, b.base)
 	end
 
-	if (not c.isType) then
+	if not c.isType then
 		c.isType = b.isType;
 	end
 
-	if (not c.isValid) then
+	if not c.isValid then
 		c.isValid = b.isValid;
 	end
 
@@ -1182,7 +1182,7 @@ function extendClass(class, base)
 	for _, op in pairs(b.constructors) do
 		local signature = string.format("%s(%s)", class, op.parameter);
 
-		if (not constructors[signature]) then
+		if not constructors[signature] then
 			constructors[signature] = {
 				name = class,
 				class = c.id,
@@ -1199,10 +1199,10 @@ function extendClass(class, base)
 	end
 
 	for _, op in pairs(methods) do
-		if (op.class == base) then
+		if op.class == base then
 			local signature = string.format("%s.%s(%s)", class, op.name, op.parameter);
 
-			if (not methods[signature]) then
+			if not methods[signature] then
 				methods[signature] = {
 					name = op.name,
 					class = c.id,
@@ -1222,7 +1222,7 @@ function extendClass(class, base)
 	local attributes = c.attributes;
 
 	for att, data in pairs(b.attributes or {}) do
-		if (not attributes[att]) then
+		if not attributes[att] then
 			attributes[att] = data;
 		end
 	end
@@ -1235,9 +1235,9 @@ end
 function EXPR_LIB.ToString(context, type, value)
 	local op = EXPR_CAST_OPERATORS["(s)" .. type];
 
-	if (not op or not op.operator) then
+	if not op or not op.operator then
 		return tostring(value);
-	elseif (not op.context) then
+	elseif not op.context then
 		return op.operator(value);
 	else
 		return op.operator(context, value);
@@ -1309,7 +1309,7 @@ function EXPR_LIB.Initialize()
 		extendClass(id, class.base);
 	end
 
-	if (CLIENT) then
+	if CLIENT then
 		include("expression3/editor/expr_editor_lib.lua");
 	end
 
@@ -1321,7 +1321,7 @@ function EXPR_LIB.Initialize()
 	include("expression3/parser.lua");
 	include("expression3/compiler.lua");
 
-	if (CLIENT) then
+	if CLIENT then
 		hook.Run("Expression3.LoadGolem");
 	end
 
@@ -1335,7 +1335,7 @@ end
 	''''''''''''''''''''''''''''''''''''
 ]]
 
-if (CLIENT) then
+if CLIENT then
 	hook.Add("Expression3.LoadGolem", "Expression3.Golem.Init", function()
 		include("expression3/editor.lua");
 		Golem.Reload();
@@ -1436,7 +1436,7 @@ function EXPR_LIB.Validate(cb, script, files)
 			end
 		end);
 
-		if (not a) then
+		if not a then
 			ok = a;
 			res = {msg = b, state == "internal", line = 0, char = 0};
 		end
@@ -1448,7 +1448,7 @@ function EXPR_LIB.Validate(cb, script, files)
 		timer.Create(vldr.timer, 0.01, 0, vldr.resume);
 
 		timer.Create(vldr.timer .. 2, 60, 1, function()
-			if (not vldr.finished) then
+			if not vldr.finished then
 				timer.Remove(vldr.timer);
 				cb(false, "Validation took to long.");
 			end
@@ -1462,11 +1462,11 @@ function EXPR_LIB.Validate(cb, script, files)
 	end;
 
 	vldr.resume = function()
-		if (not vldr.finished) then
+		if not vldr.finished then
 			coroutine.resume(vldr.func);
 		end
 
-		if (vldr.finished) then
+		if vldr.finished then
 			vldr.stop();
 			cb(ok, res);
 			return true;

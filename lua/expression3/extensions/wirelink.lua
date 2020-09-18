@@ -73,7 +73,7 @@ end, false);
 function ext_wl:PostLoadClasses(classes)
 	for _, c in pairs(classes) do
 
-    if (c.wire_in_class) then
+    if c.wire_in_class then
         ext_wl:RegisterOperator("get", string.format("wl,s,%s", c.id), c.id, 1, function(c, e, i)
 
           if IsValid(e) and e.Outputs then
@@ -102,7 +102,7 @@ function ext_wl:PostLoadClasses(classes)
 
     end
 
-    if (c.wire_out_class) then
+    if c.wire_out_class then
         ext_wl:RegisterOperator("set", string.format("wl,s,%s", c.id), "", 0, function(c, e, i, v)
 
           if IsValid(e) and e.Outputs then

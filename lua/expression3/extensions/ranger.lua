@@ -176,7 +176,7 @@ local DoTrace = function(ctx, start, stop, min, max)
 	if data.hit_water then
 		if data.hit_entitys then
 			mask = -1;
-		elseif (iworld) then
+		elseif iworld then
 			iworld = false;
 			mask = MASK_WATER;
 		else

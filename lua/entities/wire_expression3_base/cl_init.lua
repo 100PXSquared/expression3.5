@@ -21,14 +21,14 @@ local ValidateError;
 function ValidateError(Thrown)
 	local Error;
 
-	if (istable(Thrown)) then
-		if (string.sub(Thrown.msg, -1) == ".") then
+	if istable(Thrown) then
+		if string.sub(Thrown.msg, -1) == "." then
 			Thrown.msg = string.sub(Thrown.msg, 1, -2);
 		end
 
 		Error = string.format("%s, at line %i char %i.", Thrown.msg, Thrown.line, Thrown.char);
 
-		if (Thrown.file) then
+		if Thrown.file then
 			Error = string.format("%s in %s.txt", string.sub(Error, 1, -2), Thrown.file);
 		end
 	else
@@ -46,7 +46,7 @@ end
 
 function ENT:ReceiveFromServer(ply, script, files)
 	timer.Simple(1, function()
-		if (IsValid(self)) then
+		if IsValid(self) then
 			self.player = ply;
 			self:SetCode(script, files, true);
 		end

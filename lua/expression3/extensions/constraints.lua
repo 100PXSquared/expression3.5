@@ -38,34 +38,34 @@ local function toConstraint(con, ent)
 
 	local constraint = {valid = true};
 
-	if (con.Type == "Weld") then
+	if con.Type == "Weld" then
 		constraint.isWeld = true;
 		constraint.type = "Weld";
 
-	elseif (con.Type == "NoCollide") then
+	elseif con.Type == "NoCollide" then
 		constraint.isNoCollide = true;
 		constraint.type = "NoCollide";
 
-	elseif (con.Type == "AdvBallsocket") then
+	elseif con.Type == "AdvBallsocket" then
 		constraint.isAdvBallsocket = true;
 		constraint.type = "AdvBallsocket";
 
-	elseif (con.Type == "Constraints") then
+	elseif con.Type == "Constraints" then
 		constraint.isConstraint = true;
 		constraint.type = "Constraint";
 
-	elseif (con.Type == "Parented") then
+	elseif con.Type == "Parented" then
 		constraint.isParent = true;
 		constraint.type = "Parent";
 
-	elseif (con.Type == "Wires") then
+	elseif con.Type == "Wires" then
 		constraint.isWire = true;
 		constraint.type = "Wire";
 	else
 		constraint.type = con.Type;
 	end
 
-	if (ent and con.Ent1 == ent) then
+	if ent and con.Ent1 == ent then
 		constraint.entity1 = con.Ent2;
 		constraint.entity2 = con.Ent1;
 	else
@@ -113,8 +113,8 @@ local function getContraints(ent, filter, first)
 			local constraint = toConstraint(con, ent);
 
 			if constraint then
-				if (not filter) or constraint.type == filter then
-					if (first) then return constraint; end
+				if not filter or constraint.type == filter then
+					if first then return constraint; end
 					
 					arr[#arr + 1] = {"_con", constraint};
 				end
@@ -146,13 +146,13 @@ end, true);
 
 extension:RegisterMethod("e", "getWeld", "", "con", 1, function(e)
 	local con = getContraints(e, "Weld", true);
-	if (not con) then return zero; end
+	if not con then return zero; end
 	return con;
 end, true);
 
 extension:RegisterMethod("e", "getWeld", "n", "con", 1, function(e, i)
 	local arr = getContraints(e, "Weld");
-	if (#arr < i) then return zero; end
+	if #arr < i then return zero; end
 	return arr[i][2];
 end, true);
 
@@ -163,13 +163,13 @@ end, true);
 
 extension:RegisterMethod("e", "isWeldedTo", "", "e", 1, function(e)
 	local con = getContraints(e, "Weld", true);
-	if (not con) then return Entity(0); end
+	if not con then return Entity(0); end
 	return con.entity1;
 end, true);
 
 extension:RegisterMethod("e", "isWeldedTo", "n", "e", 1, function(e, i)
 	local arr = getContraints(e, "Weld");
-	if (#arr < i) then return Entity(0); end
+	if #arr < i then return Entity(0); end
 	return arr[i][2].entity1;
 end, true);
 
@@ -179,19 +179,19 @@ end, true);
 
 extension:RegisterMethod("e", "isConstrainedTo", "", "e", 1, function(e)
 	local con = getContraints(e, nil, true);
-	if (not con) then return Entity(0); end
+	if not con then return Entity(0); end
 	return con.entity1;
 end, true);
 
 extension:RegisterMethod("e", "isConstrainedTo", "n", "e", 1, function(e, i)
 	local arr = getContraints(e);
-	if (#arr < i) then return zero; end
+	if #arr < i then return zero; end
 	return arr[i][2];
 end, true);
 
 extension:RegisterMethod("e", "isConstrainedTo", "n,s", "e", 1, function(e, i, f)
 	local arr = getContraints(e, f);
-	if (#arr < i) then return zero; end
+	if #arr < i then return zero; end
 	return arr[i][2];
 end, true);
 

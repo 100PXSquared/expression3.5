@@ -26,7 +26,7 @@ E3Fonts = {};
 local function setFont(basefont, size)
 	local font = "WireEGP_" .. size .. "_" .. basefont;
 
-	if (not E3Fonts[font]) then
+	if not E3Fonts[font] then
 		local fontTable = {
 			font = basefont,
 			size = size,
@@ -49,7 +49,7 @@ end
 	*****************************************************************************************************************************************************
 ]]--
 
-if (CLIENT) then
+if CLIENT then
 
 	local function resetRenderer()
 		surface.SetTextColor(255, 255, 255, 255);
@@ -62,7 +62,7 @@ if (CLIENT) then
 end
 
 local function preDraw(ctx)
-	if (not EXPR3_DRAWSCREEN) then
+	if not EXPR3_DRAWSCREEN then
 		ctx:Throw("Attempted to render outside of a rendering event.");
 	end
 end
@@ -249,7 +249,7 @@ extension:RegisterFunction("render", "drawPoly", "t", "", 0, function(ctx, tbl)
 	local vertices = {};
 
 	for _, v in pairs(tbl.tbl) do
-		if (v and v[1] == "_v2") then
+		if v and v[1] == "_v2" then
 			vertices[#vertices + 1] = v[2];
 		end
 	end
@@ -263,7 +263,7 @@ extension:RegisterFunction("render", "drawPolyOutline", "t", "", 0, function(ctx
 	local vertices = {};
 
 	for _, v in pairs(tbl.tbl) do
-		if (v and v[1] == "_v2") then
+		if v and v[1] == "_v2" then
 			vertices[#vertices + 1] = v[2];
 		end
 	end

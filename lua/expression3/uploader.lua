@@ -135,7 +135,7 @@ if CLIENT then
 	UPLOADER.ValidateScript = function(script, target)
 		if not script or script == "" then return; end
 
-		if (validator and not validator.finished) then
+		if validator and not validator.finished then
 			return chat.AddText("Failed: Another E3 is uploading.");
 		end
 
@@ -375,7 +375,7 @@ if SERVER then
 				local active = (cl_validators[client] == validator);
 				
 				if ok and active then UPLOADER.SetState(client, ST_IDLE, 0, true); end
-				if (not ok) and active then UPLOADER.SetState(client, ST_ERROR, 0, true); end
+				if not ok and active then UPLOADER.SetState(client, ST_ERROR, 0, true); end
 				
 				if ok then
 					UPLOADER.SendToClients(nil, entity, entity.player, entity.script, entity.files);
