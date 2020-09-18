@@ -38,7 +38,7 @@ extension:RegisterOperator("ten", "b,b,b", "b", 1);
 
 --[[
 *****************************************************************************************************************************************************
-	Boolean to number and back
+	Casting
 *****************************************************************************************************************************************************
 ]]--
 
@@ -48,6 +48,15 @@ end, false);
 
 extension:RegisterCastingOperator("b", "n", function(n)
 	return n ~= 0 and true or false;
+end, false);
+
+extension:RegisterCastingOperator("s", "b", function(b)
+	return b and "true" or "false";
+end, false);
+
+extension:RegisterCastingOperator("b", "s", function(s)
+	if s == "1" or s == "true" or s == "True" then return true
+	else return false end
 end, false);
 
 --[[
