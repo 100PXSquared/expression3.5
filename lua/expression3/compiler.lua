@@ -3522,7 +3522,7 @@ function COMPILER.Compile_GET(this, inst, token, data)
 		end
 	end
 
-	if not op) and not data.class then
+	if not op and not data.class then
 		op = this:GetOperator("get", vType, iType);
 
 		if not op then

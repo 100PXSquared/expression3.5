@@ -33,7 +33,7 @@ EXPR_SOUNDS = EXPR_SOUNDS or {};
 local function stopSound(context, index, fade)
 	context = tokens[context];
 
-	if isnumber(index then
+	if isnumber(index) then
 		index = math.floor(index);
 	end
 
