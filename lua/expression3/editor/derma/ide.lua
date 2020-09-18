@@ -197,7 +197,8 @@ function PANEL:Init()
 	self.tbBottom:SetupButton("Save", "icon16/disk.png", RIGHT, function() self:SaveFile(true) end)
 
 	self.tbRight:SetupButton("Increase font size", "icon16/magnifier_zoom_in.png", BOTTOM, function() Golem.Font:ChangeFontSize(1) end)
-	self.tbRight:SetupButton("Decrease font size", "icon16/magnifier_zoom_out.png", BOTTOM, function() Golem.Font:ChangeFontSize(-1) end)
+	-- The typo is intentional. That's the actual fucking filename. I don't know either.
+	self.tbRight:SetupButton("Decrease font size", "icon16/magifier_zoom_out.png", BOTTOM, function() Golem.Font:ChangeFontSize(-1) end)
 
 	self.tbRight:SetupButton("Options", "icon16/cog.png", TOP, function() self:NewMenuTab("options") end)
 	self.tbRight:SetupButton("Options2", "icon16/cog.png", TOP, function() self:NewMenuTab("options2") end)
