@@ -69,19 +69,19 @@ client {
         gate = new entity(bf.readShort());
    });
     
-    function void renderDefault(int w, int h) {
+    function void renderDefault(num w, num h) {
         render.setTexture("omicron/bulb.png");
         render.setColor(new color(255, 255, 255, 255));
         render.drawBox(new vector2(0, 0), new vector2(w, h));
    }
     
-    event.add("RenderScreen", "Render", function(int w, int h) {
+    event.add("RenderScreen", "Render", function(num w, num h) {
         renderDefault(w, h);
         event.call(gate, "RenderScreen", w, h, system.getEntity());
    });
 }
 
-event.add("UseScreen", "Interact", function(int x, int y, player who) {
+event.add("UseScreen", "Interact", function(num x, num y, player who) {
     event.call(gate, "Interact", x, y, who, system.getEntity());
 });
 
