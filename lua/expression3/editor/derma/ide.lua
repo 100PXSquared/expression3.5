@@ -687,8 +687,9 @@ function PANEL:SaveFile(sPath, bSaveAs, pTab, bNoSound)
 
 	local sCode = self:GetCode(pTab)
 	local sTitle = string.match(sCode, "@name +\"([^\"]*)\"")
-	if sTitle and sTitle ~= "" then
+	if sTitle and sTitle ~= "" and pTab:GetName() ~= sTitle then
 		pTab:SetName(sTitle)
+		self.pnlTabHolder.tabScroller:InvalidateLayout()
 	end
 
 	file.Write(sPath, sCode)
