@@ -196,9 +196,9 @@ function PANEL:Init()
 	self.tbBottom:SetupButton("Save As", "icon16/disk_multiple.png", RIGHT, function() self:SaveFile(true, true) end)
 	self.tbBottom:SetupButton("Save", "icon16/disk.png", RIGHT, function() self:SaveFile(true) end)
 
-	self.tbRight:SetupButton("Increase font size", "icon16/magnifier_zoom_in.png", BOTTOM, function() Golem.Font:ChangeFontSize(1) end)
-	-- The typo is intentional. That's the actual fucking filename. I don't know either.
-	self.tbRight:SetupButton("Decrease font size", "icon16/magifier_zoom_out.png", BOTTOM, function() Golem.Font:ChangeFontSize(-1) end)
+	-- I changed the icon to style add and delete, as they also use + and - but represent text
+	self.tbRight:SetupButton("Increase font size", "icon16/style_add.png", BOTTOM, function() Golem.Font:ChangeFontSize(1) end)
+	self.tbRight:SetupButton("Decrease font size", "icon16/style_delete.png", BOTTOM, function() Golem.Font:ChangeFontSize(-1) end)
 
 	self.tbRight:SetupButton("Options", "icon16/cog.png", TOP, function() self:NewMenuTab("options") end)
 	self.tbRight:SetupButton("Options2", "icon16/cog.png", TOP, function() self:NewMenuTab("options2") end)
