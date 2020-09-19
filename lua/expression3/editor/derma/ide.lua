@@ -415,9 +415,9 @@ function PANEL:UpdateSyntaxColors()
 	end
 end
 
-/*---------------------------------------------------------------------------
+--[[-------------------------------------------------------------------------
 Tab Management 2.0
----------------------------------------------------------------------------*/
+---------------------------------------------------------------------------]]
 function PANEL:AddCustomTab(bScope, sName, fCreate, fClose)
 	if bScope then -- Main editor view
 		self.tTabTypes[sName] = {Create = fCreate, Close = fClose}
@@ -652,10 +652,16 @@ function PANEL:SaveFile(sPath, bSaveAs, pTab, bNoSound)
 	end
 
 	if pTab.__type ~= "editor" or not pTab.__shouldsave then return end
+	if not IsValid(pTab) or not ispanel(pTab) then return end
 
 	if bSaveAs or not sPath then
 		local FileMenu = vgui.Create("GOLEM_FileMenu")
-		FileMenu:SetSaveFile(pTab:GetText())
+		local title = string.match(self:GetCode(pTab), "@name +\"([^\"]*)\"")
+		if title and title ~= "" then
+			FileMenu:SetSaveFile(title)
+		else
+			FileMenu:SetSaveFile(pTab:GetText())
+		end
 
 		function FileMenu.DoSaveFile(_, sPath, sFileName)
 			if not string.EndsWith(sFileName, ".txt") then
@@ -674,7 +680,6 @@ function PANEL:SaveFile(sPath, bSaveAs, pTab, bNoSound)
 		return true
 	end
 
-	if not IsValid(pTab) or not ispanel(pTab) then return end
 	if not string.EndsWith(sPath, ".txt") then sPath = sPath .. ".txt" end
 	if not string.StartWith(sPath, "golem/") then sPath = "golem/" .. sPath end
 
