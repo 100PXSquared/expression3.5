@@ -20,7 +20,7 @@ These are just some of the improvemnts E3 made over E2:
 ## Expression 3.5's improvements over Expression 3
 * Text editor overhaul (with functional find and replace that only unfolds code that a match is in)
 * Reduced the number of unnecessary datatype aliases, including some out right incorrect ones (e.g. `int thisIsNotAnInt = 1.5842385` was valid)
-* Security improvements (for example in E3 you could inject Lua in strings, see [commit](https://github.com/100PXSquared/ExpAdv3/commit/1ad7d351d8af5d99f82bd7ce15c3a30ac1a0b229))
+* Security improvements (for example in E3 you could inject Lua in strings, see [commit](https://github.com/100PXSquared/expression3.5/commit/1ad7d351d8af5d99f82bd7ce15c3a30ac1a0b229))
 * Solid definition of a line with `;` (this is a problem with E2 that E3 had inherited, where code like `string someString = "" num someNumber = 5` was perfectly valid, despite no newline or separator character, you now have to use semicolons as EoL)
 * Improvements to both holograms and props spawned with E3.5 chips, props now have physics and scale can be passed to hologram constructors in order to scale them instantly
 
