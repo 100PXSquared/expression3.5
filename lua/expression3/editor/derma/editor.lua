@@ -154,9 +154,7 @@ local AutoParam = {
 local SpecialCase = {
 	["}"] = true,
 	["]"] = true,
-	[")"] = true,
-	['"'] = true,
-	["'"] = true
+	[")"] = true
 }
 
 local SpecialKeys = {}
@@ -789,8 +787,6 @@ function PANEL:_OnTextChanged()
 				if cChar == "" or cChar == " " or (AutoParam[cChar] and AutoParam[cChar][2]) then
 					self:SetSelection(text .. AutoParam[text][1])
 					self:SetCaret(self:MovePosition(self.Caret, -1))
-				elseif cChar == '"' or cChar == "'" then
-					self:SetCaret(self:MovePosition(self.Caret, 1))
 				elseif SpecialCase[cChar] then 
 					self:SetSelection(text .. AutoParam[text][1])
 					self:SetCaret(self:MovePosition(self.Caret, -1))
