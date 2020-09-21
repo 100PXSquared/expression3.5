@@ -735,6 +735,8 @@ function PANEL:_OnTextChanged()
 	local text = self.pTextEntry:GetValue()
 	self.pTextEntry:SetText("")
 
+	if text == input.LookupBinding("toggleconsole", true) then return end
+
 	if (input_IsKeyDown(KEY_LCONTROL) or input_IsKeyDown(KEY_RCONTROL)) and not (input_IsKeyDown(KEY_LALT) or input_IsKeyDown(KEY_RALT)) then
 		-- ctrl+[shift+]key
 		if input_IsKeyDown(KEY_V) then
