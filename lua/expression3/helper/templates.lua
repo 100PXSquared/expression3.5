@@ -76,7 +76,7 @@ local pre_html = [[
 		<body>
 
 			<style>
-				body {background-color: #000; color: #FFF}
+				body {background-color: #1E1E1E; color: #DCDCDC}
 				table {width: 100%}
 			</style>
 
@@ -146,14 +146,14 @@ local function describe(str)
 end
 
 local function state(n)
-	if n == EXPR_SERVER then return "[SERVER]" end
-	if n == EXPR_CLIENT then return "[CLIENT]" end
+	if n == 0 then return "[SERVER]" end
+	if n == 2 then return "[CLIENT]" end
 	return "[SERVER] [CLIENT]"
 end
 
 local function stateIcon(node, n)
-	if n == EXPR_SERVER then node:SetIcon("expression3/state_server.png")
-	elseif n == EXPR_CLIENT then node:SetIcon("expression3/state_client.png")
+	if n == 0 then node:SetIcon("expression3/state_server.png")
+	elseif n == 2 then node:SetIcon("expression3/state_client.png")
 	else node:SetIcon("expression3/state_shared.png") end
 end
 
