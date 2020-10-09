@@ -24,6 +24,8 @@ These are just some of the improvemnts E3 made over E2:
 * Solid definition of a line with `;` (this is a problem with E2 that E3 had inherited, where code like `string someString = "" num someNumber = 5` was perfectly valid, despite no newline or separator character, you now have to use semicolons as EoL)
 * Improvements to both holograms and props spawned with E3.5 chips, props now have physics and scale can be passed to hologram constructors in order to scale them instantly
 
+*Please see the [closed issues](https://github.com/100PXSquared/expression3.5/issues?q=is%3Aissue+is%3Aclosed) for all improvements made since this list was created at the start of the project.*  
+
 ## Installation
 Note, this is still very much a work in progress and has not yet fixed everything about E3. You can download it and use it in singleplayer without too many issues, but do not use it in a public multiplayer context as we have not finished making the necessary security improvements.  
 
