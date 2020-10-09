@@ -93,7 +93,7 @@ vgui.Register("GOLEM_E3HelperEditor", EDITOR_PANEL, "DListLayout");
 	Golem helper menu panel
 *********************************************************************************/
 
-local HELPER_PANEL = {};
+local HELPER_PANEL = {useSimpleIcons = false}
 
 function HELPER_PANEL:Init()
 
@@ -131,6 +131,19 @@ function HELPER_PANEL:Init()
 
 	self.expt_btn:SetWide(100);
 	self.expt_btn:SetPlaceholderText("file name");
+
+	self.iconToggleButton = self.ctrl_pnl:SetupButton("Change Sate Icon Style", "", RIGHT, function()
+		if self.useSimpleIcons then
+			self.useSimpleIcons = false
+			self.iconToggleButton:SetIcon("icon16/computer.png")
+			self:Reload()
+		else
+			self.useSimpleIcons = true
+			self.iconToggleButton:SetIcon("expression3/state_shared.png")
+			self:Reload()
+		end
+	end)
+	self.iconToggleButton:SetIcon("icon16/computer.png") -- Had to set the icon outside of the SetupButton call as it was underlaying the actual button's icon
 
 	self:Reload();
 end

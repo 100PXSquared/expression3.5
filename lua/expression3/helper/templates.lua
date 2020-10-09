@@ -151,10 +151,26 @@ local function state(n)
 	return "[SERVER] [CLIENT]"
 end
 
-local function stateIcon(node, n)
-	if n == 0 then node:SetIcon("expression3/state_server.png")
-	elseif n == 2 then node:SetIcon("expression3/state_client.png")
-	else node:SetIcon("expression3/state_shared.png") end
+local function stateIcon(node, n, simpleIcons)
+	if n == 0 then
+		if simpleIcons then
+			node:SetIcon("icon16/server.png")
+		else
+			node:SetIcon("expression3/state_server.png")
+		end
+	elseif n == 2 then
+		if simpleIcons then
+			node:SetIcon("icon16/monitor.png")
+		else
+			node:SetIcon("expression3/state_client.png")
+		end
+	else
+		if simpleIcons then
+			node:SetIcon("icon16/computer.png")
+		else
+			node:SetIcon("expression3/state_shared.png")
+		end
+	end
 end
 
 /*********************************************************************************
@@ -162,17 +178,17 @@ end
 *********************************************************************************/
 
 hook.Add("Expression3.LoadHelperNodes", "Expression3.EventHelpers", function(pnl)
-	local event_docs = EXPR_DOCS.GetEventDocs();
+	local event_docs = EXPR_DOCS.GetEventDocs()
 
 	event_docs:ForEach(function(i, keyvalues)
-		local signature = EXPR_DOCS.PrettyEvent(keyvalues);
+		local signature = EXPR_DOCS.PrettyEvent(keyvalues)
 
-		local node = pnl:AddNode("Events", signature);
+		local node = pnl:AddNode("Events", signature)
 
-		stateIcon(node, keyvalues.state);
+		stateIcon(node, keyvalues.state, pnl.useSimpleIcons)
 
 		pnl:AddHTMLCallback(node, function()
-			local keyvalues = event_docs:ToKV(event_docs.data[i]);
+			local keyvalues = event_docs:ToKV(event_docs.data[i])
 
 			return EXPR_DOCS.toHTML({
 				{"Event:", string.format("%s(%s)", keyvalues.name, EXPR_DOCS.PrettyPerams(keyvalues.parameter))},
@@ -180,17 +196,16 @@ hook.Add("Expression3.LoadHelperNodes", "Expression3.EventHelpers", function(pnl
 				keyvalues.example,
 				describe(keyvalues.desc),
 				state(keyvalues.state),
-			});
-		end);
+			})
+		end)
 
 		pnl:AddOptionsMenu(node, function()
-			return keyvalues, type_docs;
-		end);
+			return keyvalues, type_docs
+		end)
 
-		addSaveStateIcon(pnl, node, type_docs, i, keyvalues);
-
-	end);
-end);
+		addSaveStateIcon(pnl, node, type_docs, i, keyvalues)
+	end)
+end)
 
 /*********************************************************************************
 	Add library nodes to the helper
@@ -231,7 +246,7 @@ hook.Add("Expression3.LoadHelperNodes", "Expression3.LibraryHelpers", function(p
 		
 		local node = pnl:AddNode("Libraries", keyvalues.library, "Functions", signature);
 
-		stateIcon(node, keyvalues.state);
+		stateIcon(node, keyvalues.state, pnl.useSimpleIcons)
 
 		pnl:AddHTMLCallback(node, function() 
 			local keyvalues = fundocs:ToKV(fundocs.data[i]);
@@ -259,7 +274,7 @@ hook.Add("Expression3.LoadHelperNodes", "Expression3.LibraryHelpers", function(p
 	constdocs:ForEach(function(i, keyvalues)
 		local node = pnl:AddNode("Libraries", keyvalues.library, "Constants", keyvalues.signature);
 
-		stateIcon(node, keyvalues.state);
+		stateIcon(node, keyvalues.state, pnl.useSimpleIcons)
 
 		pnl:AddHTMLCallback(node, function() 
 			local keyvalues = constdocs:ToKV(constdocs.data[i]);
@@ -299,7 +314,7 @@ hook.Add("Expression3.LoadHelperNodes", "Expression3.ClassHelpers", function(pnl
 
 			local node = pnl:AddNode("Classes", keyvalues.name);
 			
-			stateIcon(node, keyvalues.state);
+			stateIcon(node, keyvalues.state, pnl.useSimpleIcons)
 
 			pnl:AddHTMLCallback(node, function()
 				local keyvalues = type_docs:ToKV(type_docs.data[i]);
@@ -331,7 +346,7 @@ hook.Add("Expression3.LoadHelperNodes", "Expression3.ClassHelpers", function(pnl
 
 		local node = pnl:AddNode("Classes", lk[keyvalues.id], "Constructors", signature);
 
-		stateIcon(node, keyvalues.state);
+		stateIcon(node, keyvalues.state, pnl.useSimpleIcons)
 
 		pnl:AddHTMLCallback(node, function()
 			local keyvalues = const_docs:ToKV(const_docs.data[i]);
@@ -388,7 +403,7 @@ hook.Add("Expression3.LoadHelperNodes", "Expression3.ClassHelpers", function(pnl
 
 		local node = pnl:AddNode("Classes", lk[keyvalues.id], "Methods", signature);
 
-		stateIcon(node, keyvalues.state);
+		stateIcon(node, keyvalues.state, pnl.useSimpleIcons)
 
 		pnl:AddHTMLCallback(node, function() 
 			local keyvalues = method_docs:ToKV(method_docs.data[i]);
@@ -524,7 +539,7 @@ hook.Add("Expression3.LoadHelperNodes", "Expression3.OperatorHelpers", function(
 
 		local node = pnl:AddNode("Operators", class, signature);
 
-		stateIcon(node, keyvalues.state);
+		stateIcon(node, keyvalues.state, pnl.useSimpleIcons)
 
 		pnl:AddHTMLCallback(node, function() 
 			local keyvalues = op_docs:ToKV(op_docs.data[i]);
