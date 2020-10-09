@@ -577,23 +577,21 @@ end);
 *********************************************************************************/
 
 hook.Add("Expression3.LoadHelperNodes", "Expression3.Links", function(pnl)
-
 	local function addLink(sName, sUrl, sIcon)
-		local node = pnl:AddNode("Links", sName);
+		local node = pnl:AddNode("Links", sName)
 
-		node:SetIcon(sIcon or sIcon);
+		node:SetIcon(sIcon or sIcon)
 
 		node.DoClick = function()
-			gui.OpenURL(sUrl);
-		end;
+			gui.OpenURL(sUrl)
+		end
 	end
 
-	addLink("GitHub", "https://github.com/Rusketh/ExpAdv3", "expression3/github.png");
-	addLink("Video Tutorials", "https://www.youtube.com/playlist?list=PLOxsj9mdwMARIj7m9MkFkV1mno6nc1TpN", "expression3/youtube.png");
+	addLink("GitHub", "https://github.com/100PXSquared/expression3.5", "expression3/github.png")
+	addLink("Video Tutorials", "https://www.youtube.com/playlist?list=PLOxsj9mdwMARIj7m9MkFkV1mno6nc1TpN", "expression3/youtube.png")
 
-	hook.Run("Expression3.LoadHelperLinks", addLink);
-
-end);
+	hook.Run("Expression3.LoadHelperLinks", addLink)
+end)
 
 /*********************************************************************************
 	Add exported data files to the helper
