@@ -14,7 +14,12 @@ local extension = EXPR_LIB.RegisterExtension("variant");
 *****************************************************************************************************************************************************
 ]]--
 
-local class_object = extension:RegisterClass("vr", {"variant", "object"}, istable, EXPR_LIB.NOTNIL);
+local class_object = extension:RegisterClass({
+	id = "vr",
+	name = {"variant", "object"},
+	isType = istable,
+	isValid = EXPR_LIB.NOTNIL
+})
 
 --[[
 *****************************************************************************************************************************************************

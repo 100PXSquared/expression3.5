@@ -140,7 +140,12 @@ end
 
 local extension = EXPR_LIB.RegisterExtension("e2table");
 
-local class_table = extension:RegisterClass("e2t", "e2.table", istable, notnil);
+local class_table = extension:RegisterClass({
+	id = "e2t",
+	name = "e2.table",
+	isType = istable,
+	isValid = EXPR_LIB.NOTNIL
+})
 
 --[[
 ]]

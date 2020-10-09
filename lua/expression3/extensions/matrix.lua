@@ -50,7 +50,12 @@
 
 	end
 
-	extension:RegisterClass("mx2", "matrix2", isMatrix2, EXPR_LIB.NOTNIL)
+	extension:RegisterClass({
+		id = "mx2",
+		name = "matrix2",
+		isType = isMatrix2,
+		isValid = EXPR_LIB.NOTNIL
+	})
 
 	extension:RegisterConstructor("mx2", "", Matrix2, true)
 	extension:RegisterConstructor("mx2", "n,n,n,n", Matrix2, true)
@@ -403,7 +408,12 @@
 
 	end
 
-	extension:RegisterClass("mx3", "matrix3", isMatrix3, EXPR_LIB.NOTNIL)
+	extension:RegisterClass({
+		id = "mx3",
+		name = "matrix3",
+		isType = isMatrix3,
+		isValid = EXPR_LIB.NOTNIL
+	})
 
 	extension:RegisterConstructor("mx3", "", Matrix3(0,0,0,0,0,0,0,0,0), true)
 	extension:RegisterConstructor("mx3", "n,n,n,n,n,n,n,n,n", Matrix3, true)
@@ -1065,10 +1075,12 @@
 	matrix4.__index = matrix4
 
 	local function Matrix4(w,x,y,z, w2,x2,y2,z2, w3,x3,y3,z3, w4,x4,y4,z4)
-		return setmetatable({w = w  ,  x = x  ,  y = y  ,  z = z  , 
-			                 w2 = w2 , x2 = x2 , y2 = y2 , z2 = z2 , 
-			                 w3 = w3 , x3 = x3 , y3 = y3 , z3 = z3 ,
-			                 w4 = w4 , x4 = x4 , y4 = y4 , z4 = z4}, matrix4)
+		return setmetatable({
+			w = w,   x = x,   y = y,   z = z, 
+			w2 = w2, x2 = x2, y2 = y2, z2 = z2, 
+			w3 = w3, x3 = x3, y3 = y3, z3 = z3,
+			w4 = w4, x4 = x4, y4 = y4, z4 = z4
+		}, matrix4)
 																			
 	end
 
@@ -1081,7 +1093,12 @@
 
 	end
 
-	extension:RegisterClass("mx4", "matrix4", isMatrix4, EXPR_LIB.NOTNIL)
+	extension:RegisterClass({
+		id = "mx4",
+		name = "matrix4",
+		isType = isMatrix4,
+		isValid = EXPR_LIB.NOTNIL
+	})
 
 	extension:RegisterConstructor("mx4", "", Matrix4(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0), true)
 	extension:RegisterConstructor("mx4", "n,n,n,n,n,n,n,n,n,n,n,n,n,n,n,n", Matrix4, true)

@@ -14,7 +14,12 @@ local extension = EXPR_LIB.RegisterExtension("error");
 *****************************************************************************************************************************************************
 ]]--
 
-local class_error = extension:RegisterClass("er", {"error"}, istable, EXPR_LIB.NOTNIL);
+local class_error = extension:RegisterClass({
+	id = "er",
+	name = "error",
+	isType = istable,
+	isValid = EXPR_LIB.NOTNIL
+})
 
 --[[
 *****************************************************************************************************************************************************

@@ -106,8 +106,18 @@ end, false);
 	Key Press Events
 ]]
 
-extension:RegisterEvent("PlayerButtonDown","p,n");
-extension:RegisterEvent("PlayerButtonUp","p,n");
+extension:RegisterEvent({
+	name = "PlayerButtonDown",
+	parameters = "p,n",
+	docstring = [[Called when a player presses a key.
+	Takes the player who pressed the key, and the number of the key]]
+})
+extension:RegisterEvent({
+	name = "PlayerButtonUp",
+	parameters = "p,n",
+	docstring = [[Called when a player stops pressing a key.
+	Takes the player who stopped pressing the key, and the number of the key]]
+})
 
 local call = function(ply, event, button)
 

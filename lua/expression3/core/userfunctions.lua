@@ -12,11 +12,12 @@ local extension = EXPR_LIB.RegisterExtension("userfunctions");
 *****************************************************************************************************************************************************
 ]]--
 
-local function notnil(obj)
-	return obj ~= nil and obj ~= _nil
-end
-
-local class_function = extension:RegisterClass("f", {"function"}, istable, notnil);
+local class_function = extension:RegisterClass({
+	id = "f",
+	name = "function",
+	isType = istable,
+	isValid = EXPR_LIB.NOTNIL
+})
 
 if SERVER then
 	WireLib.DT.E3_API = {

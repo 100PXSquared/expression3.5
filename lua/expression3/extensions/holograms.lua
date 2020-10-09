@@ -260,7 +260,7 @@ local extension = EXPR_LIB.RegisterExtension("holograms");
 
 extension:SetServerState();
 
-extension:RegisterLibrary("hololib");
+extension:RegisterLibrary("hololib", "Library for working with holograms");
 
 extension:RegisterFunction("hololib", "limit", "", "n", 1, function()
 	return max;

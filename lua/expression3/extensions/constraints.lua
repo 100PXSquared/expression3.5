@@ -14,7 +14,12 @@ function isValidCon(con)
 	return istable(con) and con.valid;
 end
 
-extension:RegisterClass("con", {"constraint"}, isCon, isValidCon);
+extension:RegisterClass({
+	id = "con",
+	name = "constraint",
+	isType = isCon,
+	isValid = isValidCon
+})
 
 local zero = {
 	isWeld = false,

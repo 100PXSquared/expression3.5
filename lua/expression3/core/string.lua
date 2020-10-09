@@ -26,7 +26,12 @@ local extension = EXPR_LIB.RegisterExtension("string");
 *****************************************************************************************************************************************************
 ]]--
 
-local class_str = extension:RegisterClass("s", {"string"}, isstring, EXPR_LIB.NOTNIL);
+local class_str = extension:RegisterClass({
+	id = "s",
+	name = "string",
+	isType = isstring,
+	isValid = EXPR_LIB.NOTNIL
+})
 extension:RegisterWiredInport("s", "STRING");
 extension:RegisterWiredOutport("s", "STRING");
 extension:RegisterNativeDefault("s", "\"\"");
@@ -113,7 +118,12 @@ extension:RegisterMethod("s", "rep", "n,s,s", "s", 1, str_rep, true);
 *****************************************************************************************************************************************************
 ]]--
 
-local class_ptr = extension:RegisterClass("ptr", {"patern"}, isstring, notnil);
+local class_ptr = extension:RegisterClass({
+	id = "ptr",
+	name = {"patern"},
+	isType = isstring,
+	isValid = EXPR_LIB.NOTNIL
+})
 
 --[[
 *****************************************************************************************************************************************************

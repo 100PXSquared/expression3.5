@@ -22,7 +22,12 @@ local function notNil(c)
 	return c ~= nil;
 end
 
-extension:RegisterClass("c", {"color", "colour"}, isColor, notNil)
+extension:RegisterClass({
+	id = "c",
+	name = {"color", "colour"},
+	isType = isColor,
+	isValid = notNil
+})
 
 extension:RegisterConstructor("c", "", function()
 	return Color(n or 255, n or 255, n or 255, 255);

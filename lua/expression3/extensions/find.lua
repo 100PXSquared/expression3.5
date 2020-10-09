@@ -97,7 +97,12 @@ local extension = EXPR_LIB.RegisterExtension("find");
 
 extension:RegisterLibrary("entlib");
 
-extension:RegisterClass("ed", "find", istable, function(v) return v ~= nil; end);
+extension:RegisterClass({
+	id = "ed",
+	name = "find",
+	isType = istable,
+	isValid = function(v) return v ~= nil end
+})
 
 extension:SetSharedState();
 

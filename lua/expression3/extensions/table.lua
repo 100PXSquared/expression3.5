@@ -127,7 +127,12 @@ EXPR_LIB.TABLE = eTable;
 
 local extension = EXPR_LIB.RegisterExtension("table");
 
-local class_table = extension:RegisterClass("t", {"table", "array"}, istable, EXPR_LIB.NOTNIL);
+local class_table = extension:RegisterClass({
+	id = "t",
+	name = "table",
+	isType = istable,
+	isValid = EXPR_LIB.NOTNIL
+})
 
 --[[
 ]]

@@ -146,15 +146,15 @@ local function describe(str)
 end
 
 local function state(n)
-	if n == EXPR_SERVER then return "[SERVER]"; end
-	if n == EXPR_CLIENT then return "[CLIENT]"; end
-	return "[SERVER] [CLIENT]";
+	if n == EXPR_SERVER then return "[SERVER]" end
+	if n == EXPR_CLIENT then return "[CLIENT]" end
+	return "[SERVER] [CLIENT]"
 end
 
 local function stateIcon(node, n)
-	if n == EXPR_SERVER then node:SetIcon("expression3/state_server.png") end
-	if n == EXPR_CLIENT then node:SetIcon("expression3/state_client.png") end
-	return node:SetIcon("expression3/state_shared.png");
+	if n == EXPR_SERVER then node:SetIcon("expression3/state_server.png")
+	elseif n == EXPR_CLIENT then node:SetIcon("expression3/state_client.png")
+	else node:SetIcon("expression3/state_shared.png") end
 end
 
 /*********************************************************************************

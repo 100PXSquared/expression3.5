@@ -149,18 +149,19 @@ end);
 *****************************************************************************************************************************************************
 ]]--
 
-local function isnil(obj)
+function EXPR_LIB.ISNIL(obj)
 	return obj == nil or getmetatable(obj) == mtvoid;
-end;
-
-local function notnil(obj)
-	return obj ~= nil and getmetatable(obj) ~= mtvoid;
+end
+function EXPR_LIB.NOTNIL(obj)
+	return obj ~= nil and getmetatable(obj) ~= mtvoid
 end
 
-EXPR_LIB.ISVOID = isnil;
-EXPR_LIB.NOTVOID = notnil;
-
-local class_nil = extension:RegisterClass("nil", {"void"}, isnil, isnil);
+local class_nil = extension:RegisterClass({
+	id = "nil",
+	name = "void",
+	isType = EXPR_LIB.ISNIL,
+	isValid = EXPR_LIB.NOTNIL
+})
 
 --[[
 *****************************************************************************************************************************************************
@@ -171,8 +172,8 @@ local class_nil = extension:RegisterClass("nil", {"void"}, isnil, isnil);
 function extension.PostLoadClasses(this, classes)
 	for _, c in pairs(classes) do
 		if c.id ~= "" then
-			extension:RegisterOperator("eq", "nil,"..c.id, "b", 1, isnil, true);
-			extension:RegisterOperator("neq", "nil,"..c.id, "b", 1, notnil, true);
+			extension:RegisterOperator("eq", "nil,"..c.id, "b", 1, EXPR_LIB.ISNIL, true);
+			extension:RegisterOperator("neq", "nil,"..c.id, "b", 1, EXPR_LIB.NOTNIL, true);
 		end
 	end
 end

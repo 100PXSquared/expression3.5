@@ -29,7 +29,13 @@ end);
 	Ranger Data
 ]]
 
-extension:RegisterClass("rd", {"rangerdata"}, istable, notnil);
+extension:RegisterClass({
+	id = "rd",
+	name = "rangerdata",
+	isType = istable,
+	isValid = EXPR_LIB.NOTNIL
+})
+
 extension:RegisterAttribute("rd", "hit", "b", "Hit");
 extension:RegisterAttribute("rd", "hit_sky", "b", "HitSky");
 extension:RegisterAttribute("rd", "hit_nodraw", "b", "HitNoDraw");

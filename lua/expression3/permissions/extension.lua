@@ -6,9 +6,17 @@ local extension = EXPR_LIB.RegisterExtension("permissions");
 
 extension:RegisterPermission("PropControl", "icon16/brick_edit.png", "This gate is allowed to alter your props.");
 
-extension:RegisterEvent("PermissionChanged", "p,s,b");
+extension:RegisterEvent({
+	name = "PermissionChanged",
+	parameters = "p,s,b"
+})
 
-extension:RegisterEvent("GatherPermissions", "", "t", 1);
+extension:RegisterEvent({
+	name = "GatherPermissions",
+	parameters = "",
+	returns = "t",
+	count = 1
+})
 
 extension:RegisterLibrary("permissions");
 

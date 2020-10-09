@@ -12,7 +12,12 @@
 ]]
 
 local ext_wl = EXPR_LIB.RegisterExtension("wirelinks");
-local class_wl = ext_wl:RegisterClass("wl", "wirelink", isentity, IsValid);
+local class_wl = ext_wl:RegisterClass({
+	id = "wl",
+	name = "wirelink",
+	isType = isentity,
+	isValid = IsValid
+})
 
 ext_wl:RegisterOperator("neq", "wl,wl", "b", 1);
 ext_wl:RegisterOperator("eq", "wl,wl", "b", 1);

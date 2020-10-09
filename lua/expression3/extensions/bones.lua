@@ -8,7 +8,12 @@ local NULL_BONE;
 	Bone Class
 ]]
 
-extension:RegisterClass("ph", {"bone", "physics"}, IsValid, IsValid);
+extension:RegisterClass({
+	id = "ph",
+	name = {"bone", "physics"},
+	isType = IsValid,
+	isValid = IsValid
+})
 
 extension:RegisterMethod("e", "physics", "", "ph", 1, function(e)
 	if IsValid(e) then return e:GetPhysicsObject() or NULL_BONE; end

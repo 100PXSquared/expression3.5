@@ -16,15 +16,16 @@ local extension = EXPR_LIB.RegisterExtension("vector2");
 		CLASS
 ]]
 
-local function notNil(v)
-	return v ~= nil;
-end
-
 local function isVector2(v)
 	return istable(v) and #v == 2 and v.x and v.y
 end
 
-extension:RegisterClass("v2", {"vector2", "vector.2d"}, isVector2, notNil)
+extension:RegisterClass({
+	id = "v2",
+	name = {"vector2", "vector.2d"},
+	isType = isVector2,
+	isValid = EXPR_LIB.NOTNIL
+})
 
 extension:RegisterWiredInport("v2", "VECTOR2");
 extension:RegisterWiredOutport("v2", "VECTOR2");

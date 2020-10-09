@@ -34,18 +34,19 @@
 	quaternion.__index = quaternion
 
 	local function Quaternion(r,i,j,k)
-
 		return setmetatable({r = r, i = i, j = j, k = k}, quaternion)
-
 	end
 
 	local function isQuaternion(q)
-
 		return istable(q) and #q == 4 and q.r and q.i and q.j and q.k
-
 	end
 
-	extension:RegisterClass("q", "quaternion", isQuaternion, EXPR_LIB.NOTNIL);
+	extension:RegisterClass({
+		id = "q",
+		name = "quaternion",
+		isType = isQuaternion,
+		isValid = EXPR_LIB.NOTNIL
+	})
 
 	extension:RegisterConstructor("q", "n", function(n) return Quaternion(n,0,0,0) end, true);
 	extension:RegisterConstructor("q", "", function() return Quaternion(1,0,0,0) end, true);
@@ -53,7 +54,6 @@
 	extension:RegisterConstructor("q", "v", function(v) return Quaternion(0, v.x, v.y, v.z) end, true);
 	extension:RegisterConstructor("q", "a", function(a) return angToQuat(Angle(a.p, a.y, a.r)) end, true);
 	extension:RegisterConstructor("q", "e", function(e)
-		
 		local ph = e:GetPhysicsObject();
 		
 		if IsValid(ph) then

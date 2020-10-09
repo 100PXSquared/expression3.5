@@ -114,15 +114,15 @@ end);
 *****************************************************************************************************************************************************
 ]]--
 
-extension:RegisterEvent("Trigger", "s");
-extension:RegisterEvent("UseScreen", "n,n,p,e");
-extension:RegisterEvent("RenderScreen", "n,n,e");
-extension:RegisterEvent("Think", "");
-extension:RegisterEvent("OnPlayerChat","p,s,n");
-extension:RegisterEvent("OnPlayerSpawn", "p");
-extension:RegisterEvent("OnPlayerJoin", "p");
-extension:RegisterEvent("OnPlayerDisconnect", "p");
-extension:RegisterEvent("OnPlayerDeath", "p,e,e");
+extension:RegisterEvent({name = "Trigger", parameters = "s"})
+extension:RegisterEvent({name = "UseScreen", parameters = "n,n,p,e"})
+extension:RegisterEvent({name = "RenderScreen", parameters = "n,n,e"})
+extension:RegisterEvent({name = "Think", parameters = ""})
+extension:RegisterEvent({name = "OnPlayerChat", parameters = "p,s,n"})
+extension:RegisterEvent({name = "OnPlayerSpawn", parameters = "p"})
+extension:RegisterEvent({name = "OnPlayerJoin", parameters = "p"})
+extension:RegisterEvent({name = "OnPlayerDisconnect", parameters = "p"})
+extension:RegisterEvent({name = "OnPlayerDeath", parameters = "p,e,e"})
 
 --[[
 *****************************************************************************************************************************************************

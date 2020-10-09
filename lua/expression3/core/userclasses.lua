@@ -12,7 +12,12 @@ local extension = EXPR_LIB.RegisterExtension("userclasses");
 *****************************************************************************************************************************************************
 ]]--
 
-local class_type = extension:RegisterClass("cls", {"type", "class"}, isstring, isnil);
+local class_type = extension:RegisterClass({
+	id = "cls",
+	name = {"type", "class"},
+	isType = isstring,
+	isValid = isnil
+})
 
 extension:RegisterOperator("neq", "cls,cls", "b", 1);
 extension:RegisterOperator("eq", "cls,cls", "b", 1);

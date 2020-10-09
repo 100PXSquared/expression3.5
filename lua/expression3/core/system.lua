@@ -6,10 +6,6 @@ local tokens = EXPR_TOKENS;
 *****************************************************************************************************************************************************
 ]]--
 
-local function notnil(obj)
-	return obj ~= nil and obj ~= _nil
-end
-
 local function name(id)
 	local obj = EXPR_LIB.GetClass(id);
 	return obj and obj.name or id;

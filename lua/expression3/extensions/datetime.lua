@@ -21,7 +21,12 @@ local function timestamp(from, utc)
 	return os.date(utc and "!*t" or "*t", from or os.time());
 end
 
-extension:RegisterClass("ts", {"date"}, istable, EXPR_LIB.NOTNIL);
+extension:RegisterClass({
+	id = "ts",
+	name = "datetime",
+	isType = istable,
+	isValid = EXPR_LIB.NOTNIL
+})
 
 extension:RegisterConstructor("ts", "", function()
 	return {year = 0, month = 0, day = 0, hour = 0, min = 0, sec = 0, isdst = false};

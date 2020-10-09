@@ -162,7 +162,12 @@ end
 	*****************************************************************************************************************************************************
 ]]--
 
-extension:RegisterClass("cv", {"canvas"}, istable, EXPR_LIB.NOTNIL);
+extension:RegisterClass({
+	id = "cv",
+	name = "canvas",
+	isType = istable,
+	isValid = EXPR_LIB.NOTNIL
+})
 
 extension:RegisterConstructor("cv", "n,n,n", GetRT);
 

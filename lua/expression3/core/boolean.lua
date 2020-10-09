@@ -12,7 +12,13 @@ local extension = EXPR_LIB.RegisterExtension("boolean");
 *****************************************************************************************************************************************************
 ]]--
 
-local class_bool = extension:RegisterClass("b", {"bool"}, isbool, EXPR_LIB.NOTNIL);
+local class_bool = extension:RegisterClass({
+	id = "b",
+	name = "bool",
+	isType = isbool,
+	isValid = EXPR_LIB.NOTNIL,
+	docstring = "Boolean datatype, can be true or false."
+})
 
 extension:RegisterWiredInport("b", "NORMAL", function(i)
 	return i ~= 0;

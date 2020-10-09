@@ -21,7 +21,12 @@ local extension = EXPR_LIB.RegisterExtension("network");
 	Extension class with methods
 ]]
 
-extension:RegisterClass("usmg", "stream", istable, istable);
+extension:RegisterClass({
+	id = "usmg",
+	name = "stream",
+	isType = istable,
+	isValid = istable
+})
 
 local function writeBool(ctx, msg, bool)
 	ctx = tokens[ctx];
@@ -247,7 +252,12 @@ end, false);
 	Recipient Filter Class
 ]]
 
-extension:RegisterClass("crf", "recipientfilter", istable, istable);
+extension:RegisterClass({
+	id = "crf",
+	name = "recipientfilter",
+	isType = istable,
+	isValid = istable
+})
 
 extension:RegisterConstructor("crf", "", RecipientFilter, true);
 

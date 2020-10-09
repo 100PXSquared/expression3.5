@@ -44,7 +44,12 @@ local extension = EXPR_LIB.RegisterExtension("math");
 *****************************************************************************************************************************************************
 ]]--
 
-local class_num = extension:RegisterClass("n", {"num", "normal"}, isnumber, EXPR_LIB.NOTNIL)
+local class_num = extension:RegisterClass({
+	id = "n",
+	name = "num", --Removed the "normal" alias
+	isType = isnumber,
+	isValid = EXPR_LIB.NOTNIL
+})
 
 extension:RegisterWiredInport("n", "NORMAL");
 extension:RegisterWiredOutport("n", "NORMAL");

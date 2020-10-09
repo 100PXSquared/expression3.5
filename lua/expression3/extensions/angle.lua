@@ -16,7 +16,12 @@ local extension = EXPR_LIB.RegisterExtension("angle")
 	CLASS
 ]]
 
-extension:RegisterClass("a", {"angle"}, isangle, IsValid)
+extension:RegisterClass({
+	id = "a",
+	name = "angle",
+	isType = isangle,
+	isValid = IsValid
+})
 
 extension:RegisterWiredInport("a", "ANGLE");
 extension:RegisterWiredOutport("a", "ANGLE");

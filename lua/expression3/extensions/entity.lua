@@ -24,7 +24,12 @@ function isEnt(e)
 	return IsEntity(e) and not e:IsPlayer();
 end
 
-extension:RegisterClass("e", {"entity"}, isEnt, IsValid);
+extension:RegisterClass({
+	id = "e",
+	name = "entity",
+	isType = isEnt,
+	isValid = IsValid
+})
 
 extension:RegisterConstructor("e", "n", Entity, true);
 

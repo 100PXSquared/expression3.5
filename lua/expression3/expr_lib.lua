@@ -298,33 +298,34 @@ end
 local events = {};
 local loadEvents = false;
 
-function EXPR_LIB.RegisterEvent(name, parameter, type, count)
+function EXPR_LIB.RegisterEvent(name, parameter, type, count, docstring)
 	if not loadEvents then
-		EXPR_LIB.ThrowInternal(0, "Attempt to register Event %s(%s) outside of Hook::Expression3.LoadEvents", name, parameter);
+		EXPR_LIB.ThrowInternal(0, "Attempt to register Event %s(%s) outside of Hook::Expression3.LoadEvents", name, parameter)
 	end
 
-	local state, signature = EXPR_LIB.SortArgs(parameter);
+	local state, signature = EXPR_LIB.SortArgs(parameter)
 
 	if not state then
-		EXPR_LIB.ThrowInternal(0, "%s for Event %s(%s)", signature, name, parameter);
+		EXPR_LIB.ThrowInternal(0, "%s for Event %s(%s)", signature, name, parameter)
 	end
 
-	if not type then type = "_nil"; end
+	if not type then type = "_nil" end
 
-	local res = EXPR_LIB.GetClass(type);
+	local res = EXPR_LIB.GetClass(type)
 
 	if not res then
-		EXPR_LIB.ThrowInternal(0, "Attempt to register Event %s(%s) with none existing return class %s", name, parameter, type);
+		EXPR_LIB.ThrowInternal(0, "Attempt to register Event %s(%s) with none existing return class %s", name, parameter, type)
 	end
 
-	local evt = {};
-	evt.name = name;
-	evt.state = STATE;
-	evt.parameter = signature;
-	evt.signature = string.format("%s(%s)", name, signature);
-	evt.result = res.id;
-	evt.rCount = count or 0;
-	events[evt.signature] = evt;
+	local evt = {}
+	evt.name = name
+	evt.state = STATE
+	evt.parameter = signature
+	evt.signature = string.format("%s(%s)", name, signature)
+	evt.result = res.id
+	evt.rCount = count or 0
+	evt.docstring = docstring
+	events[evt.signature] = evt
 
 	return evt;
 end
@@ -333,8 +334,7 @@ end
 
 ]]
 
-function EXPR_LIB.RegisterClass(id, name, isType, isValid)
-
+function EXPR_LIB.RegisterClass(id, name, isType, isValid, docstring)
 	if not loadClasses then
 		EXPR_LIB.ThrowInternal(0, "Attempt to register class %s outside of Hook::Expression3.LoadClasses}}", name);
 	end
@@ -369,6 +369,8 @@ function EXPR_LIB.RegisterClass(id, name, isType, isValid)
 
 	class.attributes = {};
 	class.constructors = {};
+
+	class.docstring = docstring
 
 	classIDs[class.id] = class;
 	classes[class.name] = class;
@@ -639,17 +641,18 @@ end
 local libraries;
 local loadLibraries = false;
 
-function EXPR_LIB.RegisterLibrary(name)
+function EXPR_LIB.RegisterLibrary(name, docstring)
 	if not loadLibraries then
-		EXPR_LIB.ThrowInternal(0, "Attempt to register library %s) outside of Hook::Expression3.LoadLibariess", name);
+		EXPR_LIB.ThrowInternal(0, "Attempt to register library '%s' outside of Hook::Expression3.LoadLibariess", name)
 	end
 
-	local lib = {};
-	lib.name = string.lower(name);
-	lib._functions = {};
-	lib._constants = {};
+	local lib = {}
+	lib.name = string.lower(name)
+	lib.docstring = docstring
+	lib._functions = {}
+	lib._constants = {}
 
-	libraries[lib.name] = lib;
+	libraries[lib.name] = lib
 
 	--MsgN("Registered library: ", lib.name);
 end
@@ -831,7 +834,7 @@ end
 --[[
 	:::Extension Base For Loading Sainly:::
 	'''''''''''''''''''''''''''''''''''''''
-	Since we need to add everything in a specific order, this is a extension base that can do this for you.
+	Since we need to add everything in a specific order, this is an extension base that can do this for you.
 ]]
 
 local Extension = {};
@@ -879,16 +882,29 @@ function Extension.SetClientState(this)
 end
 
 function Extension.RegisterPermission(this, name, image, desc)
-	this.perms[#this.perms+1] = {name, image, desc};
+	this.perms[#this.perms + 1] = {name, image, desc};
 end
 
-function Extension.RegisterEvent(this, name, parameter, type, count)
-	this.events[#this.events+1] = {name, parameter, type, count, this.state};
+function Extension:RegisterEvent(event)
+	self.events[#self.events + 1] = {
+		event.name,
+		event.parameters,
+		event.returns,
+		event.count,
+		event.docstring,
+		self.state
+	}
 end
 
-function Extension.RegisterClass(this, id, name, isType, isValid)
-	local entry = {id, name, isType, isValid, this.state};
-	this.classes[#this.classes + 1] = entry;
+function Extension:RegisterClass(class)
+	self.classes[#self.classes + 1] = {
+		class.id,
+		class.name,
+		class.isType,
+		class.isValid,
+		class.docstring,
+		self.state
+	}
 end
 
 function Extension.RegisterExtendedClass(this, id, name, base, isType, isValid)
@@ -945,9 +961,8 @@ function Extension.RegisterCastingOperator(this, type, parameter, operator, excl
 	this.castOperators[#this.castOperators + 1] = entry;
 end
 
-function Extension.RegisterLibrary(this, name)
-	local entry = {name, name};
-	this.libraries[#this.libraries + 1] = entry;
+function Extension:RegisterLibrary(name, docstring)
+	self.libraries[#self.libraries + 1] = {name, docstring}
 end
 
 function Extension.RegisterFunction(this, library, name, parameter, type, count, _function, excludeContext)
@@ -990,29 +1005,29 @@ function Extension.EnableExtension(this)
 	hook.Add("Expression3.LoadEvents", "Expression3.Extension." .. this.name, function()
 		for _, v in pairs(this.events) do
 			if not v[0] then
-				STATE = v[5];
+				STATE = v[6]
 
-				local op = this:CheckRegistration(EXPR_LIB.RegisterEvent, v[1], v[2], v[3], v[4]);
-				op.extension = this.name;
-				events[op.name] = op;
+				local op = this:CheckRegistration(EXPR_LIB.RegisterEvent, unpack(v, 1, 5))
+				op.extension = this.name
+				events[op.name] = op
 			end
 		end
-	end);
+	end)
 
 	local classes = {};
 
 	hook.Add("Expression3.LoadClasses", "Expression3.Extension." .. this.name, function()
 		for _, v in pairs(this.classes) do
 			if not v[0] then
-				STATE = v[5];
-				PRICE = v[6];
+				STATE = v[6]
+				PRICE = v[7]
 
-				local op = this:CheckRegistration(EXPR_LIB.RegisterClass, v[1], v[2], v[3], v[4]);
-				op.extension = this.name;
-				classes[op.id] = op;
+				local op = this:CheckRegistration(EXPR_LIB.RegisterClass, unpack(v, 1, 5))
+				op.extension = this.name
+				classes[op.id] = op
 			end
 		end
-	end);
+	end)
 
 	hook.Add("Expression3.LoadExtendedClasses", "Expression3.Extension." .. this.name, function()
 		for _, v in pairs(this.classes) do
@@ -1092,7 +1107,7 @@ function Extension.EnableExtension(this)
 
 	hook.Add("Expression3.LoadLibraries", "Expression3.Extension." .. this.name, function()
 		for _, v in pairs(this.libraries) do
-			this:CheckRegistration(EXPR_LIB.RegisterLibrary, v[1]);
+			this:CheckRegistration(EXPR_LIB.RegisterLibrary, unpack(v));
 		end
 	end);
 
@@ -1289,11 +1304,11 @@ function EXPR_LIB.Initialize()
 	EXPR_OPERATORS = operators;
 	EXPR_CAST_OPERATORS = castOperators;
 
-	libraries = {};
-	loadLibraries = true;
-	hook.Run("Expression3.LoadLibraries");
-	loadLibraries = false;
-	EXPR_LIBRARIES = libraries;
+	libraries = {}
+	loadLibraries = true
+	hook.Run("Expression3.LoadLibraries")
+	loadLibraries = false
+	EXPR_LIBRARIES = libraries
 
 	functions = {};
 	loadFunctions = true;
