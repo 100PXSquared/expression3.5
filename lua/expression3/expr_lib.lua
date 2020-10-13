@@ -383,23 +383,21 @@ end
 --[[
 ]]
 
-function EXPR_LIB.RegisterExtendedClass(id, name, base, isType, isValid)
-
+function EXPR_LIB.RegisterExtendedClass(base, id, name, isType, isValid, docstring)
 	if not loadClasses then
-		EXPR_LIB.ThrowInternal(0, "Attempt to register class %s outside of Hook::Expression3.LoadClasses", name);
+		EXPR_LIB.ThrowInternal(0, "Attempt to register class %s outside of Hook::Expression3.LoadClasses", name)
 	end
 
-	local cls = EXPR_LIB.GetClass(base);
+	local cls = EXPR_LIB.GetClass(base)
 
 	if not cls then
-		EXPR_LIB.ThrowInternal(0, "Attempt to register extended class %s from none existing class %s", class, base);
+		EXPR_LIB.ThrowInternal(0, "Attempt to register extended class %s from none existing class %s", class, base)
 	end
 
-	local class = EXPR_LIB.RegisterClass(id, name, isType, isValid);
+	local class = EXPR_LIB.RegisterClass(id, name, isType, isValid, docstring)
 
-	class.base = cls.id;
-
-	return class;
+	class.base = cls.id
+	return class
 end
 
 function EXPR_LIB.RegisterWiredInport(class, wiretype, func)
@@ -907,9 +905,17 @@ function Extension:RegisterClass(class)
 	}
 end
 
-function Extension.RegisterExtendedClass(this, id, name, base, isType, isValid)
-	local entry = {[0] = base, id, name, isType, isValid, this.state};
-	this.classes[#this.classes + 1] = entry;
+function Extension:RegisterExtendedClass(class)
+	self.classes[#self.classes + 1] = {
+		class.base,
+		class.id,
+		class.name,
+		class.isType,
+		class.isValid,
+		class.docstring,
+		self.state,
+		extended = true
+	}
 end
 
 function Extension.RegisterWiredInport(this, class, wiretype, func)
@@ -1004,13 +1010,11 @@ function Extension.EnableExtension(this)
 
 	hook.Add("Expression3.LoadEvents", "Expression3.Extension." .. this.name, function()
 		for _, v in pairs(this.events) do
-			if not v[0] then
-				STATE = v[6]
+			STATE = v[6]
 
-				local op = this:CheckRegistration(EXPR_LIB.RegisterEvent, unpack(v, 1, 5))
-				op.extension = this.name
-				events[op.name] = op
-			end
+			local op = this:CheckRegistration(EXPR_LIB.RegisterEvent, unpack(v, 1, 5))
+			op.extension = this.name
+			events[op.name] = op
 		end
 	end)
 
@@ -1018,7 +1022,7 @@ function Extension.EnableExtension(this)
 
 	hook.Add("Expression3.LoadClasses", "Expression3.Extension." .. this.name, function()
 		for _, v in pairs(this.classes) do
-			if not v[0] then
+			if not v.extended then
 				STATE = v[6]
 				PRICE = v[7]
 
@@ -1031,16 +1035,16 @@ function Extension.EnableExtension(this)
 
 	hook.Add("Expression3.LoadExtendedClasses", "Expression3.Extension." .. this.name, function()
 		for _, v in pairs(this.classes) do
-			if v[0] then
-				STATE = v[5];
-				PRICE = v[6];
+			if v.extended then
+				STATE = v[7]
+				PRICE = v[8]
 
-				local op = this:CheckRegistration(EXPR_LIB.RegisterExtendedClass, v[1], v[2], v[0], v[3], v[4]);
+				local op = this:CheckRegistration(EXPR_LIB.RegisterExtendedClass, unpack(v, 1, 6))
 				op.extension = this.name;
-				classes[op.id] = op;
+				classes[op.id] = op
 			end
 		end
-	end);
+	end)
 
 	local constructors = {};
 

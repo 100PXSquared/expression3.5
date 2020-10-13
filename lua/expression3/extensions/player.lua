@@ -26,7 +26,13 @@ local function isPlayer(p)
 	return p:IsPlayer()
 end
 
-extension:RegisterExtendedClass("p", {"player"}, "e", isPlayer, IsValid);
+extension:RegisterExtendedClass({
+	id = "p",
+	name = "player",
+	base = "e",
+	isType = isPlayer,
+	isValid = IsValid
+})
 
 extension:RegisterWiredInport("p", "ENTITY");
 

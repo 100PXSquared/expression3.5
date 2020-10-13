@@ -291,9 +291,15 @@ end, false);
 	Register Class
 ]]
 
-extension:RegisterExtendedClass("h", {"hologram"}, "e", function(entity)
-	return IsValid(entity) and entity:GetClass() == "wire_expression3_hologram";
-end, IsValid);
+extension:RegisterExtendedClass({
+	id = "h",
+	name = "hologram",
+	base = "e",
+	isType = function(entity)
+		return IsValid(entity) and entity:GetClass() == "wire_expression3_hologram"
+	end,
+	isValid = IsValid
+})
 
 --[[
 	Casting to entity
