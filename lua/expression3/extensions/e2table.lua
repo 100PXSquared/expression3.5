@@ -156,20 +156,27 @@ extension:RegisterWiredOutport("e2t", "TABLE");
 --[[
 ]]
 
-extension:RegisterConstructor("e2t", "...", function(ctx,...)
-	ctx = tokens[ctx];
-	local t = table.Copy(DEFAULT)
-	local n = 0
-	for k,v in pairs({...}) do
-		n = n + 1
-		eTable.set(ctx, t, n, "_vr", v)
+extension:RegisterConstructor({
+	class = "e2t",
+	parameters = "...",
+	func = function(ctx, ...)
+		ctx = tokens[ctx]
+		local t = table.Copy(DEFAULT)
+		local n = 0
+		for k,v in pairs({...}) do
+			n = n + 1
+			eTable.set(ctx, t, n, "_vr", v)
+		end
+		return t
+	end,
+	includeContext = false
+})
+extension:RegisterConstructor({
+	class = "e2t",
+	func = function(...)
+		return table.Copy(DEFAULT)
 	end
-	return t
-end, false)
-
-extension:RegisterConstructor("e2t", "", function(...)
-	return table.Copy(DEFAULT)
-end, true)
+})
 
 --[[
 ]]

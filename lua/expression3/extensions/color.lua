@@ -29,21 +29,33 @@ extension:RegisterClass({
 	isValid = notNil
 })
 
-extension:RegisterConstructor("c", "", function()
-	return Color(n or 255, n or 255, n or 255, 255);
-end, true);
-
-extension:RegisterConstructor("c", "n", function(n)
-	return Color(n or 0, n or 0, n or 0, 255);
-end, true);
-
-extension:RegisterConstructor("c", "n,n,n", function(r, g, b, a)
-	return Color(r or 0, g or 0, b or 0, a or 255);
-end, true);
-
-extension:RegisterConstructor("c", "n,n,n,n", function(r, g, b, a)
-	return Color(r or 0, g or 0, b or 0, a or 255);
-end, true);
+extension:RegisterConstructor({
+	class = "c",
+	func = function()
+		return Color(0, 0, 0, 255)
+	end
+})
+extension:RegisterConstructor({
+	class = "c",
+	parameters = "n",
+	func = function(n)
+		return Color(n or 0, n or 0, n or 0, 255)
+	end
+})
+extension:RegisterConstructor({
+	class = "c",
+	parameters = "n,n,n",
+	func = function(r, g, b)
+		return Color(r or 0, g or 0, b or 0, 255)
+	end
+})
+extension:RegisterConstructor({
+	class = "c",
+	parameters = "n,n,n,n",
+	func = function(r, g, b, a)
+		return Color(r or 0, g or 0, b or 0, a or 255)
+	end
+})
 
 extension:RegisterNativeDefault("c", "Color(0, 0, 0, 0)");
 

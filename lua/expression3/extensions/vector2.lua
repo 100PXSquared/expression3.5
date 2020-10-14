@@ -31,9 +31,15 @@ extension:RegisterWiredInport("v2", "VECTOR2");
 extension:RegisterWiredOutport("v2", "VECTOR2");
 extension:RegisterNativeDefault("v2", "{x=0,y=0}");
 
-extension:RegisterConstructor("v2", "n,n", function(x, y) return {x = x or 0, y = y or 0}; end, true)
-extension:RegisterConstructor("v2", "n", function(v) return {x = v or 0, y = v or 0}; end, true)
-extension:RegisterConstructor("v2", "", function() return {x = 0, y = 0}; end, true)
+extension:RegisterConstructor({
+	class = "v2", parameters = "n,n", func = function(x, y) return {x = x or 0, y = y or 0} end
+})
+extension:RegisterConstructor({
+	class = "v2", parameters = "n", func = function(n) return {x = n or 0, y = n or 0} end
+})
+extension:RegisterConstructor({
+	class = "v2", func = function() return {x = 0, y = 0} end
+})
 
 --[[
 	Operators

@@ -259,7 +259,10 @@ extension:RegisterClass({
 	isValid = istable
 })
 
-extension:RegisterConstructor("crf", "", RecipientFilter, true);
+extension:RegisterConstructor({
+	class = "crf",
+	func = RecipientFilter
+})
 
 extension:RegisterMethod("crf", "addAllPlayers", "", "", 0);
 

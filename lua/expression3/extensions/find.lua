@@ -106,7 +106,10 @@ extension:RegisterClass({
 
 extension:SetSharedState();
 
-extension:RegisterConstructor("ed", "", function() return {a = {}}; end, true);
+extension:RegisterConstructor({
+	class = "ed",
+	func = function() return {a = {}} end
+})
 
 extension:RegisterMethod("ed", "clearWhiteList", "", "", 0, function(a)
 

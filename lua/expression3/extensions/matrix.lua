@@ -57,10 +57,25 @@
 		isValid = EXPR_LIB.NOTNIL
 	})
 
-	extension:RegisterConstructor("mx2", "", Matrix2, true)
-	extension:RegisterConstructor("mx2", "n,n,n,n", Matrix2, true)
-	extension:RegisterConstructor("mx2", "v2,v2", function(a,b) return Matrix2(a.x, b.x, a.y, b.y) end, true)
-	extension:RegisterConstructor("mx2", "v2,v2", function(a,b) return Matrix2(a.x, a.y, b.x, b.y) end, true)
+	extension:RegisterConstructor({
+		class = "mx2",
+		func = Matrix2
+	})
+	extension:RegisterConstructor({
+		class = "mx2",
+		parameters = "n,n,n,n",
+		func = Matrix2
+	})
+	extension:RegisterConstructor({
+		class = "mx2",
+		parameters = "v2,v2",
+		func = function(a,b) return Matrix2(a.x, b.x, a.y, b.y) end
+	})
+	extension:RegisterConstructor({
+		class = "mx2",
+		parameters = "v2,v2",
+		func = function(a,b) return Matrix2(a.x, a.y, b.x, b.y) end
+	})
 
 
 --[[
@@ -415,51 +430,81 @@
 		isValid = EXPR_LIB.NOTNIL
 	})
 
-	extension:RegisterConstructor("mx3", "", Matrix3(0,0,0,0,0,0,0,0,0), true)
-	extension:RegisterConstructor("mx3", "n,n,n,n,n,n,n,n,n", Matrix3, true)
-	extension:RegisterConstructor("mx3", "v,v,v", function(a,b,c) return Matrix3(a.x, b.x, c.x, a.y, b.y, c.y, a.z, b.z, c.z) end, true)
-	//extension:RegisterConstructor("mx3", "v,v,v", function(a,b,c) return Matrix3(a.x, a.y, a.z, b.x, b.y, b.z, c.x, c.y, c.z) end)
-	extension:RegisterConstructor("mx3", "mx2", function(m2) return Matrix3(m2.x, m2.y, 0, m2.x2, m2.y2, 0, 0, 0, 0) end, true)
-	extension:RegisterConstructor("mx3", "q", function(q) 
-
-		return Matrix3((1 - 2 * (q.j * q.j)) - (2 * (q.k * q.k))	, (2 * q.i * q.j) - (2 * q.k * q.r)			, (2 * q.i * q.k) + (2 * q.j * q.r)				, 
-			            (2 * q.i * q.j) + (2 * q.k * q.r)			, (1 - 2 * (q.i * q.i)) - (2 * (q.k * q.k))	, (2 * q.j * q.k) - (2 * q.i * q.r)				, 
-			            (2 * q.i * q.k) - (2 * q.j * q.r)			, (2 * q.j * q.k) + (2 * q.i * q.r)			, (1 - 2 * (q.i * q.i)) - (2 * (q.j * q.j)) 	) 
-	end, true)
-	extension:RegisterConstructor("mx3", "a", function(a)
-
-		ang = Angle(a.p, a.y, a.r)
-		local x = ang:Forward()
-		local y = ang:Right() * -1
-		local z = ang:Up()
-
-		return Matrix3(x.x, y.x, z.x,
-			            x.y, y.y, z.y,
-			            x.z, y.z, z.z)
-	end, true)
-	extension:RegisterConstructor("mx3", "e", function(e)
-
-		if IsValid(e) then
-			local ph = e:GetPhysicsObject()
-
-			local div = 10000
-			local pos = ph:GetPos()
-			
-			local x = ph:LocalToWorld(Vector(div, 0, 0)) - pos
-			local y = ph:LocalToWorld(Vector(0, div, 0)) - pos
-			local z = ph:LocalToWorld(Vector(0, 0, div)) - pos
-
-			return Matrix3(x.x / div , y.x / div , z.x / div , 
-				            x.y / div , y.y / div , z.y / div , 
-				            x.z / div , y.z / div , z.z / div)
-		
-		else return Matrix3(0, 0, 0,
-			                 0, 0, 0,
-			                 0, 0, 0)
-
-		
+	extension:RegisterConstructor({
+		class = "mx3",
+		func = Matrix3
+	})
+	extension:RegisterConstructor({
+		class = "mx3",
+		parameters = "n,n,n,n,n,n,n,n,n",
+		func = Matrix3
+	})
+	extension:RegisterConstructor({
+		class = "mx3",
+		parameters = "v,v,v",
+		func = function(a,b,c) return Matrix3(a.x, b.x, c.x, a.y, b.y, c.y, a.z, b.z, c.z) end
+	})
+	--extension:RegisterConstructor("mx3", "v,v,v", function(a,b,c) return Matrix3(a.x, a.y, a.z, b.x, b.y, b.z, c.x, c.y, c.z) end)
+	extension:RegisterConstructor({
+		class = "mx3",
+		parameters = "mx2",
+		func = function(m2) return Matrix3(m2.x, m2.y, 0, m2.x2, m2.y2, 0, 0, 0, 0) end
+	})
+	extension:RegisterConstructor({
+		class = "mx3",
+		parameters = "q",
+		func = function(q)
+			return Matrix3(
+				(1 - 2 * (q.j * q.j)) - (2 * (q.k * q.k)), (2 * q.i * q.j) - (2 * q.k * q.r)		, (2 * q.i * q.k) + (2 * q.j * q.r), 
+				(2 * q.i * q.j) + (2 * q.k * q.r)		 , (1 - 2 * (q.i * q.i)) - (2 * (q.k * q.k)), (2 * q.j * q.k) - (2 * q.i * q.r), 
+				(2 * q.i * q.k) - (2 * q.j * q.r)		 , (2 * q.j * q.k) + (2 * q.i * q.r)		, (1 - 2 * (q.i * q.i)) - (2 * (q.j * q.j))
+			)
 		end
-	end, true)
+	})
+	extension:RegisterConstructor({
+		class = "mx3",
+		parameters = "a",
+		func = function(a)
+			ang = Angle(a.p, a.y, a.r)
+			local x = ang:Forward()
+			local y = ang:Right() * -1
+			local z = ang:Up()
+
+			return Matrix3(
+				x.x, y.x, z.x,
+				x.y, y.y, z.y,
+				x.z, y.z, z.z
+			)
+		end
+	})
+	extension:RegisterConstructor({
+		class = "mx3",
+		parameters = "e",
+		func = function(e)
+			if IsValid(e) then
+				local ph = e:GetPhysicsObject()
+
+				local div = 10000
+				local pos = ph:GetPos()
+
+				local x = ph:LocalToWorld(Vector(div, 0, 0)) - pos
+				local y = ph:LocalToWorld(Vector(0, div, 0)) - pos
+				local z = ph:LocalToWorld(Vector(0, 0, div)) - pos
+
+				return Matrix3(
+					x.x / div, y.x / div, z.x / div, 
+					x.y / div, y.y / div, z.y / div, 
+					x.z / div, y.z / div, z.z / div
+				)
+			else
+				return Matrix3(
+					0, 0, 0,
+					0, 0, 0,
+					0, 0, 0
+				)
+			end
+		end
+	})
 
 
 --[[
@@ -1100,94 +1145,121 @@
 		isValid = EXPR_LIB.NOTNIL
 	})
 
-	extension:RegisterConstructor("mx4", "", Matrix4(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0), true)
-	extension:RegisterConstructor("mx4", "n,n,n,n,n,n,n,n,n,n,n,n,n,n,n,n", Matrix4, true)
-	extension:RegisterConstructor("mx4", "mx2", function(m2)
-		
-		return Matrix4(m2.x  , m2.y  , 0 , 0 , 
-			            m2.x2 , m2.y2 , 0 , 0 ,
-			            0     , 0     , 0 , 0 , 
-			            0     , 0     , 0 , 0)
-	
-	end, true)
-	
-	extension:RegisterConstructor("mx4", "mx3", function(m3)
-		
-		return Matrix4(m3.x  , m3.y  , m3.z  , 0 , 
-			            m3.x2 , m3.y2 , m3.z2 , 0 ,
-			            m3.x3 , m2.y3 , m3.z3 , 0 , 
-			            0     , 0     , 0     , 0)
-	
-	end, true)
-	
-	extension:RegisterConstructor("mx4", "mx2,mx2,mx2,mx2", function(a,b,c,d)
-
-		return Matrix4(a.x  , a.y  , b.x  , b.y  ,
-			            a.x2 , a.y2 , b.x2 , b.y2 ,
-			            c.x  , c.y  , d.x  , d.y  , 
-			            c.x2 , c.y2 , d.x2 , d.y2)
-
-	end, true)
-	
-	extension:RegisterConstructor("mx4", "a", function(a)
-
-		ang = Angle(a.p, a.y, a.r)
-		local x = ang:Forward()
-		local y = ang:Right() * -1
-		local z = ang:Up()
-
-		return Matrix4(x.x , y.x , z.x , 0 ,
-			            x.y , y.y , z.y , 0 ,
-			            x.z , y.z , z.z , 0 ,
-			            0   , 0   , 0   , 1)
-	end, true)
-
-	extension:RegisterConstructor("mx4", "a,v", function(a,v)
-
-		ang = Angle(a.p, a.y, a.r)
-		local x = ang:Forward()
-		local y = ang:Right() * -1
-		local z = ang:Up()
-
-		return Matrix4(x.x , y.x , z.x , v.x ,
-			            x.y , y.y , z.y , v.y ,
-			            x.z , y.z , z.z , v.z ,
-			            0   , 0   , 0   , 1  )
-	end, true)
-
-	extension:RegisterConstructor("mx4", "e", function(e)
-
-		if IsValid(e) then
-			local ph = e:GetPhysicsObject()
-
-			local div = 10000
-			local pos = ph:GetPos()
-			
-			local x = ph:LocalToWorld(Vector(div, 0, 0)) - pos
-			local y = ph:LocalToWorld(Vector(0, div, 0)) - pos
-			local z = ph:LocalToWorld(Vector(0, 0, div)) - pos
-
-			return Matrix4(x.x / div , y.x / div , z.x / div , pos.x ,
-				            x.y / div , y.y / div , z.y / div , pos.y ,
-				            x.z / div , y.z / div , z.z / div , pos.z ,
-				            0         , 0         , 0         , 1    )
-		
-		else return Matrix4(0, 0, 0, 0 ,
-			                 0, 0, 0, 0 ,
-			                 0, 0, 0, 0)
-
-		
+	extension:RegisterConstructor({
+		class = "mx4",
+		func = Matrix4
+	})
+	extension:RegisterConstructor({
+		class = "mx4",
+		parameters = "n,n,n,n,n,n,n,n,n,n,n,n,n,n,n,n",
+		func = Matrix4
+	})
+	extension:RegisterConstructor({
+		class = "mx4",
+		parameters = "mx2",
+		func = function(m2)
+			return Matrix4(
+				m2.x , m2.y , 0, 0, 
+				m2.x2, m2.y2, 0, 0,
+				0    , 0    , 0, 0, 
+				0    , 0    , 0, 0
+			)
 		end
-	end, true)
+	})
+	extension:RegisterConstructor({
+		class = "mx4",
+		parameters = "mx3",
+		func = function(m3)
+			return Matrix4(
+				m3.x , m3.y , m3.z , 0, 
+				m3.x2, m3.y2, m3.z2, 0,
+				m3.x3, m2.y3, m3.z3, 0, 
+				0    , 0    , 0    , 0
+			)
+		end
+	})
+	extension:RegisterConstructor({
+		class = "mx4",
+		parameters = "mx2,mx2,mx2,mx2",
+		func = function(a,b,c,d)
+			return Matrix4(
+				a.x , a.y , b.x , b.y ,
+				a.x2, a.y2, b.x2, b.y2,
+				c.x , c.y , d.x , d.y , 
+				c.x2, c.y2, d.x2, d.y2
+			)
+		end
+	})
+	extension:RegisterConstructor({
+		class = "mx4",
+		parameters = "a",
+		func = function(a)
+			ang = Angle(a.p, a.y, a.r)
+			local x = ang:Forward()
+			local y = ang:Right() * -1
+			local z = ang:Up()
 
+			return Matrix4(
+				x.x, y.x, z.x, 0,
+				x.y, y.y, z.y, 0,
+				x.z, y.z, z.z, 0,
+				0  , 0  , 0  , 1
+			)
+		end
+	})
+	extension:RegisterConstructor({
+		class = "mx4",
+		parameters = "a,v",
+		func = function(a,v)
+			ang = Angle(a.p, a.y, a.r)
+			local x = ang:Forward()
+			local y = ang:Right() * -1
+			local z = ang:Up()
 
+			return Matrix4(
+				x.x, y.x, z.x, v.x,
+				x.y, y.y, z.y, v.y,
+				x.z, y.z, z.z, v.z,
+				0  , 0  , 0  , 1
+			)
+		end
+	})
+	extension:RegisterConstructor({
+		class = "mx4",
+		parameters = "e",
+		func = function(e)
+			if IsValid(e) then
+				local ph = e:GetPhysicsObject()
+
+				local div = 10000
+				local pos = ph:GetPos()
+
+				local x = ph:LocalToWorld(Vector(div, 0, 0)) - pos
+				local y = ph:LocalToWorld(Vector(0, div, 0)) - pos
+				local z = ph:LocalToWorld(Vector(0, 0, div)) - pos
+
+				return Matrix4(
+					x.x / div, y.x / div, z.x / div, pos.x,
+					x.y / div, y.y / div, z.y / div, pos.y,
+					x.z / div, y.z / div, z.z / div, pos.z,
+					0        , 0        , 0        , 1
+				)
+			else
+				return Matrix4(
+					0, 0, 0, 0,
+					0, 0, 0, 0,
+					0, 0, 0, 0
+				)
+			end
+		end
+	})
 
 --[[
 	*****************************************************************************************************************************************************
 	 	Matrix4 Global Funcs
 	*****************************************************************************************************************************************************
 ]]--
-	
+
 	local function identitym4()
 
 		return Matrix4(1 , 0 , 0 , 0 ,

@@ -347,7 +347,13 @@ local paramCombinations = {
 
 -- Loop through each variant of constructor/function params and register
 for i = 1, #paramCombinations do
-	extension:RegisterConstructor("h", paramCombinations[i], Create)
+	extension:RegisterConstructor({
+		class = "h",
+		parameters = paramCombinations[i],
+		func = Create,
+		includeContext = true,
+		docstring = "Creates a new hologram object. Takes (string model, vector pos, angle ang, vector scale), any of which can be null"
+	})
 	extension:RegisterFunction("hololib", "create", paramCombinations[i], "h", 1, Create)
 end
 

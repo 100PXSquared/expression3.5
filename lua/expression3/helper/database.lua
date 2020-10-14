@@ -315,7 +315,7 @@ do
 						["result type"] = op.result,
 						["result count"] = op.rCount,
 						["state"] = op.state,
-						["desc"] = "",
+						["desc"] = op.docstring or DEFAULT_DOCSTRING,
 					})
 				end
 			end

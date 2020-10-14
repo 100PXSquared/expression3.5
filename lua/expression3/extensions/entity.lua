@@ -31,7 +31,11 @@ extension:RegisterClass({
 	isValid = IsValid
 })
 
-extension:RegisterConstructor("e", "n", Entity, true);
+extension:RegisterConstructor({
+	class = "e",
+	parameters = "n",
+	func = Entity
+})
 
 extension:RegisterWiredInport("e", "ENTITY", function(e)
 	if not IsValid(e) then return Entity(0); end

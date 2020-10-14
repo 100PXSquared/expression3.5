@@ -27,10 +27,18 @@ extension:RegisterWiredInport("v", "VECTOR");
 extension:RegisterWiredOutport("v", "VECTOR");
 extension:RegisterNativeDefault("v", "Vector(0, 0, 0)");
 
-extension:RegisterConstructor("v", "n,n,n", function(x,y,z) return Vector(x or 0, y or 0, z or 0); end, true)
-extension:RegisterConstructor("v", "n", function(n) return Vector(n or 0, n or 0, n or 0); end, true)
-extension:RegisterConstructor("v", "", function() return Vector(0, 0, 0); end, true)
-extension:RegisterConstructor("v", "q", function(q) return Vector(q.i, q.j, q.k); end, true)
+extension:RegisterConstructor({
+	class = "v", parameters = "n,n,n", func = function(x,y,z) return Vector(x or 0, y or 0, z or 0) end
+})
+extension:RegisterConstructor({
+	class = "v", parameters = "n", func = function(n) return Vector(n or 0) end
+})
+extension:RegisterConstructor({
+	class = "v", func = function() return Vector(0) end
+})
+extension:RegisterConstructor({
+	class = "v", parameters = "q", func = function(q) return Vector(q.i, q.j, q.k) end
+})
 
 --[[
 	Operators

@@ -446,38 +446,39 @@ end
 
 local loadConstructors = false;
 
-function EXPR_LIB.RegisterConstructor(class, parameter, constructor, excludeContext)
+function EXPR_LIB.RegisterConstructor(class, parameter, constructor, includeContext, docstring)
 	if not loadConstructors then
-		EXPR_LIB.ThrowInternal(0, "Attempt to register Constructor new %s(%s) outside of Hook::Expression3.LoadConstructors", class, parameter);
+		EXPR_LIB.ThrowInternal(0, "Attempt to register Constructor new %s(%s) outside of Hook::Expression3.LoadConstructors", class, parameter)
 	end
 
-	local cls = EXPR_LIB.GetClass(class);
+	local cls = EXPR_LIB.GetClass(class)
 
 	if not cls then
-		EXPR_LIB.ThrowInternal(0, "Attempt to register Constructor new %s(%s) for none existing class", class, parameter);
+		EXPR_LIB.ThrowInternal(0, "Attempt to register Constructor new %s(%s) for none existing class", class, parameter)
 	end
 
-	local state, signature = EXPR_LIB.SortArgs(parameter);
+	local state, signature = EXPR_LIB.SortArgs(parameter)
 
 	if not state then
-		EXPR_LIB.ThrowInternal(0, "%s for Constructor new %s(%s)", signature, class, parameter);
+		EXPR_LIB.ThrowInternal(0, "%s for Constructor new %s(%s)", signature, class, parameter)
 	end
 
-	local op = {};
-	op.name = name;
-	op.class = cls.id;
-	op.state = STATE;
-	op.price = PRICE;
-	op.parameter = signature;
-	op.signature = string.format("%s(%s)", cls.id, signature);
-	op.result = cls.id;
-	op.rCount = count;
-	op.operator = constructor;
-	op.context = not excludeContext;
+	local op = {}
+	op.name = name
+	op.class = cls.id
+	op.state = STATE
+	op.price = PRICE
+	op.parameter = signature
+	op.signature = string.format("%s(%s)", cls.id, signature)
+	op.result = cls.id
+	op.rCount = count
+	op.operator = constructor
+	op.context = includeContext
+	op.docstring = docstring
 
-	cls.constructors[op.signature] = op;
+	cls.constructors[op.signature] = op
 
-	return op;
+	return op
 end
 
 local methods;
@@ -886,7 +887,7 @@ end
 function Extension:RegisterEvent(event)
 	self.events[#self.events + 1] = {
 		event.name,
-		event.parameters,
+		event.parameters or "",
 		event.returns,
 		event.count,
 		event.docstring,
@@ -942,9 +943,16 @@ function Extension.RegisterNativeDefault(this, class, native)
 	end);
 end
 
-function Extension.RegisterConstructor(this, class, parameter, constructor, excludeContext)
-	local entry = {class, parameter, constructor, excludeContext, this.state, this.price};
-	this.constructors[#this.constructors + 1] = entry;
+function Extension:RegisterConstructor(constructor)
+	self.constructors[#self.constructors + 1] = {
+		constructor.class,
+		constructor.parameters or "",
+		constructor.func,
+		constructor.includeContext or false,
+		constructor.docstring,
+		self.state,
+		self.price
+	}
 end
 
 function Extension.RegisterMethod(this, class, name, parameter, type, count, method, excludeContext)
@@ -1006,7 +1014,7 @@ function Extension.EnableExtension(this)
 		end
 	end);
 
-	local events = {};
+	local events = {}
 
 	hook.Add("Expression3.LoadEvents", "Expression3.Extension." .. this.name, function()
 		for _, v in pairs(this.events) do
@@ -1018,7 +1026,7 @@ function Extension.EnableExtension(this)
 		end
 	end)
 
-	local classes = {};
+	local classes = {}
 
 	hook.Add("Expression3.LoadClasses", "Expression3.Extension." .. this.name, function()
 		for _, v in pairs(this.classes) do
@@ -1040,26 +1048,26 @@ function Extension.EnableExtension(this)
 				PRICE = v[8]
 
 				local op = this:CheckRegistration(EXPR_LIB.RegisterExtendedClass, unpack(v, 1, 6))
-				op.extension = this.name;
+				op.extension = this.name
 				classes[op.id] = op
 			end
 		end
 	end)
 
-	local constructors = {};
+	local constructors = {}
 
 	hook.Add("Expression3.LoadConstructors", "Expression3.Extension." .. this.name, function()
 		for _, v in pairs(this.constructors) do
-			STATE = v[5];
-			PRICE = v[6];
+			STATE = v[6]
+			PRICE = v[7]
 
-			local op = this:CheckRegistration(EXPR_LIB.RegisterConstructor, v[1], v[2], v[3], v[4]);
-			op.extension = this.name;
-			constructors[op.signature] = op;
+			local op = this:CheckRegistration(EXPR_LIB.RegisterConstructor, unpack(v, 1, 5))
+			op.extension = this.name
+			constructors[op.signature] = op
 		end
 
-		this:PostLoadClasses(EXPR_LIB.GetAllClasses());
-	end);
+		this:PostLoadClasses(EXPR_LIB.GetAllClasses())
+	end)
 
 	local methods = {};
 

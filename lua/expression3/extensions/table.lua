@@ -150,14 +150,20 @@ extension:RegisterNativeDefault("t", "{tbl = {}, children = {}, parents = {}, si
 --[[
 ]]
 
-extension:RegisterConstructor("t", "...", function(...)
-	local t = {...};
-	return {tbl = t, children = {}, parents = {}, size = #t};
-end, true)
-
-extension:RegisterConstructor("t", "", function(...)
-	return {tbl = {}, children = {}, parents = {}, size = 0};
-end, true)
+extension:RegisterConstructor({
+	class = "t",
+	parameters = "...",
+	func = function(...)
+		local t = {...}
+		return {tbl = t, children = {}, parents = {}, size = #t}
+	end
+})
+extension:RegisterConstructor({
+	class = "t",
+	func = function()
+		return {tbl = {}, children = {}, parents = {}, size = 0}
+	end
+})
 
 --[[
 ]]

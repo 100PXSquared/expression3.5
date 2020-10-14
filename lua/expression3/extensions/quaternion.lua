@@ -48,46 +48,59 @@
 		isValid = EXPR_LIB.NOTNIL
 	})
 
-	extension:RegisterConstructor("q", "n", function(n) return Quaternion(n,0,0,0) end, true);
-	extension:RegisterConstructor("q", "", function() return Quaternion(1,0,0,0) end, true);
-	extension:RegisterConstructor("q", "n,n,n,n", function(r,i,j,k) return Quaternion(r,i,j,k) end, true);
-	extension:RegisterConstructor("q", "v", function(v) return Quaternion(0, v.x, v.y, v.z) end, true);
-	extension:RegisterConstructor("q", "a", function(a) return angToQuat(Angle(a.p, a.y, a.r)) end, true);
-	extension:RegisterConstructor("q", "e", function(e)
-		local ph = e:GetPhysicsObject();
-		
-		if IsValid(ph) then
-			return angToQuat(ph:GetAngles());
+	extension:RegisterConstructor({
+		class = "q", func = function() return Quaternion(1,0,0,0) end
+	})
+	extension:RegisterConstructor({
+		class = "q", parameters = "n", func = function(n) return Quaternion(n,0,0,0) end
+	})
+	extension:RegisterConstructor({
+		class = "q", parameters = "n,n,n,n", func = function(r,i,j,k) return Quaternion(r,i,j,k) end
+	})
+	extension:RegisterConstructor({
+		class = "q", parameters = "v", func = function(v) return Quaternion(0, v.x, v.y, v.z) end
+	})
+	extension:RegisterConstructor({
+		class = "q", parameters = "a", func = function(a) return angToQuat(Angle(a.p, a.y, a.r)) end
+	})
+	extension:RegisterConstructor({
+		class = "q",
+		parameters = "e",
+		func = function(e)
+			local ph = e:GetPhysicsObject()
+
+			if IsValid(ph) then
+				return angToQuat(ph:GetAngles())
+			end
 		end
-	end, true);
+	})
+	extension:RegisterConstructor({
+		class = "q",
+		parameters = "v,v",
+		func = function(a,b)
+			local x, z = a, b
+			local y = z:Cross(x):GetNormalized()
 
-	extension:RegisterConstructor("q", "v,v", function(a,b)
+			local ang = x:Angle()
+			if ang.p > 180 then ang.p = ang.p - 360 end
+			if ang.y > 180 then ang.y = ang.y - 360 end
 
-		local x, z = a, b
-		local y = z:Cross(x):GetNormalized()
+			local yaw = Vector(0, 1, 0)
+			yaw:Rotate(Angle(0, ang.y, 0))
 
-		local ang = x:Angle()
-		if ang.p > 180 then ang.p = ang.p - 360 end
-		if ang.y > 180 then ang.y = ang.y - 360 end
+			local roll = acos(clamp(y:Dot(yaw), -1, 1)) * rad2deg
+			if y.z < 0 then roll = -roll end
 
-		local yaw = Vector(0, 1, 0)
-		yaw:Rotate(Angle(0, ang.y, 0))
-
-		local roll = acos(clamp(y:Dot(yaw), -1, 1)) * rad2deg
-		if y.z < 0 then roll = -roll end
-
-		return angToQuat(Angle(ang.p, ang.y, roll));
-
-	end, true);
-
-
+			return angToQuat(Angle(ang.p, ang.y, roll))
+		end
+	})
 
 --[[
 	*****************************************************************************************************************************************************
 		Quaternion Global Funcs
 	*****************************************************************************************************************************************************
 ]]--
-	
+
 	local function qmul(a,b)
 		return Quaternion(
 

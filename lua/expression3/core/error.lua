@@ -27,15 +27,20 @@ local class_error = extension:RegisterClass({
 *****************************************************************************************************************************************************
 ]]--
 
-extension:RegisterConstructor("er", "s", function(ctx, msg)
-	local err = {};
-	err.state = "runtime";
-	err.char = 0;
-	err.line = 0;
-	err.msg = msg;
-	err.ctx = tokens[ctx];
-	return err;
-end);
+extension:RegisterConstructor({
+	class = "er",
+	parameters = "s",
+	func = function(ctx, msg)
+		return {
+			state = "runtime",
+			char = 0,
+			line = 0,
+			msg = msg,
+			ctx = tokens[ctx]
+		}
+	end,
+	includeContext = true
+})
 
 
 --[[

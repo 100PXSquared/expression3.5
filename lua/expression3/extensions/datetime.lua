@@ -28,16 +28,29 @@ extension:RegisterClass({
 	isValid = EXPR_LIB.NOTNIL
 })
 
-extension:RegisterConstructor("ts", "", function()
-	return {year = 0, month = 0, day = 0, hour = 0, min = 0, sec = 0, isdst = false};
-end, true);
-
-extension:RegisterConstructor("ts", "n", timestamp, true);
-extension:RegisterConstructor("ts", "n,b", timestamp, true);
-
-extension:RegisterConstructor("ts", "b", function(utc)
-	return os.date(utc and "!*t" or "*t", os.time());
-end, true);
+extension:RegisterConstructor({
+	class = "ts",
+	func = function()
+		return {year = 0, month = 0, day = 0, hour = 0, min = 0, sec = 0, isdst = false}
+	end
+})
+extension:RegisterConstructor({
+	class = "ts",
+	parameters = "n",
+	func = timestamp
+})
+extension:RegisterConstructor({
+	class = "ts",
+	parameters = "n,b",
+	func = timestamp
+})
+extension:RegisterConstructor({
+	class = "ts",
+	parameters = "b",
+	func = function(utc)
+		return timestamp(nil, utc)
+	end
+})
 
 --[[
 	Attributes

@@ -169,7 +169,12 @@ extension:RegisterClass({
 	isValid = EXPR_LIB.NOTNIL
 })
 
-extension:RegisterConstructor("cv", "n,n,n", GetRT);
+extension:RegisterConstructor({
+	class = "cv",
+	parameters = "n,n,n",
+	func = GetRT,
+	includeContext = true
+})
 
 extension:RegisterOperator("eq", "cv,cv", "b", 1);
 extension:RegisterOperator("neq", "cv,cv", "b", 1);
