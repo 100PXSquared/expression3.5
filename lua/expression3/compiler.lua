@@ -2930,12 +2930,12 @@ function COMPILER.Compile_CONST(this, inst, token, data)
 
 	local op = lib._constants[data.name];
 
-	if not lib then
-		this:Throw(token, "No such constant %.%s", library, data.name);
+	if not op then
+		this:Throw(token, "No such constant %s.%s", library, data.name);
 	end
 
 	if not op.native then
-		this:Throw(token, "Constant %.%s is beyound modern science :(", library, data.name);
+		this:Throw(token, "Constant %s.%s is beyound modern science :(", library, data.name);
 	end
 
 	this:writeToBuffer(inst, op.value);
